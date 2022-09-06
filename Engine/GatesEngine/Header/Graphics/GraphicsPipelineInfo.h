@@ -34,6 +34,13 @@ namespace GE
 		COMPARISON_FUNC_ALWAYS,
 	};
 
+	enum class GraphicsPipelineCullingMode
+	{
+		CULL_MODE_NONE = 1,
+		CULL_MODE_FRONT = 2,
+		CULL_MODE_BACK = 3
+	};
+
 	struct GraphicsPipelineInfo
 	{
 		GraphicsPipelineBlendMode blendMode = GraphicsPipelineBlendMode::BLENDMODE_ALPHA;
@@ -43,6 +50,7 @@ namespace GE
 		int renderTargetCount = 1; 
 		bool isUseAlphaToCoverage = false;
 		GraphicsPipelineComparison depthComparison = GraphicsPipelineComparison::COMPARISON_FUNC_LESS;
+		GraphicsPipelineCullingMode cullMode = GraphicsPipelineCullingMode::CULL_MODE_BACK;
 	};
 
 	enum class GraphicsPipelineInputLayout

@@ -5,6 +5,8 @@
 #include "..\..\..\Header\Graphics\Window.h"
 #include "..\..\..\Header\GUI\GUIManager.h"
 
+GE::Math::Vector3 GE::SampleComponent::angles = GE::Math::Vector3();
+
 GE::SampleComponent::SampleComponent()
 	: inputDevice(nullptr)
 {
@@ -78,9 +80,11 @@ void GE::SampleComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteShader");
+	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ SPRITE_SIZE });
+
+	modelMatrix *= GE::Math::Matrix4x4::RotationZXY(angles);
 	GE::Math::Vector2 mousePos = inputDevice->GetMouse()->GetClientMousePos();
 	//GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
 
@@ -95,6 +99,7 @@ void GE::SampleComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
+	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_null")->GetSRVNumber() });
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
@@ -114,4 +119,5 @@ void GE::SampleComponent::OnGui()
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
+	ImGui::DragFloat3("Angles", angles.value, dragSpeed, 0, 360);
 }
