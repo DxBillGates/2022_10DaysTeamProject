@@ -82,5 +82,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	sampleCollider->SetSize({ 2 });
 	sampleCollider->SetType(GE::ColliderType::OBB);
 
+	testObject->Awake();
+
 	isGenerate = false;
 }
