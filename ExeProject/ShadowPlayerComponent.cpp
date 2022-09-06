@@ -5,6 +5,12 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
+ShadowPlayerComponent::ShadowPlayerComponent()
+	: moveEntity(MoveEntity())
+	, autoMove(true)
+{
+}
+
 void ShadowPlayerComponent::Start()
 {
 	moveEntity.Initialize();

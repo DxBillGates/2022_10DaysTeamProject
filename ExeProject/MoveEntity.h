@@ -25,6 +25,7 @@ private:
 	GE::FlagController changeMoveDirectionFlag;
 	GE::Math::Vector3 angles;
 public:
+	MoveEntity();
 
 	void Initialize();
 

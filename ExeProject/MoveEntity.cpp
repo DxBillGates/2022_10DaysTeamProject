@@ -2,6 +2,14 @@
 #include <GatesEngine/Header/Util/Math/Math.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 
+MoveEntity::MoveEntity()
+	: stanceState(StanceState::NORMAL)
+	, moveDirectionState(MoveDirectionState::RIGHT)
+	, changeMoveDirectionFlag(GE::FlagController())
+	, angles()
+{
+}
+
 void MoveEntity::Initialize()
 {
 	const float CHANGE_DIRECTION_TIME = 0.3f;

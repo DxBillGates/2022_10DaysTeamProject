@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameSetting.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveEntity.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameSetting.h" />
     <ClInclude Include="MoveEntity.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />

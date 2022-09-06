@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "SampleScene.h"
+#include "GameSetting.h"
 
 #include <GatesEngine/Header/Graphics/Texture.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -44,12 +45,16 @@ bool Game::LoadContents()
 bool Game::Initialize()
 {
 	Application::Initialize();
+
+	GameSetting::GetInstance()->Initialize();
+
 	return true;
 }
 
 bool Game::Update()
 {
 	GE::GUIManager::StartFrame();
+	GameSetting::GetInstance()->ChangingGameTime(timer.GetElapsedTime());
 	Application::Update();
 	return true;
 }

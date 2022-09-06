@@ -9,6 +9,8 @@ private:
 	MoveEntity moveEntity;
 	bool autoMove;
 public:
+	ShadowPlayerComponent();
+
 	void Start() override;
 	void Update(float deltaTime) override;
 	void LateDraw() override;

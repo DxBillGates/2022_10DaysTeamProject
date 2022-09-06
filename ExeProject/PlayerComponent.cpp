@@ -1,9 +1,17 @@
 #include "PlayerComponent.h"
+#include "GameSetting.h"
+
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Util/Random.h           >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
+
+PlayerComponent::PlayerComponent()
+	: inputDevice(nullptr)
+	, moveEntity(MoveEntity())
+{
+}
 
 void PlayerComponent::Start()
 {
@@ -18,6 +26,8 @@ void PlayerComponent::Start()
 
 void PlayerComponent::Update(float deltaTime)
 {
+	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
+
 	// 移動方向の変更テスト
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT 
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
@@ -28,17 +38,17 @@ void PlayerComponent::Update(float deltaTime)
 	const float MOVE_SPEED = 5;
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
 	{
-		transform->position.x -= MOVE_SPEED;
+		transform->position.x -= MOVE_SPEED * GAME_TIME;
 	}
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
 	{
-		transform->position.x += MOVE_SPEED;
+		transform->position.x += MOVE_SPEED * GAME_TIME;
 	}
 
 	// 移動オブジェクト用の各種更新処理
 	moveEntity.CheckTeleport(transform->position, transform->scale);
-	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
-	moveEntity.UpdateStanceAngle(deltaTime, 1);
+	moveEntity.UpdateChangeDirectionFlag(deltaTime, GAME_TIME);
+	moveEntity.UpdateStanceAngle(deltaTime, GAME_TIME);
 }
 
 void PlayerComponent::LateDraw()
