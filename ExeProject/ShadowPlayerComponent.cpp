@@ -8,22 +8,30 @@
 void ShadowPlayerComponent::Start()
 {
 	moveEntity.Initialize();
+	moveEntity.SetStanceState(StanceState::INVERSE);
+
+	autoMove = true;
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
+	transform->position = { 1920 / 2,transform->scale.y / 2,0 };
+
 }
 
 void ShadowPlayerComponent::Update(float deltaTime)
 {
 	const float MOVE_SPEED = 7;
 
-	if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
+	if (autoMove == true)
 	{
-		transform->position.x += MOVE_SPEED;
-	}
-	else
-	{
-		transform->position.x -= MOVE_SPEED;
+		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
+		{
+			transform->position.x += MOVE_SPEED;
+		}
+		else
+		{
+			transform->position.x -= MOVE_SPEED;
+		}
 	}
 
 	// 移動オブジェクト用の各種更新処理
@@ -46,7 +54,7 @@ void ShadowPlayerComponent::LateDraw()
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
-	material.color = GE::Color(0.5f, 0.5f, 0.5f,1);
+	material.color = GE::Color(0.5f, 0.5f, 0.5f, 1);
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
@@ -58,12 +66,7 @@ void ShadowPlayerComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
-//void ShadowPlayerComponent::OnGui()
-//{
-//	static bool flag = true;
-//	bool oldFlag = flag;
-//
-//	ImGui::Checkbox("flag", &flag);
-//
-//	if (flag != oldFlag)moveEntity.ChangeMoveDirection();
-//}
+void ShadowPlayerComponent::OnGui()
+{
+	ImGui::Checkbox("flag", &autoMove);
+}

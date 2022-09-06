@@ -13,12 +13,14 @@ void PlayerComponent::Start()
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
+	transform->position = { 1920 / 2,1080 - transform->scale.y,0 };
 }
 
 void PlayerComponent::Update(float deltaTime)
 {
 	// 移動方向の変更テスト
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) || inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT 
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
 	{
 		moveEntity.ChangeMoveDirection();
 	}
@@ -34,7 +36,7 @@ void PlayerComponent::Update(float deltaTime)
 	}
 
 	// 移動オブジェクト用の各種更新処理
-	moveEntity.CheckTeleport(transform->position,transform->scale);
+	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
 	moveEntity.UpdateStanceAngle(deltaTime, 1);
 }
