@@ -1,12 +1,11 @@
 #pragma once
 #include "MoveEntity.h"
-#include <GatesEngine/Header/GameFramework/Component/Component.h>
-#include <GatesEngine/Header/Input/InputDevice.h>
 
-class PlayerComponent : public GE::Component
+#include <GatesEngine/Header/GameFramework/Component/Component.h>
+
+class ShadowPlayerComponent : public GE::Component
 {
 private:
-	GE::InputDevice* inputDevice;
 	MoveEntity moveEntity;
 public:
 	void Start() override;

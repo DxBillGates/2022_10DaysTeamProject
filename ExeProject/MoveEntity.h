@@ -28,15 +28,23 @@ public:
 
 	void Initialize();
 
+	void CheckTeleport(GE::Math::Vector3& pos,const GE::Math::Vector3 size);
 	void UpdateStanceAngle(float deltaTime, float gameTime);
 	void UpdateChangeDirectionFlag(float deltaTime,float gameTime);
 
 	// ˆÚ“®•ûŒü‚ğ‹t‚É•ÏX‚·‚é
 	void ChangeMoveDirection();
+	// ã‰º‚Ìó‘Ô‚ğ•ÏX‚·‚é
+	void ChangeStanceState();
 
 	StanceState GetStanceState()
 	{
 		return stanceState;
+	}
+
+	MoveDirectionState GetDirectionState()
+	{
+		return moveDirectionState;
 	}
 
 	GE::Math::Vector3 GetAngles()

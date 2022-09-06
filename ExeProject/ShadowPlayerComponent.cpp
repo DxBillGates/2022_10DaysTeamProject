@@ -1,45 +1,38 @@
-#include "PlayerComponent.h"
+#include "ShadowPlayerComponent.h"
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Util/Random.h           >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
-void PlayerComponent::Start()
+void ShadowPlayerComponent::Start()
 {
-	inputDevice = GE::InputDevice::GetInstance();
-
 	moveEntity.Initialize();
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
 }
 
-void PlayerComponent::Update(float deltaTime)
+void ShadowPlayerComponent::Update(float deltaTime)
 {
-	// 移動方向の変更テスト
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) || inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D))
-	{
-		moveEntity.ChangeMoveDirection();
-	}
+	const float MOVE_SPEED = 7;
 
-	const float MOVE_SPEED = 5;
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
-	{
-		transform->position.x -= MOVE_SPEED;
-	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
+	if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
 	{
 		transform->position.x += MOVE_SPEED;
 	}
+	else
+	{
+		transform->position.x -= MOVE_SPEED;
+	}
 
 	// 移動オブジェクト用の各種更新処理
-	moveEntity.CheckTeleport(transform->position,transform->scale);
+	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
 	moveEntity.UpdateStanceAngle(deltaTime, 1);
 }
 
-void PlayerComponent::LateDraw()
+void ShadowPlayerComponent::LateDraw()
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -53,8 +46,7 @@ void PlayerComponent::LateDraw()
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
-	material.color = GE::Color::White();
-
+	material.color = GE::Color(0.5f, 0.5f, 0.5f,1);
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
@@ -66,9 +58,12 @@ void PlayerComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
-//void PlayerComponent::OnGui()
+//void ShadowPlayerComponent::OnGui()
 //{
-//	float dragSpeed = 0.1f;
-//	float maxValue = 100;
-//	ImGui::DragFloat3("Angles", transform->rotation.value, dragSpeed, 0, 360);
+//	static bool flag = true;
+//	bool oldFlag = flag;
+//
+//	ImGui::Checkbox("flag", &flag);
+//
+//	if (flag != oldFlag)moveEntity.ChangeMoveDirection();
 //}

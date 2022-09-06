@@ -179,6 +179,10 @@ bool GE::Application::LoadContents()
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
 
+	Texture* iconTexture = new Texture();
+	iconTexture->Load("test.png", device, shaderResourceHeap);
+	textureManager->Add(iconTexture, "texture_icon");
+
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");

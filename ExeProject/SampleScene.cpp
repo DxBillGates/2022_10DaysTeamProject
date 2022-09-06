@@ -1,5 +1,6 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
+#include "ShadowPlayerComponent.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -27,18 +28,18 @@ SampleScene::SampleScene(const std::string& sceneName)
 		col1 = sampleCollider;
 	}
 
-	//{
-	//	auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-	//	testObject->SetName("test2");
-	//	testObject->GetTransform()->position = { 1300,0,0 };
-	//	testObject->SetDrawAxisEnabled(true);
-	//	auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-	//	auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-	//	sampleCollider->SetCenter({ 0,0,0 });
-	//	sampleCollider->SetSize({ 2 });
-	//	sampleCollider->SetType(GE::ColliderType::OBB);
-	//	col2 = sampleCollider;
-	//}
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
+		testObject->SetName("test2");
+		testObject->GetTransform()->position = { 1300,0,0 };
+		testObject->SetDrawAxisEnabled(true);
+		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
+		auto* sampleComponent = testObject->AddComponent<ShadowPlayerComponent>();
+		sampleCollider->SetCenter({ 0,0,0 });
+		sampleCollider->SetSize({ 2 });
+		sampleCollider->SetType(GE::ColliderType::OBB);
+		col2 = sampleCollider;
+	}
 }
 
 SampleScene::~SampleScene()

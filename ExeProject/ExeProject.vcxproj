@@ -168,6 +168,7 @@
     <ClCompile Include="MoveEntity.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="ShadowPlayerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="ShadowPlayerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultShader.hlsli" />
