@@ -60,4 +60,7 @@ void MoveEntity::ChangeMoveDirection()
 	{
 		moveDirectionState = MoveDirectionState::RIGHT;
 	}
+
+	changeMoveDirectionFlag.SetFlag(true);
+	changeMoveDirectionFlag.SetTime(0);
 }
