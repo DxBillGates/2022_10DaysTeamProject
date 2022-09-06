@@ -165,10 +165,14 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveEntity.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MoveEntity.h" />
+    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
   </ItemGroup>
