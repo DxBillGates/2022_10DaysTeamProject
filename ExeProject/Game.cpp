@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "SampleScene.h"
 
+#include <GatesEngine/Header/Graphics/Texture.h>
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Graphics/CBufferStruct.h>
@@ -28,6 +29,12 @@ Game::~Game()
 bool Game::LoadContents()
 {
 	Application::LoadContents();
+
+	GE::Texture* playerTexture = new GE::Texture();
+	playerTexture->Load("player.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(playerTexture, "texture_player");
+
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
 
