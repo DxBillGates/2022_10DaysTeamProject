@@ -1,3 +1,1 @@
 # GatesEngine
-
-(コミットテスト kousi)
