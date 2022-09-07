@@ -20,6 +20,20 @@ private:
 	GE::FlagController attackStateFlag;
 
 	GE::FlagController coolTimeFlag;
+
+	struct PlayerVibrationInfo
+	{
+		GE::Math::Vector3 playerOriginPosition;
+		GE::Math::Vector3 shadowPlayerOriginPosition;
+
+		GE::FlagController flag;
+
+		// true : ƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ÉˆÚ“®
+		// false : ‚à‚Æ‚ÌˆÊ’u‚ÉˆÚ“®
+		bool vibrationState;
+	};
+	PlayerVibrationInfo vibrationInfo;
+
 public:
 	static PlayerAttackManager* GetInstance();
 
@@ -42,4 +56,6 @@ private:
 	void AttackProcess();
 
 	void CoolTimeProcess();
+
+	void InitializeVibrationInfo();
 };

@@ -8,6 +8,8 @@ private:
 	float gameTime;
 	float afterGameTime;
 
+	const int MAX_FRAMERATE;
+
 	GE::FlagController changeGameTimeFlag;
 public:
 	static GameSetting* GetInstance();
@@ -21,6 +23,7 @@ public:
 	void ChangingGameTime(float deltaTime);
 
 	float GetTime();
+	int GetMaxFramerate();
 
 	/// <summary>
 	/// ゲームの経過速度を変更する

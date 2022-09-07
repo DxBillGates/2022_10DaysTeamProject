@@ -35,6 +35,11 @@ float GameSetting::GetTime()
 	return gameTime;
 }
 
+int GameSetting::GetMaxFramerate()
+{
+	return MAX_FRAMERATE;
+}
+
 void GameSetting::SetTime(float setTime, float changingTime)
 {
 	changeGameTimeFlag.Initialize();
@@ -49,6 +54,7 @@ GameSetting::GameSetting()
 	: beforeGameTime(1)
 	, gameTime(1)
 	, afterGameTime(1)
+	, MAX_FRAMERATE(144)
 	, changeGameTimeFlag()
 {
 }

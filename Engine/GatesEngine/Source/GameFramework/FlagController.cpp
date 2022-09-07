@@ -31,7 +31,7 @@ void GE::FlagController::Update(float deltaTime)
 
 bool GE::FlagController::GetOverTimeTrigger()
 {
-	if (preElapsedTime < 1 && elapsedTime >= 1)
+	if (preElapsedTime < PROPERTY_MAX_TIME && elapsedTime >= PROPERTY_MAX_TIME)
 	{
 		return true;
 	}
