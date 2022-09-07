@@ -89,6 +89,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	newEnemy->SetDrawAxisEnabled(true);
 	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
 	auto* normalEnemyComponent = newEnemy->AddComponent<NormalEnemyComponent>();
+	normalEnemyComponent->SetPBossPosition(&transform->position);
 	normalEnemyComponent->SetMovePos(transform->position, afterPos);
 	sampleCollider->SetCenter({ 0,0,0 });
 	sampleCollider->SetSize({ 2 });

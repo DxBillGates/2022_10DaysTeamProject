@@ -1,6 +1,6 @@
 #include "NormalEnemyComponent.h"
 #include <GatesEngine/Header/Graphics/Window.h>
-#include <GatesEngine/Header/GUI\GUIManager.h        >
+#include <GatesEngine/Header/GUI\GUIManager.h>
 
 void NormalEnemyComponent::Start()
 {
@@ -22,37 +22,29 @@ void NormalEnemyComponent::Update(float deltaTime)
 	//画像の向きを正す
 	CheckStance();
 
-	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
-		//上に落ちる
-		if (transform->position.y < 1080 / 2) {
-			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
-		}
-		//下に落ちる
-		else {
-			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
-		}
-		moveTimer = 0;
-		enemyState = EnemyState::FALLING;
-	}
-
 	//状態に応じて処理を分ける
 	if (enemyState == EnemyState::GENERATING) {
-		MoveGenerating();
+		UpdateGenerating();
 	}
 	else if (enemyState == EnemyState::FLYING) {
-		MoveFlying();
+		UpdateFlying();
 	}
 	else if (enemyState == EnemyState::FALLING) {
-		MoveFalling();
+		UpdateFalling();
+	}
+	else if (enemyState == EnemyState::WALKING) {
+		UpdateWalking();
 	}
 	else {
-		MoveWalking();
+		UpdateDeading();
 	}
 }
 
 void NormalEnemyComponent::LateDraw()
 {
+	//死んだら描画しない
+	if (enemyState == EnemyState::DEAD) { return; }
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -101,7 +93,7 @@ void NormalEnemyComponent::CheckStance()
 	}
 }
 
-void NormalEnemyComponent::MoveGenerating()
+void NormalEnemyComponent::UpdateGenerating()
 {
 	//イージングかけてBossの座標からあらかじめ決めてある位置に移動
 	float t = moveTimer <= 1.0f ? moveTimer : 1.0f;
@@ -116,14 +108,28 @@ void NormalEnemyComponent::MoveGenerating()
 	}
 }
 
-void NormalEnemyComponent::MoveFlying()
+void NormalEnemyComponent::UpdateFlying()
 {
 	//上下にふわふわ浮く感じ
 	const float amount = 20;
 	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((loopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
+
+	//デバッグ用　状態遷移
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
+		//上に落ちる
+		if (transform->position.y < 1080 / 2) {
+			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+		}
+		//下に落ちる
+		else {
+			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+		}
+		moveTimer = 0;
+		enemyState = EnemyState::FALLING;
+	}
 }
 
-void NormalEnemyComponent::MoveFalling()
+void NormalEnemyComponent::UpdateFalling()
 {
 	//イージングかけてBossの座標からあらかじめ決めてある位置に移動
 	float t = moveTimer <= 1.0f ? moveTimer : 1.0f;
@@ -138,9 +144,29 @@ void NormalEnemyComponent::MoveFalling()
 	}
 }
 
-void NormalEnemyComponent::MoveWalking()
+void NormalEnemyComponent::UpdateWalking()
 {
+	//デバッグ用　状態遷移
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
+		SetMovePos(transform->position, *pBossPosition);
+		moveTimer = 0;
+		enemyState = EnemyState::DEADING;
+	}
+}
 
+void NormalEnemyComponent::UpdateDeading()
+{
+	//イージングかけてBossの座標からあらかじめ決めてある位置に移動
+	float t = moveTimer <= 1.0f ? moveTimer : 1.0f;
+	float x = moveBeforePos.x + (moveAfterPos.x - moveBeforePos.x) * GE::Math::Easing::EaseInBack(t);
+	float y = moveBeforePos.y + (moveAfterPos.y - moveBeforePos.y) * GE::Math::Easing::EaseInBack(t);
+
+	transform->position = { x, y, 0 };
+
+	//移動終わったら死ぬ
+	if (moveTimer >= 1.0f) {
+		enemyState = EnemyState::DEAD;
+	}
 }
 
 void NormalEnemyComponent::SetMovePos(const GE::Math::Vector3& before, const GE::Math::Vector3& after)
