@@ -78,6 +78,11 @@ void PlayerComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
+MoveEntity* PlayerComponent::GetMoveEntity()
+{
+	return &moveEntity;
+}
+
 //void PlayerComponent::OnGui()
 //{
 //	float dragSpeed = 0.1f;

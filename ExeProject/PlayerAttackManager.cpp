@@ -52,19 +52,21 @@ PlayerAttackState PlayerAttackManager::GetAttackState()
 	return attackState;
 }
 
-void PlayerAttackManager::SetPlayer(GE::GameObject* pPlayer)
+void PlayerAttackManager::SetPlayer(GE::GameObject* pPlayer, MoveEntity* moveEntity)
 {
-	player = pPlayer;
+	player.object = pPlayer;
+	player.moveEntity = moveEntity;
 }
 
-void PlayerAttackManager::SetShadowPlayer(GE::GameObject* pPlayer)
+void PlayerAttackManager::SetShadowPlayer(GE::GameObject* pPlayer, MoveEntity* moveEntity)
 {
-	shadowPlayer = pPlayer;
+	shadowPlayer.object = pPlayer;
+	shadowPlayer.moveEntity = moveEntity;
 }
 
 PlayerAttackManager::PlayerAttackManager()
-	: player(nullptr)
-	, shadowPlayer(nullptr)
+	: player()
+	, shadowPlayer()
 	, attackState(PlayerAttackState::NONE)
 	, attackStateFlag(GE::FlagController())
 	, coolTimeFlag(GE::FlagController())
@@ -103,6 +105,15 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 			break;
 		case PlayerAttackState::ACTIVE:
 			TransitionAttackState(END_TIME, PlayerAttackState::END);
+
+			player.object->GetTransform()->position = vibrationInfo.shadowPlayerOriginPosition;
+			shadowPlayer.object->GetTransform()->position = vibrationInfo.playerOriginPosition;
+
+			player.moveEntity->SetStanceState(shadowPlayer.moveEntity->GetStanceState());
+			shadowPlayer.moveEntity->SetStanceState(player.moveEntity->GetStanceState());
+
+			shadowPlayer.moveEntity->SetDirectionState(player.moveEntity->GetDirectionState());
+
 			break;
 		case PlayerAttackState::END:
 			attackState = PlayerAttackState::NONE;
@@ -149,19 +160,19 @@ void PlayerAttackManager::AttackProcess()
 					randomVector.value[i] = GE::RandomMaker::GetFloat(-1, 1);
 				}
 
-				player->GetTransform()->position += randomVector;
-				shadowPlayer->GetTransform()->position += randomVector;
+				player.object->GetTransform()->position += randomVector;
+				shadowPlayer.object->GetTransform()->position += randomVector;
 			}
 			else
 			{
-				player->GetTransform()->position = vibrationInfo.playerOriginPosition;
-				shadowPlayer->GetTransform()->position = vibrationInfo.shadowPlayerOriginPosition;
+				player.object->GetTransform()->position = vibrationInfo.playerOriginPosition;
+				shadowPlayer.object->GetTransform()->position = vibrationInfo.shadowPlayerOriginPosition;
 			}
 		}
 		break;
 	case PlayerAttackState::ACTIVE:
-		player->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.playerOriginPosition, vibrationInfo.shadowPlayerOriginPosition, lerpTime);
-		shadowPlayer->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.shadowPlayerOriginPosition, vibrationInfo.playerOriginPosition, lerpTime);
+		player.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.playerOriginPosition, vibrationInfo.shadowPlayerOriginPosition, lerpTime);
+		shadowPlayer.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.shadowPlayerOriginPosition, vibrationInfo.playerOriginPosition, lerpTime);
 		break;
 	case PlayerAttackState::END:
 		break;
@@ -183,8 +194,8 @@ void PlayerAttackManager::InitializeVibrationInfo()
 	// U“®ŠÔƒtƒŒ[ƒ€(‰½ƒtƒŒ[ƒ€‚²‚Æ‚ÉU“®‚³‚¹‚é‚©)
 	const int VIBRATION_FRAME_COUNT = 5;
 
-	vibrationInfo.playerOriginPosition = player->GetTransform()->position;
-	vibrationInfo.shadowPlayerOriginPosition = shadowPlayer->GetTransform()->position;
+	vibrationInfo.playerOriginPosition = player.object->GetTransform()->position;
+	vibrationInfo.shadowPlayerOriginPosition = shadowPlayer.object->GetTransform()->position;
 	vibrationInfo.flag.Initialize();
 	vibrationInfo.flag.SetMaxTimeProperty(1.0f / GameSetting::GetInstance()->GetMaxFramerate() * VIBRATION_FRAME_COUNT);
 	vibrationInfo.flag.SetFlag(true);

@@ -57,4 +57,9 @@ public:
 	{
 		stanceState = state;
 	}
+
+	void SetDirectionState(MoveDirectionState state)
+	{
+		moveDirectionState = state;
+	}
 };

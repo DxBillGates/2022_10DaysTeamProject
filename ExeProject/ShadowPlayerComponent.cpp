@@ -76,3 +76,8 @@ void ShadowPlayerComponent::OnGui()
 {
 	ImGui::Checkbox("flag", &autoMove);
 }
+
+MoveEntity* ShadowPlayerComponent::GetMoveEntity()
+{
+	return &moveEntity;
+}

@@ -30,7 +30,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 2 });
 		col1 = sampleCollider;
 
-		playerAttackManager->SetPlayer(testObject);
+		playerAttackManager->SetPlayer(testObject,sampleComponent->GetMoveEntity());
 	}
 
 	{
@@ -45,7 +45,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
 
-		playerAttackManager->SetShadowPlayer(testObject);
+		playerAttackManager->SetShadowPlayer(testObject, sampleComponent->GetMoveEntity());
 	}
 }
 

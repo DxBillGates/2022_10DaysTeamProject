@@ -15,4 +15,6 @@ public:
 	void Update(float deltaTime) override;
 	void LateDraw() override;
 	void OnGui() override;
+
+	MoveEntity* GetMoveEntity();
 };

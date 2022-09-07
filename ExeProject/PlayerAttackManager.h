@@ -1,6 +1,6 @@
 #pragma once
-#include "PlayerComponent.h"
-#include "ShadowPlayerComponent.h"
+#include "MoveEntity.h"
+#include <GatesEngine/Header/GameFramework/GameObject/GameObject.h>
 
 enum class PlayerAttackState
 {
@@ -10,11 +10,17 @@ enum class PlayerAttackState
 	END,
 };
 
+struct PlayerInfo
+{
+	GE::GameObject* object;
+	MoveEntity* moveEntity;
+};
+
 class PlayerAttackManager
 {
 private:
-	GE::GameObject* player;
-	GE::GameObject* shadowPlayer;
+	PlayerInfo player;
+	PlayerInfo shadowPlayer;
 
 	PlayerAttackState attackState;
 	GE::FlagController attackStateFlag;
@@ -41,8 +47,8 @@ public:
 	void Update(float deltaTime);
 
 	PlayerAttackState GetAttackState();
-	void SetPlayer(GE::GameObject* pPlayer);
-	void SetShadowPlayer(GE::GameObject* pPlayer);
+	void SetPlayer(GE::GameObject* pPlayer,MoveEntity* moveEntity);
+	void SetShadowPlayer(GE::GameObject* pPlayer, MoveEntity* moveEntity);
 private:
 	PlayerAttackManager();
 	PlayerAttackManager(const PlayerAttackManager&) = delete;
