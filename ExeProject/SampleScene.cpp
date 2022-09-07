@@ -1,6 +1,7 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include "ShadowPlayerComponent.h"
+#include "PlayerAttackManager.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -16,6 +17,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 	, col1(nullptr)
 	, col2(nullptr)
 {
+	auto* playerAttackManager = PlayerAttackManager::GetInstance();
+
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
 		testObject->SetName("test1");
@@ -26,6 +29,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetCenter({ 0,0,0 });
 		sampleCollider->SetSize({ 2 });
 		col1 = sampleCollider;
+
+		playerAttackManager->SetPlayer(testObject);
 	}
 
 	{
@@ -39,6 +44,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 2 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
+
+		playerAttackManager->SetShadowPlayer(testObject);
 	}
 }
 
@@ -50,12 +57,15 @@ void SampleScene::Initialize()
 {
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
+
+	PlayerAttackManager::GetInstance()->Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 
+	PlayerAttackManager::GetInstance()->Update(deltaTime);
 	//if (GE::CollisionManager::CheckHit(col1, col2))
 	//{
 	//	col1->Hit(col2, nullptr);
