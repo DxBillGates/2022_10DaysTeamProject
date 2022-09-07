@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h>
+#include <vector>
 
 //デバッグ用
 #include <GatesEngine/Header/Input/InputDevice.h>
@@ -13,6 +14,9 @@ private:
 
 	//デバッグ用
 	GE::InputDevice* inputDevice;
+
+	//NormalEnemyの管理コンテナ
+	std::vector<GE::GameObject*> normalEnemies;
 
 	//横移動用
 	float velocity = 0;

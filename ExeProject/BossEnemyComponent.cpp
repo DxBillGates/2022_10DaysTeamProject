@@ -1,6 +1,7 @@
 #include "BossEnemyComponent.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
+#include <GatesEngine/Header/Util/Random.h           >
 #include "NormalEnemyComponent.h"
 
 void BossEnemyComponent::Start()
@@ -71,18 +72,32 @@ void BossEnemyComponent::GenerateNormalEnemy()
 {
 	if (isGenerate == false) { return; }
 
-	auto* testObject = pGameObjectManager->AddGameObject(new GE::GameObject());
-	testObject->SetName("test_enemy");
-	testObject->GetTransform()->position = { 0,0,0 };
-	testObject->SetDrawAxisEnabled(true);
-	auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-	auto* normalEnemyComponent = testObject->AddComponent<NormalEnemyComponent>();
-	normalEnemyComponent->SetGeneratePos(transform->position, { 1920 / 2, 0, 0 });	//‚Æ‚è‚ ‚¦‚¸Œˆ‚ß‘Å‚¿
+	//ƒ‰ƒ“ƒ_ƒ€‚ÅˆÚ“®À•WŒˆ’è
+	float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
+
+	float y = GE::RandomMaker::GetFloat(100, 300);
+	if (GE::RandomMaker::GetInt(0, 1) == 1) {
+		y *= -1;
+	}
+
+	GE::Math::Vector3 afterPos = { x, 1080 / 2 + y, 0 };
+
+	//NormalEnemy¶¬
+	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
+	newEnemy->SetName("test_enemy_" + std::to_string(normalEnemies.size()));
+	newEnemy->GetTransform()->position = { 0,0,0 };
+	newEnemy->SetDrawAxisEnabled(true);
+	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
+	auto* normalEnemyComponent = newEnemy->AddComponent<NormalEnemyComponent>();
+	normalEnemyComponent->SetMovePos(transform->position, afterPos);
 	sampleCollider->SetCenter({ 0,0,0 });
 	sampleCollider->SetSize({ 2 });
 	sampleCollider->SetType(GE::ColliderType::OBB);
 
-	testObject->Awake();
+	newEnemy->Awake();
+	newEnemy->Start();
+
+	normalEnemies.push_back(newEnemy);
 
 	isGenerate = false;
 }
