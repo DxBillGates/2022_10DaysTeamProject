@@ -8,7 +8,7 @@ void BossEnemyComponent::Start()
 {
 	inputDevice = GE::InputDevice::GetInstance();
 
-	const float SPRITE_SIZE = 100;
+	const GE::Math::Vector3 SPRITE_SIZE = { 512, 384,0 };
 
 	transform->scale = SPRITE_SIZE;
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
