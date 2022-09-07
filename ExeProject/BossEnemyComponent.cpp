@@ -23,7 +23,7 @@ void BossEnemyComponent::Update(float deltaTime)
 	Move();
 
 	//デバッグ用　ほんとは攻撃されたら呼び出す
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) {
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
 		isGenerate = true;
 	}
 }

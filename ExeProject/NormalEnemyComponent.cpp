@@ -115,7 +115,7 @@ void NormalEnemyComponent::UpdateFlying()
 	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((loopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
 
 	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
 		//上に落ちる
 		if (transform->position.y < 1080 / 2) {
 			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
@@ -147,7 +147,7 @@ void NormalEnemyComponent::UpdateFalling()
 void NormalEnemyComponent::UpdateWalking()
 {
 	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F3)) {
 		SetMovePos(transform->position, *pBossPosition);
 		moveTimer = 0;
 		enemyState = EnemyState::DEADING;
