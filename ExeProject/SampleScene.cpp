@@ -47,6 +47,19 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 		playerAttackManager->SetShadowPlayer(testObject, sampleComponent->GetMoveEntity());
 	}
+
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
+		testObject->SetName("test3");
+		testObject->GetTransform()->position = { 0,0,0 };
+		testObject->SetDrawAxisEnabled(true);
+		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
+		bossEnemyComponent = testObject->AddComponent<BossEnemyComponent>();
+		bossEnemyComponent->SetPGameObjectManager(&gameObjectManager);
+		sampleCollider->SetCenter({ 0,0,0 });
+		sampleCollider->SetSize({ 2 });
+		sampleCollider->SetType(GE::ColliderType::OBB);
+	}
 }
 
 SampleScene::~SampleScene()
@@ -63,6 +76,7 @@ void SampleScene::Initialize()
 
 void SampleScene::Update(float deltaTime)
 {
+	bossEnemyComponent->GenerateNormalEnemy();
 	gameObjectManager.Update(deltaTime);
 
 	PlayerAttackManager::GetInstance()->Update(deltaTime);

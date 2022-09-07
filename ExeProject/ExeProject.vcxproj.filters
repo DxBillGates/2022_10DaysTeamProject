@@ -32,10 +32,10 @@
     <ClCompile Include="ShadowPlayerComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="GameSetting.cpp">
+    <ClCompile Include="BossEnemyComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerAttackManager.cpp">
+    <ClCompile Include="NormalEnemyComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,10 +58,10 @@
     <ClInclude Include="ShadowPlayerComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="GameSetting.h">
+    <ClInclude Include="BossEnemyComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerAttackManager.h">
+    <ClInclude Include="NormalEnemyComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

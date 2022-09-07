@@ -29,6 +29,7 @@ Game::~Game()
 
 bool Game::LoadContents()
 {
+	//ƒŠƒ\[ƒX’Ç‰Á‚Í‚±‚±‚©‚ç«
 	Application::LoadContents();
 
 	GE::Texture* playerTexture = new GE::Texture();
