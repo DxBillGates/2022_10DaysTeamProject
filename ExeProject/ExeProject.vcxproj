@@ -165,9 +165,11 @@
   <ItemGroup>
     <ClCompile Include="BossEnemyComponent.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameSetting.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveEntity.cpp" />
     <ClCompile Include="NormalEnemyComponent.cpp" />
+    <ClCompile Include="PlayerAttackManager.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="ShadowPlayerComponent.cpp" />
@@ -175,8 +177,10 @@
   <ItemGroup>
     <ClInclude Include="BossEnemyComponent.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameSetting.h" />
     <ClInclude Include="MoveEntity.h" />
     <ClInclude Include="NormalEnemyComponent.h" />
+    <ClInclude Include="PlayerAttackManager.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
