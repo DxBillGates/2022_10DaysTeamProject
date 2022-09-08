@@ -10,8 +10,11 @@ public:
 
 	void Initialize();
 	void Update(float deltaTime);
+
+	// ヒットストップをオンにする
 	void Active(float time);
 
+	// ヒットストップ中か取得
 	bool IsActive();
 private:
 	HitStopManager();

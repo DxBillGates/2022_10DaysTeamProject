@@ -113,10 +113,12 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 
 	setKnockbackVector = knockbackVelocity = GE::Math::Vector3::Normalize(transform->position - otherPosition) * POWER;
 
+	// ノックバック用のフラグ初期化
 	knockbackFlag.Initialize();
 	knockbackFlag.SetMaxTimeProperty(KNOCKBACK_TIME);
 	knockbackFlag.SetFlag(true);
 
+	// 無敵時間用のフラグ初期化
 	invincibleFlag.Initialize();
 	invincibleFlag.SetMaxTimeProperty(INVINCIBLE_TIME);
 	invincibleFlag.SetFlag(true);
@@ -134,6 +136,7 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 		knockbackFlag.SetTime(knockbackFlag.GetMaxTimeProperty());
 	}
 
+	// ノックバックの経過時間を取得し線形補間でノックバックのベクトルを減衰させる
 	float lerpTime = knockbackFlag.GetTime() / knockbackFlag.GetMaxTimeProperty();
 	knockbackVelocity = GE::Math::Vector3::Lerp(setKnockbackVector, GE::Math::Vector3(), lerpTime);
 
