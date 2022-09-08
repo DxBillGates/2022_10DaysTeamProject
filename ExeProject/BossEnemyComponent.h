@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h>
 #include <vector>
 #include "NormalEnemyComponent.h"
+#include "MoveEntity.h"
 
 //デバッグ用
 #include <GatesEngine/Header/Input/InputDevice.h>
@@ -20,6 +21,9 @@ private:
 	//最小スケール
 	static const float MIN_SCALE;
 
+	//動く速さ
+	static const float MOVE_SPEED;
+
 private:
 	//通常エネミー生成用
 	GE::GameObjectManager* pGameObjectManager = nullptr;
@@ -34,8 +38,7 @@ private:
 	int life = MAX_GENERATE_COUNT;
 
 	//横移動用
-	float velocity = 1;	//-1で左、+1で右
-	float moveSpeed = 0;		//移動速度倍率
+	float velocity = 0;	//-1で左、+1で右、0で停止
 
 	//敵生成フラグ
 	bool isGenerate = false;
@@ -45,6 +48,12 @@ private:
 
 	//スケール縮小タイマー
 	float scaleDownTimer = 0;
+
+	//プレイヤーMoveEntityポインタ
+	MoveEntity* pPlayerMoveEntity = nullptr;
+
+	//プレイヤー位置ポインタ
+	GE::Math::Vector3* pPlayerPos = nullptr;
 
 public:
 	void Start() override;
@@ -81,6 +90,18 @@ public:
 	/// </summary>
 	/// <param name="pGameObjectManager"></param>
 	void SetPGameObjectManager(GE::GameObjectManager* pGameObjectManager) { this->pGameObjectManager = pGameObjectManager; }
+
+	/// <summary>
+	/// プレイヤーのMoveEntityポインタセット
+	/// </summary>
+	/// <param name="pMoveEntity">プレイヤーのMoveEntityポインタ</param>
+	void SetPPlayerMoveEntity(MoveEntity* pMoveEntity) { pPlayerMoveEntity = pMoveEntity; };
+
+	/// <summary>
+	/// プレイヤーの位置ポインタセット
+	/// </summary>
+	/// <param name="pPlayerPos">プレイヤーの位置ポインタ</param>
+	void SetPPlayerPos(GE::Math::Vector3* pPlayerPos) { this->pPlayerPos = pPlayerPos; }
 
 	/// <summary>
 	/// 自身が死んでいるか

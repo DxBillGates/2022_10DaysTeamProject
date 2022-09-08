@@ -18,6 +18,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 	, col2(nullptr)
 {
 	auto* playerAttackManager = PlayerAttackManager::GetInstance();
+	MoveEntity* pPlayerMoveEntity = nullptr;
+	GE::Math::Vector3* pPlayerPos = nullptr;
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
@@ -30,7 +32,10 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 2 });
 		col1 = sampleCollider;
 
-		playerAttackManager->SetPlayer(testObject,sampleComponent->GetMoveEntity());
+		pPlayerMoveEntity = sampleComponent->GetMoveEntity();
+		pPlayerPos = &testObject->GetTransform()->position;
+
+		playerAttackManager->SetPlayer(testObject, pPlayerMoveEntity);
 	}
 
 	{
@@ -56,6 +61,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
 		bossEnemyComponent = testObject->AddComponent<BossEnemyComponent>();
 		bossEnemyComponent->SetPGameObjectManager(&gameObjectManager);
+		bossEnemyComponent->SetPPlayerMoveEntity(pPlayerMoveEntity);
+		bossEnemyComponent->SetPPlayerPos(pPlayerPos);
 		sampleCollider->SetCenter({ 0,0,0 });
 		sampleCollider->SetSize({ 2 });
 		sampleCollider->SetType(GE::ColliderType::OBB);

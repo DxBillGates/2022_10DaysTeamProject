@@ -15,15 +15,12 @@ enum class EnemyState {
 	DEAD		//死亡 (削除待ち)
 };
 
-////姿勢
-//enum class StanceState
-//{
-//	NORMAL,		//通常 (頭が上)
-//	INVERSE,	//上下反転
-//};
-
 class NormalEnemyComponent : public GE::Component
 {
+//定数
+private:
+	static const float MOVE_SPEED;
+
 private:
 
 	//デバッグ用
@@ -48,6 +45,12 @@ private:
 
 	//ボスの位置ポインタ
 	GE::Math::Vector3* pBossPosition = nullptr;
+
+	//プレイヤー位置取得用MoveEntityポインタ
+	MoveEntity* pPlayerMoveEntity = nullptr;
+
+	//プレイヤー位置ポインタ
+	GE::Math::Vector3* pPlayerPos = nullptr;
 
 public:
 	void Start() override;
@@ -107,5 +110,17 @@ public:
 	/// </summary>
 	/// <param name="pBossPosition">ボスの位置ポインタ</param>
 	void SetPBossPosition(GE::Math::Vector3* pBossPosition) { this->pBossPosition = pBossPosition; };
+
+	/// <summary>
+	/// プレイヤーのMoveEntityポインタセット
+	/// </summary>
+	/// <param name="pMoveEntity">プレイヤーのMoveEntityポインタ</param>
+	void SetPPlayerMoveEntity(MoveEntity* pMoveEntity) { pPlayerMoveEntity = pMoveEntity; };
+
+	/// <summary>
+	/// プレイヤーの位置ポインタセット
+	/// </summary>
+	/// <param name="pPlayerPos">プレイヤーの位置ポインタ</param>
+	void SetPPlayerPos(GE::Math::Vector3* pPlayerPos) { this->pPlayerPos = pPlayerPos; }
 };
 

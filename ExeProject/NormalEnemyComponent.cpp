@@ -2,6 +2,8 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 
+const float NormalEnemyComponent::MOVE_SPEED = 0.5f;
+
 void NormalEnemyComponent::Start()
 {
 	inputDevice = GE::InputDevice::GetInstance();
@@ -146,6 +148,20 @@ void NormalEnemyComponent::UpdateFalling()
 
 void NormalEnemyComponent::UpdateWalking()
 {
+	//プレイヤー側にいるか
+	if (pPlayerMoveEntity->GetStanceState() == stanceState) {
+		//プレイヤーに向かって歩く
+		//プレイヤーが自分の右にいる
+		if (pPlayerPos->x - transform->position.x > 0) {
+			transform->position.x += MOVE_SPEED;
+		}
+		//プレイヤーが自分の左にいる
+		else if(pPlayerPos->x - transform->position.x < 0) {
+			transform->position.x -= MOVE_SPEED;
+		}
+		
+	}
+
 	//デバッグ用　状態遷移
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F3)) {
 		SetMovePos(transform->position, *pBossPosition);
