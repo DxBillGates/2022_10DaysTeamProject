@@ -77,21 +77,30 @@ void NormalEnemyComponent::LateDraw()
 
 void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 {
-	if (other->GetTag() != "Player" || other->GetTag() != "ShadowPlayer")return;
-
-	if (enemyState == EnemyState::FLYING && PlayerAttackManager::GetInstance()->GetAttackState() == PlayerAttackState::ACTIVE)
+	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
 	{
-		//デバッグ用　状態遷移
-		//上に落ちる
-		if (transform->position.y < 1080 / 2) {
-			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
+		if (enemyState == EnemyState::FLYING)
+		{
+			//デバッグ用　状態遷移
+			//上に落ちる
+			if (transform->position.y < 1080 / 2) {
+				SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+			}
+			//下に落ちる
+			else {
+				SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+			}
+			moveTimer = 0;
+			enemyState = EnemyState::FALLING;
 		}
-		//下に落ちる
-		else {
-			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+		else if (enemyState == EnemyState::WALKING)
+		{
+			//デバッグ用　状態遷移
+			SetMovePos(transform->position, *pBossPosition);
+			moveTimer = 0;
+			enemyState = EnemyState::DEADING;
 		}
-		moveTimer = 0;
-		enemyState = EnemyState::FALLING;
 	}
 
 }
@@ -168,12 +177,12 @@ void NormalEnemyComponent::UpdateFalling()
 
 void NormalEnemyComponent::UpdateWalking()
 {
-	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
-		SetMovePos(transform->position, *pBossPosition);
-		moveTimer = 0;
-		enemyState = EnemyState::DEADING;
-	}
+	////デバッグ用　状態遷移
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
+	//	SetMovePos(transform->position, *pBossPosition);
+	//	moveTimer = 0;
+	//	enemyState = EnemyState::DEADING;
+	//}
 }
 
 void NormalEnemyComponent::UpdateDeading()
