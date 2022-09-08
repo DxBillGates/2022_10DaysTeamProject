@@ -112,6 +112,7 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 	const float INVINCIBLE_TIME = 1.0f;
 
 	setKnockbackVector = knockbackVelocity = GE::Math::Vector3::Normalize(transform->position - otherPosition) * POWER;
+	setKnockbackVector.y = knockbackVelocity.y = 0;
 
 	// ノックバック用のフラグ初期化
 	knockbackFlag.Initialize();

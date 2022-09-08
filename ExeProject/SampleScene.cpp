@@ -3,6 +3,7 @@
 #include "ShadowPlayerComponent.h"
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
+#include "CollisionManager.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -19,10 +20,11 @@ SampleScene::SampleScene(const std::string& sceneName)
 	, col2(nullptr)
 {
 	auto* playerAttackManager = PlayerAttackManager::GetInstance();
+	auto* collisionManager = CollisionManager::GetInstance();
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("test1");
+		testObject->SetName("Player");
 		testObject->GetTransform()->position = { 1050,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent < GE::SphereCollider >();
@@ -30,13 +32,15 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetCenter({ 0,0,0 });
 		sampleCollider->SetSize({ 1 });
 		col1 = sampleCollider;
+		testObject->SetTag("Player");
 
 		playerAttackManager->SetPlayer(testObject,sampleComponent->GetMoveEntity());
+		collisionManager->SetPlayer(testObject, sampleCollider);
 	}
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("test2");
+		testObject->SetName("ShadowPlayer");
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
@@ -45,8 +49,10 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 1 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
+		testObject->SetTag("ShadowPlayer");
 
 		playerAttackManager->SetShadowPlayer(testObject, sampleComponent->GetMoveEntity());
+		collisionManager->SetShadowPlayer(testObject, sampleCollider);
 	}
 
 	{
@@ -84,11 +90,13 @@ void SampleScene::Update(float deltaTime)
 	PlayerAttackManager::GetInstance()->Update(deltaTime);
 	HitStopManager::GetInstance()->Update(deltaTime);
 
-	if (GE::CollisionManager::CheckHit(col1, col2))
-	{
-		col1->Hit(col2, gameObjectManager.FindGameObject("test2"));
-		col2->Hit(col1, gameObjectManager.FindGameObject("test1"));
-	}
+	//if (GE::CollisionManager::CheckHit(col1, col2))
+	//{
+	//	col1->Hit(col2, gameObjectManager.FindGameObject("test2"));
+	//	col2->Hit(col1, gameObjectManager.FindGameObject("test1"));
+	//}
+
+	CollisionManager::GetInstance()->Update(deltaTime);
 }
 
 void SampleScene::Draw()
