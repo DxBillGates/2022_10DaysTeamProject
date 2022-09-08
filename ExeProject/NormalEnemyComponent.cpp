@@ -78,7 +78,22 @@ void NormalEnemyComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy")->GetSRVNumber() });
+
+	//状態によって送る画像を変える
+	if (enemyState == EnemyState::GENERATING ||
+		enemyState == EnemyState::FLYING) {
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_0")->GetSRVNumber() });
+	}
+	else if (enemyState == EnemyState::FALLING) {
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
+	}
+	else if (enemyState == EnemyState::WALKING) {
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking")->GetSRVNumber() });
+	}
+	else {
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
+	}
+
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
@@ -188,29 +203,51 @@ void NormalEnemyComponent::UpdateWalking()
 
 		float t = walkLoopTimer / (MAX_WALK_LOOP_TIMER / 2);
 		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
+		float posY = moveBeforePos.y;
 		float scaleX = INIT_SCALE;
+		float scaleY = INIT_SCALE;
 
-		//移動するならスケールも変化
+		//移動するならy座標とスケールも変化
 		if (moveBeforePos.x != moveAfterPos.x) {
+			if (stanceState == StanceState::NORMAL){
+				posY += INIT_SCALE / 8 * GE::Math::Easing::EaseOutQuart(t);
+			}
+			else {
+				posY -= INIT_SCALE / 8 * GE::Math::Easing::EaseOutQuart(t);
+			}
 			scaleX = INIT_SCALE + WALK_SPEED * GE::Math::Easing::EaseOutQuart(t);
+			scaleY = INIT_SCALE - INIT_SCALE / 4 * GE::Math::Easing::EaseOutQuart(t);
 		}
 
 		transform->position.x = posX;
+		transform->position.y = posY;
 		transform->scale.x = scaleX;
+		transform->scale.y = scaleY;
 	}
 	//身体をちぢめる
 	else {
 		float t = (walkLoopTimer - MAX_WALK_LOOP_TIMER / 2) / (MAX_WALK_LOOP_TIMER / 2);
 		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
+		float posY = moveBeforePos.y;
 		float scaleX = INIT_SCALE;
-		
+		float scaleY = INIT_SCALE;
+
 		//移動するならスケールも変化
 		if (moveBeforePos.x != moveAfterPos.x) {
+			if (stanceState == StanceState::NORMAL) {
+				posY = (posY + INIT_SCALE / 8) - INIT_SCALE / 8 * GE::Math::Easing::EaseOutQuart(t);
+			}
+			else {
+				posY = (posY - INIT_SCALE / 8) + INIT_SCALE / 8 * GE::Math::Easing::EaseOutQuart(t);
+			}
 			scaleX = (INIT_SCALE + WALK_SPEED) - WALK_SPEED * GE::Math::Easing::EaseOutQuart(t);
+			scaleY = INIT_SCALE * 3 / 4 + INIT_SCALE / 4 * GE::Math::Easing::EaseOutQuart(t);
 		}
 
 		transform->position.x = posX;
+		transform->position.y = posY;
 		transform->scale.x = scaleX;
+		transform->scale.y = scaleY;
 	}
 	
 	//プレイヤーが自身と同じ側に来たらタイマーリセットして動き出すようにする

@@ -183,14 +183,6 @@ bool GE::Application::LoadContents()
 	iconTexture->Load("test.png", device, shaderResourceHeap);
 	textureManager->Add(iconTexture, "texture_icon");
 
-	Texture* bossEnemyTexture = new Texture();
-	bossEnemyTexture->Load("boss_enemy.png", device, shaderResourceHeap);
-	textureManager->Add(bossEnemyTexture, "boss_enemy");
-
-	Texture* normalEnemyTexture = new Texture();
-	normalEnemyTexture->Load("normal_enemy.png", device, shaderResourceHeap);
-	textureManager->Add(normalEnemyTexture, "normal_enemy");
-
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");

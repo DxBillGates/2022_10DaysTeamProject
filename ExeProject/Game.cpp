@@ -29,13 +29,47 @@ Game::~Game()
 
 bool Game::LoadContents()
 {
-	//リソース追加はここから↓
 	Application::LoadContents();
 
+	//リソース追加はここから↓
 	GE::Texture* playerTexture = new GE::Texture();
 	playerTexture->Load("player.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(playerTexture, "texture_player");
 
+	//テストテクスチャ
+	GE::Texture* bossEnemyTexture = new GE::Texture();
+	bossEnemyTexture->Load("boss_enemy.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(bossEnemyTexture, "boss_enemy");
+
+	//飛んでいる敵テクスチャ0
+	GE::Texture* normalEnemyFlyingTex_0 = new GE::Texture();
+	normalEnemyFlyingTex_0->Load("normal_enemy_flying_0.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_0, "normal_enemy_flying_0");
+
+	//飛んでいる敵テクスチャ1
+	GE::Texture* normalEnemyFlyingTex_1 = new GE::Texture();
+	normalEnemyFlyingTex_1->Load("normal_enemy_flying_1.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_1, "normal_enemy_flying_1");
+
+	//飛んでいる敵テクスチャ2
+	GE::Texture* normalEnemyFlyingTex_2 = new GE::Texture();
+	normalEnemyFlyingTex_2->Load("normal_enemy_flying_2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_2, "normal_enemy_flying_2");
+
+	//飛んでいる敵のダメージテクスチャ
+	GE::Texture* normalEnemyFlyingDamageTex = new GE::Texture();
+	normalEnemyFlyingDamageTex->Load("normal_enemy_flying_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingDamageTex, "normal_enemy_flying_damage");
+
+	//歩いている敵テクスチャ
+	GE::Texture* normalEnemyWalkingTex = new GE::Texture();
+	normalEnemyWalkingTex->Load("normal_enemy_walking.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex, "normal_enemy_walking");
+
+	//歩いている敵のダメージテクスチャ
+	GE::Texture* normalEnemyWalkingDamageTex = new GE::Texture();
+	normalEnemyWalkingDamageTex->Load("normal_enemy_walking_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingDamageTex, "normal_enemy_walking_damage");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
