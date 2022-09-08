@@ -41,45 +41,37 @@ bool Game::LoadContents()
 	bossEnemyTexture->Load("boss_enemy.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(bossEnemyTexture, "boss_enemy");
 
-	//飛んでいる敵テクスチャ0
-	GE::Texture* normalEnemyFlyingTex_0 = new GE::Texture();
-	normalEnemyFlyingTex_0->Load("normal_enemy_flying_0.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_0, "normal_enemy_flying_0");
-
-	//飛んでいる敵テクスチャ1
-	GE::Texture* normalEnemyFlyingTex_1 = new GE::Texture();
-	normalEnemyFlyingTex_1->Load("normal_enemy_flying_1.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_1, "normal_enemy_flying_1");
-
-	//飛んでいる敵テクスチャ2
-	GE::Texture* normalEnemyFlyingTex_2 = new GE::Texture();
-	normalEnemyFlyingTex_2->Load("normal_enemy_flying_2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex_2, "normal_enemy_flying_2");
+	for (int i = 0; i < 3; i++) {
+		//飛んでいる敵テクスチャ
+		GE::Texture* normalEnemyFlyingTex = new GE::Texture();
+		normalEnemyFlyingTex->Load("normal_enemy/flying/" + std::to_string(i) + ".png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingTex, "normal_enemy_flying_" + std::to_string(i));
+	}
 
 	//飛んでいる敵のダメージテクスチャ
 	GE::Texture* normalEnemyFlyingDamageTex = new GE::Texture();
-	normalEnemyFlyingDamageTex->Load("normal_enemy_flying_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	normalEnemyFlyingDamageTex->Load("normal_enemy/flying_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingDamageTex, "normal_enemy_flying_damage");
 
-	//歩いている敵テクスチャ0
-	GE::Texture* normalEnemyWalkingTex_0 = new GE::Texture();
-	normalEnemyWalkingTex_0->Load("normal_enemy_walking_0.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_0, "normal_enemy_walking_0");
-
-	//歩いている敵テクスチャ1
-	GE::Texture* normalEnemyWalkingTex_1 = new GE::Texture();
-	normalEnemyWalkingTex_1->Load("normal_enemy_walking_1.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_1, "normal_enemy_walking_1");
-
-	//歩いている敵テクスチャ2
-	GE::Texture* normalEnemyWalkingTex_2 = new GE::Texture();
-	normalEnemyWalkingTex_2->Load("normal_enemy_walking_2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_2, "normal_enemy_walking_2");
+	for (int i = 0; i < 3; i++) {
+		//歩いている敵テクスチャ
+		GE::Texture* normalEnemyWalkingTex = new GE::Texture();
+		normalEnemyWalkingTex->Load("normal_enemy/walking/" + std::to_string(i) + ".png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex, "normal_enemy_walking_" + std::to_string(i));
+	}
 
 	//歩いている敵のダメージテクスチャ
 	GE::Texture* normalEnemyWalkingDamageTex = new GE::Texture();
-	normalEnemyWalkingDamageTex->Load("normal_enemy_walking_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	normalEnemyWalkingDamageTex->Load("normal_enemy/walking_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingDamageTex, "normal_enemy_walking_damage");
+
+	//爆発テクスチャ
+	for (int i = 0; i < 12; i++) {
+		//歩いている敵テクスチャ
+		GE::Texture* explosionTex = new GE::Texture();
+		explosionTex->Load("ex/" + std::to_string(i) + ".png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(explosionTex, "ex_" + std::to_string(i));
+	}
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

@@ -112,6 +112,8 @@ void BossEnemyComponent::UpdateScale()
 
 void BossEnemyComponent::UpdateLife()
 {
+	//エネミーリスト走査して死んでいる個体の数だけライフ値減少させる
+	//(コスト高めなので処理見直したほうがいいかも)
 	life = MAX_GENERATE_COUNT;
 	for (auto& v : normalEnemies) {
 		if (v->IsDead()) {

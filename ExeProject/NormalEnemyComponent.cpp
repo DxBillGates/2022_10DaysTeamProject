@@ -173,6 +173,7 @@ void NormalEnemyComponent::UpdateTimer(float deltaTime)
 		flyingAnimeLoopTimer -= MAX_FLYING_ANIME_LOOP_TIMER;
 	}
 
+	//歩いていないときは0をかけてタイマーストップさせる
 	float filter = moveBeforePos.x == moveAfterPos.x ? 0 : 1;
 	walkingAnimeLoopTimer += (deltaTime * WALKING_ANIME_LOOP_TIMER_SPEED * filter);
 	if (walkingAnimeLoopTimer >= MAX_WALKING_ANIME_LOOP_TIMER) {
