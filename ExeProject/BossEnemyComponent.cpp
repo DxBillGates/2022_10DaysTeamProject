@@ -2,24 +2,40 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include <GatesEngine/Header/Util/Random.h           >
-#include "NormalEnemyComponent.h"
+
+const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
+const float BossEnemyComponent::MIN_SCALE = 0.5f;
 
 void BossEnemyComponent::Start()
 {
 	inputDevice = GE::InputDevice::GetInstance();
 
-	const GE::Math::Vector3 SPRITE_SIZE = { 512, 384,0 };
-
 	transform->scale = SPRITE_SIZE;
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
 
+	//初期ライフは最大敵生成数
+	life = MAX_GENERATE_COUNT;
+
 	velocity = 1;
+
 	//初期状態は動かない
 	moveSpeed = 0;
+
+	scaleDownMag = 1.0f;
 }
 
 void BossEnemyComponent::Update(float deltaTime)
 {
+	//タイマー更新
+	UpdateTimer(deltaTime);
+
+	//スケール更新
+	UpdateScale();
+
+	//ライフ更新
+	UpdateLife();
+
+	//移動処理
 	Move();
 
 	//デバッグ用　ほんとは攻撃されたら呼び出す
@@ -30,6 +46,9 @@ void BossEnemyComponent::Update(float deltaTime)
 
 void BossEnemyComponent::LateDraw()
 {
+	//死んでいるなら描画しない
+	if (IsDead()) { return; }
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -68,9 +87,39 @@ void BossEnemyComponent::Move()
 	}
 }
 
+void BossEnemyComponent::UpdateTimer(float deltaTime)
+{
+	scaleDownTimer = scaleDownTimer + deltaTime < 1.0f ? scaleDownTimer + deltaTime : 1.0f;
+}
+
+void BossEnemyComponent::UpdateScale()
+{
+	//イージングかけてスケール倍率変化
+	float t = scaleDownTimer;
+	float beforeScale = scaleDownMag + (1.0 - MIN_SCALE) / MAX_GENERATE_COUNT;
+	float scaleMag = beforeScale + (scaleDownMag - beforeScale) * GE::Math::Easing::EaseOutQuart(t);
+
+	//自身のスケールを小さくする
+	transform->scale = SPRITE_SIZE * scaleMag;
+}
+
+void BossEnemyComponent::UpdateLife()
+{
+	life = MAX_GENERATE_COUNT;
+	for (auto& v : normalEnemies) {
+		if (v->IsDead()) {
+			life--;
+		}
+	}
+}
+
 void BossEnemyComponent::GenerateNormalEnemy()
 {
+	//前フレームで生成フラグ立ってなかったらreturn
 	if (isGenerate == false) { return; }
+
+	//すでに最大生成回数以上であったらreturn
+	if (normalEnemies.size() >= MAX_GENERATE_COUNT) { return; }
 
 	//ランダムで移動座標決定
 	float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
@@ -98,7 +147,13 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	newEnemy->Awake();
 	newEnemy->Start();
 
-	normalEnemies.push_back(newEnemy);
+	normalEnemies.push_back(normalEnemyComponent);
+
+	//スケール値下げる
+	scaleDownMag -= (1.0 - MIN_SCALE) / MAX_GENERATE_COUNT;
+
+	//タイマーリセット
+	scaleDownTimer = 0;
 
 	isGenerate = false;
 }

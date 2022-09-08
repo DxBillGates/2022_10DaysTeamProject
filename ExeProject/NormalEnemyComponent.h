@@ -1,5 +1,6 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include "MoveEntity.h"
 
 //デバッグ用
 #include <GatesEngine/Header/Input/InputDevice.h>
@@ -14,12 +15,12 @@ enum class EnemyState {
 	DEAD		//死亡 (削除待ち)
 };
 
-//姿勢
-enum class StanceState
-{
-	NORMAL,		//通常 (頭が上)
-	INVERSE,	//上下反転
-};
+////姿勢
+//enum class StanceState
+//{
+//	NORMAL,		//通常 (頭が上)
+//	INVERSE,	//上下反転
+//};
 
 class NormalEnemyComponent : public GE::Component
 {
@@ -87,6 +88,12 @@ public:
 	/// 死亡中の更新処理
 	/// </summary>
 	void UpdateDeading();
+
+	/// <summary>
+	/// 自身が死んでいるか
+	/// </summary>
+	/// <returns>死亡状態か</returns>
+	bool IsDead()const { return enemyState == EnemyState::DEAD; };
 
 	/// <summary>
 	/// 生成する際の移動前と移動後の座標セット
