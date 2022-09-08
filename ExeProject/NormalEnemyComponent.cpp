@@ -1,19 +1,25 @@
 #include "NormalEnemyComponent.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
+#include <GatesEngine/Header/Util/Random.h>
 
-const float NormalEnemyComponent::MOVE_SPEED = 0.5f;
+const float NormalEnemyComponent::INIT_SCALE = 100;
+const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
+const float NormalEnemyComponent::MAX_FLYING_LOOP_TIMER = 2.0f;
+const float NormalEnemyComponent::MAX_WALK_LOOP_TIMER = 1.5f;
 
 void NormalEnemyComponent::Start()
 {
 	inputDevice = GE::InputDevice::GetInstance();
 
-	const float SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = INIT_SCALE;
 
 	transform->scale = SPRITE_SIZE;
 	transform->position = moveBeforePos;
 
 	moveTimer = 0;
+	flyingLoopTimer = 0;
+	walkLoopTimer = 0;
 }
 
 void NormalEnemyComponent::Update(float deltaTime)
@@ -79,9 +85,32 @@ void NormalEnemyComponent::LateDraw()
 void NormalEnemyComponent::UpdateTimer(float deltaTime)
 {
 	moveTimer += deltaTime;
-	loopTimer += deltaTime;
-	if (loopTimer >= 2.0f) {
-		loopTimer -= 2.0f;
+	flyingLoopTimer += deltaTime;
+	if (flyingLoopTimer >= MAX_FLYING_LOOP_TIMER) {
+		flyingLoopTimer -= MAX_FLYING_LOOP_TIMER;
+	}
+	walkLoopTimer += deltaTime;
+	if (walkLoopTimer >= MAX_WALK_LOOP_TIMER) {
+		walkLoopTimer -= MAX_WALK_LOOP_TIMER;
+
+		if (enemyState == EnemyState::WALKING) {
+			//プレイヤーと同じ側にいるなら動く
+			if (pPlayerMoveEntity->GetStanceState() == stanceState) {
+				//次の移動地点決定
+				//右へ
+				if (pPlayerPos->x - transform->position.x > 0) {
+					SetMovePos(transform->position, transform->position + GE::Math::Vector3(WALK_SPEED, 0, 0));
+				}
+				//左へ
+				else if (pPlayerPos->x - transform->position.x < 0) {
+					SetMovePos(transform->position, transform->position - GE::Math::Vector3(WALK_SPEED, 0, 0));
+				}
+			}
+			else {
+				//動かない
+				SetMovePos(transform->position, transform->position);
+			}
+		}
 	}
 }
 
@@ -114,17 +143,17 @@ void NormalEnemyComponent::UpdateFlying()
 {
 	//上下にふわふわ浮く感じ
 	const float amount = 20;
-	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((loopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
+	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((flyingLoopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
 
 	//デバッグ用　状態遷移
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
 		//上に落ちる
 		if (transform->position.y < 1080 / 2) {
-			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+			SetMovePos(transform->position, { transform->position.x, transform->scale.y / 2, 0 });
 		}
 		//下に落ちる
 		else {
-			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+			SetMovePos(transform->position, { transform->position.x, GE::Window::GetWindowSize().y - transform->scale.y / 2, 0 });
 		}
 		moveTimer = 0;
 		enemyState = EnemyState::FALLING;
@@ -142,25 +171,59 @@ void NormalEnemyComponent::UpdateFalling()
 
 	//移動終わったら状態遷移
 	if (moveTimer >= 1.0f) {
+		//タイマーリセット (ばらつき出す)
+		walkLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
+		//次のタイマーループまで動かない
+		SetMovePos(transform->position, transform->position);
+
 		enemyState = EnemyState::WALKING;
 	}
 }
 
 void NormalEnemyComponent::UpdateWalking()
 {
-	//プレイヤー側にいるか
-	if (pPlayerMoveEntity->GetStanceState() == stanceState) {
-		//プレイヤーに向かって歩く
-		//プレイヤーが自分の右にいる
-		if (pPlayerPos->x - transform->position.x > 0) {
-			transform->position.x += MOVE_SPEED;
+	//プレイヤーに向かって歩く
+	//進行方向に身体をのばす
+	if (walkLoopTimer < MAX_WALK_LOOP_TIMER / 2) {
+
+		float t = walkLoopTimer / (MAX_WALK_LOOP_TIMER / 2);
+		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
+		float scaleX = INIT_SCALE;
+
+		//移動するならスケールも変化
+		if (moveBeforePos.x != moveAfterPos.x) {
+			scaleX = INIT_SCALE + WALK_SPEED * GE::Math::Easing::EaseOutQuart(t);
 		}
-		//プレイヤーが自分の左にいる
-		else if(pPlayerPos->x - transform->position.x < 0) {
-			transform->position.x -= MOVE_SPEED;
-		}
-		
+
+		transform->position.x = posX;
+		transform->scale.x = scaleX;
 	}
+	//身体をちぢめる
+	else {
+		float t = (walkLoopTimer - MAX_WALK_LOOP_TIMER / 2) / (MAX_WALK_LOOP_TIMER / 2);
+		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
+		float scaleX = INIT_SCALE;
+		
+		//移動するならスケールも変化
+		if (moveBeforePos.x != moveAfterPos.x) {
+			scaleX = (INIT_SCALE + WALK_SPEED) - WALK_SPEED * GE::Math::Easing::EaseOutQuart(t);
+		}
+
+		transform->position.x = posX;
+		transform->scale.x = scaleX;
+	}
+	
+	//プレイヤーが自身と同じ側に来たらタイマーリセットして動き出すようにする
+	static StanceState prevPlayerStanceState = pPlayerMoveEntity->GetStanceState();
+	if (pPlayerMoveEntity->GetStanceState() != prevPlayerStanceState &&
+		pPlayerMoveEntity->GetStanceState() == stanceState) {
+		//タイマーリセット (ばらつき出す)
+		walkLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
+		//次のタイマーループまで動かない
+		SetMovePos(transform->position, transform->position);
+	}
+	prevPlayerStanceState = pPlayerMoveEntity->GetStanceState();
+
 
 	//デバッグ用　状態遷移
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F3)) {

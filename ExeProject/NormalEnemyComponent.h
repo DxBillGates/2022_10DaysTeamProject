@@ -19,7 +19,14 @@ class NormalEnemyComponent : public GE::Component
 {
 //定数
 private:
-	static const float MOVE_SPEED;
+	//初期スケール
+	static const float INIT_SCALE;
+	//一回の移動動作で進む距離
+	static const float WALK_SPEED;
+	//空中浮遊タイマー最大値
+	static const float MAX_FLYING_LOOP_TIMER;
+	//歩行用タイマー最大値
+	static const float MAX_WALK_LOOP_TIMER;
 
 private:
 
@@ -37,8 +44,11 @@ private:
 	//移動用タイマー
 	float moveTimer = 0;
 
-	//空中浮遊用
-	float loopTimer = 0;
+	//空中浮遊用タイマー
+	float flyingLoopTimer = 0;
+
+	//歩行用タイマー
+	float walkLoopTimer = 0;
 
 	//姿勢
 	StanceState stanceState = StanceState::NORMAL;
