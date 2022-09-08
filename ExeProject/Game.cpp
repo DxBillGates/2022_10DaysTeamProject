@@ -61,10 +61,20 @@ bool Game::LoadContents()
 	normalEnemyFlyingDamageTex->Load("normal_enemy_flying_damage.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(normalEnemyFlyingDamageTex, "normal_enemy_flying_damage");
 
-	//歩いている敵テクスチャ
-	GE::Texture* normalEnemyWalkingTex = new GE::Texture();
-	normalEnemyWalkingTex->Load("normal_enemy_walking.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
-	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex, "normal_enemy_walking");
+	//歩いている敵テクスチャ0
+	GE::Texture* normalEnemyWalkingTex_0 = new GE::Texture();
+	normalEnemyWalkingTex_0->Load("normal_enemy_walking_0.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_0, "normal_enemy_walking_0");
+
+	//歩いている敵テクスチャ1
+	GE::Texture* normalEnemyWalkingTex_1 = new GE::Texture();
+	normalEnemyWalkingTex_1->Load("normal_enemy_walking_1.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_1, "normal_enemy_walking_1");
+
+	//歩いている敵テクスチャ2
+	GE::Texture* normalEnemyWalkingTex_2 = new GE::Texture();
+	normalEnemyWalkingTex_2->Load("normal_enemy_walking_2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(normalEnemyWalkingTex_2, "normal_enemy_walking_2");
 
 	//歩いている敵のダメージテクスチャ
 	GE::Texture* normalEnemyWalkingDamageTex = new GE::Texture();

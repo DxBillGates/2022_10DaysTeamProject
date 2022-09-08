@@ -10,6 +10,8 @@ const float NormalEnemyComponent::MAX_FLYING_LOOP_TIMER = 2.0f;
 const float NormalEnemyComponent::MAX_WALK_LOOP_TIMER = 1.5f;
 const float NormalEnemyComponent::MAX_FLYING_ANIME_LOOP_TIMER = 0.3f;
 const float NormalEnemyComponent::FLYING_ANIME_LOOP_TIMER_SPEED = 0.75f;
+const float NormalEnemyComponent::MAX_WALKING_ANIME_LOOP_TIMER = 0.3f;
+const float NormalEnemyComponent::WALKING_ANIME_LOOP_TIMER_SPEED = 0.75f;
 
 void NormalEnemyComponent::Start()
 {
@@ -22,8 +24,9 @@ void NormalEnemyComponent::Start()
 
 	moveTimer = 0;
 	flyingLoopTimer = 0;
-	walkLoopTimer = 0;
+	walkingLoopTimer = 0;
 	flyingAnimeLoopTimer = 0;
+	walkingAnimeLoopTimer = 0;
 }
 
 void NormalEnemyComponent::Update(float deltaTime)
@@ -93,7 +96,8 @@ void NormalEnemyComponent::LateDraw()
 		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
 	}
 	else if (enemyState == EnemyState::WALKING) {
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking")->GetSRVNumber() });
+		int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
 	}
 	else {
 		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
@@ -134,13 +138,15 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 void NormalEnemyComponent::UpdateTimer(float deltaTime)
 {
 	moveTimer += deltaTime;
+
 	flyingLoopTimer += deltaTime;
 	if (flyingLoopTimer >= MAX_FLYING_LOOP_TIMER) {
 		flyingLoopTimer -= MAX_FLYING_LOOP_TIMER;
 	}
-	walkLoopTimer += deltaTime;
-	if (walkLoopTimer >= MAX_WALK_LOOP_TIMER) {
-		walkLoopTimer -= MAX_WALK_LOOP_TIMER;
+
+	walkingLoopTimer += deltaTime;
+	if (walkingLoopTimer >= MAX_WALK_LOOP_TIMER) {
+		walkingLoopTimer -= MAX_WALK_LOOP_TIMER;
 
 		if (enemyState == EnemyState::WALKING) {
 			//プレイヤーと同じ側にいるなら動く
@@ -161,11 +167,17 @@ void NormalEnemyComponent::UpdateTimer(float deltaTime)
 			}
 		}
 	}
+
 	flyingAnimeLoopTimer += (deltaTime * FLYING_ANIME_LOOP_TIMER_SPEED);
 	if (flyingAnimeLoopTimer >= MAX_FLYING_ANIME_LOOP_TIMER) {
 		flyingAnimeLoopTimer -= MAX_FLYING_ANIME_LOOP_TIMER;
 	}
 
+	float filter = moveBeforePos.x == moveAfterPos.x ? 0 : 1;
+	walkingAnimeLoopTimer += (deltaTime * WALKING_ANIME_LOOP_TIMER_SPEED * filter);
+	if (walkingAnimeLoopTimer >= MAX_WALKING_ANIME_LOOP_TIMER) {
+		walkingAnimeLoopTimer -= MAX_WALKING_ANIME_LOOP_TIMER;
+	}
 }
 
 void NormalEnemyComponent::CheckStance()
@@ -226,7 +238,7 @@ void NormalEnemyComponent::UpdateFalling()
 	//移動終わったら状態遷移
 	if (moveTimer >= 1.0f) {
 		//タイマーリセット (ばらつき出す)
-		walkLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
+		walkingLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
 		//次のタイマーループまで動かない
 		SetMovePos(transform->position, transform->position);
 
@@ -238,9 +250,9 @@ void NormalEnemyComponent::UpdateWalking()
 {
 	//プレイヤーに向かって歩く
 	//進行方向に身体をのばす
-	if (walkLoopTimer < MAX_WALK_LOOP_TIMER / 2) {
+	if (walkingLoopTimer < MAX_WALK_LOOP_TIMER / 2) {
 
-		float t = walkLoopTimer / (MAX_WALK_LOOP_TIMER / 2);
+		float t = walkingLoopTimer / (MAX_WALK_LOOP_TIMER / 2);
 		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
 		float posY = moveBeforePos.y;
 		float scaleX = INIT_SCALE;
@@ -265,7 +277,7 @@ void NormalEnemyComponent::UpdateWalking()
 	}
 	//身体をちぢめる
 	else {
-		float t = (walkLoopTimer - MAX_WALK_LOOP_TIMER / 2) / (MAX_WALK_LOOP_TIMER / 2);
+		float t = (walkingLoopTimer - MAX_WALK_LOOP_TIMER / 2) / (MAX_WALK_LOOP_TIMER / 2);
 		float posX = moveBeforePos.x + ((moveAfterPos.x - moveBeforePos.x) / 2) + ((moveAfterPos.x - moveBeforePos.x) / 2) * GE::Math::Easing::EaseOutQuart(t);
 		float posY = moveBeforePos.y;
 		float scaleX = INIT_SCALE;
@@ -294,7 +306,7 @@ void NormalEnemyComponent::UpdateWalking()
 	if (pPlayerMoveEntity->GetStanceState() != prevPlayerStanceState &&
 		pPlayerMoveEntity->GetStanceState() == stanceState) {
 		//タイマーリセット (ばらつき出す)
-		walkLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
+		walkingLoopTimer = MAX_WALK_LOOP_TIMER * 3 / 4 + GE::RandomMaker::GetFloat(0, MAX_WALK_LOOP_TIMER / 4);
 		//次のタイマーループまで動かない
 		SetMovePos(transform->position, transform->position);
 	}

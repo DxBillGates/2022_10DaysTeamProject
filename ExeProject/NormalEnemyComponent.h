@@ -37,6 +37,10 @@ private:
 	static const float MAX_FLYING_ANIME_LOOP_TIMER;
 	//空中浮遊アニメタイマー更新倍率
 	static const float FLYING_ANIME_LOOP_TIMER_SPEED;
+	//歩行アニメタイマー最大値
+	static const float MAX_WALKING_ANIME_LOOP_TIMER;
+	//歩行アニメタイマー更新倍率
+	static const float WALKING_ANIME_LOOP_TIMER_SPEED;
 
 private:
 
@@ -58,10 +62,13 @@ private:
 	float flyingLoopTimer = 0;
 
 	//歩行用タイマー
-	float walkLoopTimer = 0;
+	float walkingLoopTimer = 0;
 
 	//空中浮遊アニメタイマー
 	float flyingAnimeLoopTimer = 0;
+
+	//歩行アニメタイマー
+	float walkingAnimeLoopTimer = 0;
 
 	//姿勢
 	StanceState stanceState = StanceState::NORMAL;
