@@ -1,4 +1,5 @@
 #include "NormalEnemyComponent.h"
+#include "PlayerAttackManager.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 
@@ -74,6 +75,27 @@ void NormalEnemyComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
+void NormalEnemyComponent::OnCollision(GE::GameObject* other)
+{
+	if (other->GetTag() != "Player" || other->GetTag() != "ShadowPlayer")return;
+
+	if (enemyState == EnemyState::FLYING && PlayerAttackManager::GetInstance()->GetAttackState() == PlayerAttackState::ACTIVE)
+	{
+		//デバッグ用　状態遷移
+		//上に落ちる
+		if (transform->position.y < 1080 / 2) {
+			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+		}
+		//下に落ちる
+		else {
+			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+		}
+		moveTimer = 0;
+		enemyState = EnemyState::FALLING;
+	}
+
+}
+
 void NormalEnemyComponent::UpdateTimer(float deltaTime)
 {
 	moveTimer += deltaTime;
@@ -114,19 +136,19 @@ void NormalEnemyComponent::UpdateFlying()
 	const float amount = 20;
 	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((loopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
 
-	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
-		//上に落ちる
-		if (transform->position.y < 1080 / 2) {
-			SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
-		}
-		//下に落ちる
-		else {
-			SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
-		}
-		moveTimer = 0;
-		enemyState = EnemyState::FALLING;
-	}
+	////デバッグ用　状態遷移
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
+	//	//上に落ちる
+	//	if (transform->position.y < 1080 / 2) {
+	//		SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+	//	}
+	//	//下に落ちる
+	//	else {
+	//		SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+	//	}
+	//	moveTimer = 0;
+	//	enemyState = EnemyState::FALLING;
+	//}
 }
 
 void NormalEnemyComponent::UpdateFalling()

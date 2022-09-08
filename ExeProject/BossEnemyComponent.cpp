@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include <GatesEngine/Header/Util/Random.h           >
 #include "NormalEnemyComponent.h"
+#include "CollisionManager.h"
 
 void BossEnemyComponent::Start()
 {
@@ -92,8 +93,11 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	normalEnemyComponent->SetPBossPosition(&transform->position);
 	normalEnemyComponent->SetMovePos(transform->position, afterPos);
 	sampleCollider->SetCenter({ 0,0,0 });
-	sampleCollider->SetSize({ 2 });
+	sampleCollider->SetSize({ 1 });
 	sampleCollider->SetType(GE::ColliderType::OBB);
+
+	newEnemy->SetTag("Enemy");
+	CollisionManager::GetInstance()->AddEnemy(newEnemy, sampleCollider);
 
 	newEnemy->Awake();
 	newEnemy->Start();
