@@ -108,11 +108,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			//デバッグ用　状態遷移
 			//上に落ちる
 			if (transform->position.y < 1080 / 2) {
-				SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+				SetMovePos(transform->position, { transform->position.x, transform->scale.y / 2, 0 });
 			}
 			//下に落ちる
 			else {
-				SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+				SetMovePos(transform->position, { transform->position.x, GE::Window::GetWindowSize().y - transform->scale.y / 2, 0 });
 			}
 			moveTimer = 0;
 			enemyState = EnemyState::FALLING;
