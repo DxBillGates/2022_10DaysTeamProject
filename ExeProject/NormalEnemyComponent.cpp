@@ -8,6 +8,8 @@ const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
 const float NormalEnemyComponent::MAX_FLYING_LOOP_TIMER = 2.0f;
 const float NormalEnemyComponent::MAX_WALK_LOOP_TIMER = 1.5f;
+const float NormalEnemyComponent::MAX_FLYING_ANIME_LOOP_TIMER = 0.3f;
+const float NormalEnemyComponent::FLYING_ANIME_LOOP_TIMER_SPEED = 0.75f;
 
 void NormalEnemyComponent::Start()
 {
@@ -21,6 +23,7 @@ void NormalEnemyComponent::Start()
 	moveTimer = 0;
 	flyingLoopTimer = 0;
 	walkLoopTimer = 0;
+	flyingAnimeLoopTimer = 0;
 }
 
 void NormalEnemyComponent::Update(float deltaTime)
@@ -83,7 +86,8 @@ void NormalEnemyComponent::LateDraw()
 	//ó‘Ô‚É‚æ‚Á‚Ä‘—‚é‰æ‘œ‚ð•Ï‚¦‚é
 	if (enemyState == EnemyState::GENERATING ||
 		enemyState == EnemyState::FLYING) {
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_0")->GetSRVNumber() });
+		int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
 	}
 	else if (enemyState == EnemyState::FALLING) {
 		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
@@ -157,6 +161,11 @@ void NormalEnemyComponent::UpdateTimer(float deltaTime)
 			}
 		}
 	}
+	flyingAnimeLoopTimer += (deltaTime * FLYING_ANIME_LOOP_TIMER_SPEED);
+	if (flyingAnimeLoopTimer >= MAX_FLYING_ANIME_LOOP_TIMER) {
+		flyingAnimeLoopTimer -= MAX_FLYING_ANIME_LOOP_TIMER;
+	}
+
 }
 
 void NormalEnemyComponent::CheckStance()
