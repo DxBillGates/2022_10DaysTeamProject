@@ -86,8 +86,8 @@ void SampleScene::Update(float deltaTime)
 
 	if (GE::CollisionManager::CheckHit(col1, col2))
 	{
-		col1->Hit(col2, nullptr);
-		col2->Hit(col1, nullptr);
+		col1->Hit(col2, gameObjectManager.FindGameObject("test2"));
+		col2->Hit(col1, gameObjectManager.FindGameObject("test1"));
 	}
 }
 

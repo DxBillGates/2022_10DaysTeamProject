@@ -22,7 +22,8 @@ void PlayerComponent::Start()
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
-	transform->position = { 1920 / 2,1080 - transform->scale.y,0 };
+
+	transform->position = { 1920 / 2,GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 }
 
 void PlayerComponent::Update(float deltaTime)
@@ -34,11 +35,6 @@ void PlayerComponent::Update(float deltaTime)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
 	{
 		moveEntity.ChangeMoveDirection();
-	}
-
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
-	{
-		HitStopManager::GetInstance()->Active(1);
 	}
 
 
@@ -53,10 +49,21 @@ void PlayerComponent::Update(float deltaTime)
 		transform->position.x += MOVE_SPEED * GAME_TIME;
 	}
 
+	transform->position += knockbackVelocity * GAME_TIME;
+
 	// 移動オブジェクト用の各種更新処理
 	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, GAME_TIME);
 	moveEntity.UpdateStanceAngle(deltaTime, GAME_TIME);
+
+
+	if (invincibleFlag.GetOverTimeTrigger())
+	{
+		invincibleFlag.Initialize();
+	}
+	invincibleFlag.Update(deltaTime * GAME_TIME);
+
+	UpdateKnockback(deltaTime * GAME_TIME);
 }
 
 void PlayerComponent::LateDraw()
@@ -86,9 +93,51 @@ void PlayerComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
+void PlayerComponent::OnCollision(GE::GameObject* other)
+{
+	Knockback(other->GetTransform()->position);
+}
+
 MoveEntity* PlayerComponent::GetMoveEntity()
 {
 	return &moveEntity;
+}
+
+void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
+{
+	if (invincibleFlag.GetFlag() == true)return;
+
+	const float POWER = 3;
+	const float KNOCKBACK_TIME = 0.5f;
+	const float INVINCIBLE_TIME = 1.0f;
+
+	setKnockbackVector = knockbackVelocity = GE::Math::Vector3::Normalize(transform->position - otherPosition) * POWER;
+
+	knockbackFlag.Initialize();
+	knockbackFlag.SetMaxTimeProperty(KNOCKBACK_TIME);
+	knockbackFlag.SetFlag(true);
+
+	invincibleFlag.Initialize();
+	invincibleFlag.SetMaxTimeProperty(INVINCIBLE_TIME);
+	invincibleFlag.SetFlag(true);
+
+	HitStopManager::GetInstance()->Active(0.5f);
+}
+
+void PlayerComponent::UpdateKnockback(float deltaTime)
+{
+	if (knockbackFlag.GetFlag() == false)return;
+
+	if (knockbackFlag.GetOverTimeTrigger())
+	{
+		knockbackFlag.SetFlag(false);
+		knockbackFlag.SetTime(knockbackFlag.GetMaxTimeProperty());
+	}
+
+	float lerpTime = knockbackFlag.GetTime() / knockbackFlag.GetMaxTimeProperty();
+	knockbackVelocity = GE::Math::Vector3::Lerp(setKnockbackVector, GE::Math::Vector3(), lerpTime);
+
+	knockbackFlag.Update(deltaTime);
 }
 
 //void PlayerComponent::OnGui()

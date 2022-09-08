@@ -11,6 +11,8 @@ public:
 	void Initialize();
 	void Update(float deltaTime);
 	void Active(float time);
+
+	bool IsActive();
 private:
 	HitStopManager();
 	HitStopManager(const HitStopManager&) = delete;

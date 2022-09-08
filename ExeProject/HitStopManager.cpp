@@ -33,6 +33,11 @@ void HitStopManager::Active(float time)
 	gameSetting->SetTime(0, 0.05f);
 }
 
+bool HitStopManager::IsActive()
+{
+	return flag.GetFlag();
+}
+
 HitStopManager::HitStopManager()
 	: flag()
 {
