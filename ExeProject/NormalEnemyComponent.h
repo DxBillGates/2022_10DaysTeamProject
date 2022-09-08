@@ -1,6 +1,6 @@
 #pragma once
-#include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include "MoveEntity.h"
+#include <GatesEngine/Header/GameFramework/Component/Component.h>
 
 //デバッグ用
 #include <GatesEngine/Header/Input/InputDevice.h>
@@ -15,6 +15,12 @@ enum class EnemyState {
 	DEAD		//死亡 (削除待ち)
 };
 
+////姿勢
+//enum class StanceState
+//{
+//	NORMAL,		//通常 (頭が上)
+//	INVERSE,	//上下反転
+//};
 class NormalEnemyComponent : public GE::Component
 {
 //定数
@@ -66,6 +72,7 @@ public:
 	void Start() override;
 	void Update(float deltaTime) override;
 	void LateDraw() override;
+	void OnCollision(GE::GameObject* other)override;
 
 	/// <summary>
 	/// タイマー更新

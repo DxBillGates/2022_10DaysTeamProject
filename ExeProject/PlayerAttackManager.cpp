@@ -79,7 +79,7 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 	const float PRE_TIME = 1;
 	const float ACTIVE_TIME = 0.5f;
 	const float END_TIME = 1;
-	const float COOL_TIME = 5;
+	const float COOL_TIME = 1;
 
 	// UŒ‚’†‚ÌƒQ[ƒ€‘¬“x(s)
 	const float SLOW_TIME = 0.05f;
@@ -109,8 +109,16 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 			player.object->GetTransform()->position = vibrationInfo.shadowPlayerOriginPosition;
 			shadowPlayer.object->GetTransform()->position = vibrationInfo.playerOriginPosition;
 
-			player.moveEntity->SetStanceState(shadowPlayer.moveEntity->GetStanceState());
-			shadowPlayer.moveEntity->SetStanceState(player.moveEntity->GetStanceState());
+			if (player.moveEntity->GetStanceState() != shadowPlayer.moveEntity->GetStanceState())
+			{
+				player.moveEntity->ChangeStanceState();
+				shadowPlayer.moveEntity->ChangeStanceState();
+			}
+
+			if (shadowPlayer.moveEntity->GetDirectionState() != player.moveEntity->GetDirectionState())
+			{
+				shadowPlayer.moveEntity->ChangeMoveDirection();
+			}
 
 			shadowPlayer.moveEntity->SetDirectionState(player.moveEntity->GetDirectionState());
 

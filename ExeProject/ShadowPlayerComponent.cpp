@@ -1,4 +1,6 @@
 #include "ShadowPlayerComponent.h"
+#include "GameSetting.h"
+
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Util/Random.h           >
@@ -26,17 +28,18 @@ void ShadowPlayerComponent::Start()
 
 void ShadowPlayerComponent::Update(float deltaTime)
 {
+	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 	const float MOVE_SPEED = 7;
 
 	if (autoMove == true)
 	{
 		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
 		{
-			transform->position.x += MOVE_SPEED;
+			transform->position.x += MOVE_SPEED * GAME_TIME;
 		}
 		else
 		{
-			transform->position.x -= MOVE_SPEED;
+			transform->position.x -= MOVE_SPEED * GAME_TIME;
 		}
 	}
 

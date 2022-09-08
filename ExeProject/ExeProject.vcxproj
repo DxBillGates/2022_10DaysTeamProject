@@ -164,8 +164,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BossEnemyComponent.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameSetting.cpp" />
+    <ClCompile Include="HitStopManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveEntity.cpp" />
     <ClCompile Include="NormalEnemyComponent.cpp" />
@@ -176,8 +178,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BossEnemyComponent.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameSetting.h" />
+    <ClInclude Include="HitStopManager.h" />
     <ClInclude Include="MoveEntity.h" />
     <ClInclude Include="NormalEnemyComponent.h" />
     <ClInclude Include="PlayerAttackManager.h" />

@@ -1,4 +1,5 @@
 #include "NormalEnemyComponent.h"
+#include "PlayerAttackManager.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -97,6 +98,35 @@ void NormalEnemyComponent::LateDraw()
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
+void NormalEnemyComponent::OnCollision(GE::GameObject* other)
+{
+	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
+	{
+		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
+		if (enemyState == EnemyState::FLYING)
+		{
+			//デバッグ用　状態遷移
+			//上に落ちる
+			if (transform->position.y < 1080 / 2) {
+				SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+			}
+			//下に落ちる
+			else {
+				SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+			}
+			moveTimer = 0;
+			enemyState = EnemyState::FALLING;
+		}
+		else if (enemyState == EnemyState::WALKING)
+		{
+			//デバッグ用　状態遷移
+			SetMovePos(transform->position, *pBossPosition);
+			moveTimer = 0;
+			enemyState = EnemyState::DEADING;
+		}
+	}
+
+}
 void NormalEnemyComponent::UpdateTimer(float deltaTime)
 {
 	moveTimer += deltaTime;
@@ -160,19 +190,19 @@ void NormalEnemyComponent::UpdateFlying()
 	const float amount = 20;
 	transform->position = moveAfterPos + GE::Math::Vector3{ 0, amount * sinf((flyingLoopTimer / 2.0f) * 360 * GE::Math::PI / 180), 0 };
 
-	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F2)) {
-		//上に落ちる
-		if (transform->position.y < 1080 / 2) {
-			SetMovePos(transform->position, { transform->position.x, transform->scale.y / 2, 0 });
-		}
-		//下に落ちる
-		else {
-			SetMovePos(transform->position, { transform->position.x, GE::Window::GetWindowSize().y - transform->scale.y / 2, 0 });
-		}
-		moveTimer = 0;
-		enemyState = EnemyState::FALLING;
-	}
+	////デバッグ用　状態遷移
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
+	//	//上に落ちる
+	//	if (transform->position.y < 1080 / 2) {
+	//		SetMovePos(transform->position, { transform->position.x, transform->scale.y, 0 });
+	//	}
+	//	//下に落ちる
+	//	else {
+	//		SetMovePos(transform->position, { transform->position.x, 1080 - transform->scale.y, 0 });
+	//	}
+	//	moveTimer = 0;
+	//	enemyState = EnemyState::FALLING;
+	//}
 }
 
 void NormalEnemyComponent::UpdateFalling()
@@ -262,12 +292,12 @@ void NormalEnemyComponent::UpdateWalking()
 	prevPlayerStanceState = pPlayerMoveEntity->GetStanceState();
 
 
-	//デバッグ用　状態遷移
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F3)) {
-		SetMovePos(transform->position, *pBossPosition);
-		moveTimer = 0;
-		enemyState = EnemyState::DEADING;
-	}
+	////デバッグ用　状態遷移
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F3)) {
+	//	SetMovePos(transform->position, *pBossPosition);
+	//	moveTimer = 0;
+	//	enemyState = EnemyState::DEADING;
+	//}
 }
 
 void NormalEnemyComponent::UpdateDeading()

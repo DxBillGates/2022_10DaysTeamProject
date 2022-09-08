@@ -2,6 +2,8 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include <GatesEngine/Header/Util/Random.h           >
+#include "NormalEnemyComponent.h"
+#include "CollisionManager.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -148,8 +150,11 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	normalEnemyComponent->SetPPlayerPos(pPlayerPos);
 	normalEnemyComponent->SetMovePos(transform->position, afterPos);
 	sampleCollider->SetCenter({ 0,0,0 });
-	sampleCollider->SetSize({ 2 });
+	sampleCollider->SetSize({ 1 });
 	sampleCollider->SetType(GE::ColliderType::OBB);
+
+	newEnemy->SetTag("Enemy");
+	CollisionManager::GetInstance()->AddEnemy(newEnemy, sampleCollider);
 
 	newEnemy->Awake();
 	newEnemy->Start();
