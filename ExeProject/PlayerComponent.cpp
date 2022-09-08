@@ -1,5 +1,6 @@
 #include "PlayerComponent.h"
 #include "GameSetting.h"
+#include "HitStopManager.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -34,6 +35,13 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		moveEntity.ChangeMoveDirection();
 	}
+
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
+	{
+		HitStopManager::GetInstance()->Active(1);
+	}
+
+
 
 	const float MOVE_SPEED = 5;
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
