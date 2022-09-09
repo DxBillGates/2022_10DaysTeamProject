@@ -9,6 +9,7 @@
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
+#include <GatesEngine/Header/Util/Random.h>
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -77,8 +78,10 @@ SampleScene::SampleScene(const std::string& sceneName)
 	}
 
 	//パーティクルを最前面に
-	SpriteParticleManager::SetPGameObjectManager(&gameObjectManager);
+	SpriteParticleManager::SetPGameObjectManager(&particleManager);
 	SpriteParticleManager::StaticInitialize();
+
+	GE::RandomMaker::ResetSeed();
 }
 
 SampleScene::~SampleScene()
@@ -90,6 +93,9 @@ void SampleScene::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 
+	particleManager.Awake();
+	particleManager.Start();
+
 	PlayerAttackManager::GetInstance()->Initialize();
 	HitStopManager::GetInstance()->Initialize();
 
@@ -100,6 +106,7 @@ void SampleScene::Update(float deltaTime)
 {
 	bossEnemyComponent->GenerateNormalEnemy();
 	gameObjectManager.Update(deltaTime);
+	particleManager.Update(deltaTime);
 
 	PlayerAttackManager::GetInstance()->Update(deltaTime);
 	HitStopManager::GetInstance()->Update(deltaTime);
@@ -116,9 +123,12 @@ void SampleScene::Update(float deltaTime)
 void SampleScene::Draw()
 {
 	gameObjectManager.Draw();
+
+	particleManager.Draw();
 }
 
 void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
+	particleManager.LateDraw();
 }

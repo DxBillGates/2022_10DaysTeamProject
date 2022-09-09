@@ -102,10 +102,10 @@ bool Game::Draw()
 	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
 
 	graphicsDevice.ClearDefaultRenderTarget(GE::Color::Blue());
-	//graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.SetDefaultRenderTarget();
 
-	graphicsDevice.ClearLayer("resultLayer");
-	graphicsDevice.SetLayer("resultLayer");
+	//graphicsDevice.ClearLayer("resultLayer");
+	//graphicsDevice.SetLayer("resultLayer");
 
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.ResetCBufferAllocater();
@@ -139,29 +139,29 @@ bool Game::Draw()
 		Application::Draw();
 	}
 
-	graphicsDevice.ExecuteRenderQueue();
-	graphicsDevice.ExecuteCommands();
+	//graphicsDevice.ExecuteRenderQueue();
+	//graphicsDevice.ExecuteCommands();
 
-	graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetDefaultRenderTarget();
-	graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
-	auto windowSize = GE::Window::GetWindowSize();
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
-	windowSize.x /= 2;
-	windowSize.y /= 2;
-	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
-	GE::Material material;
-	material.color = GE::Color::White();
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	//graphicsDevice.SetDefaultRenderTarget();
+	//graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
+	//auto windowSize = GE::Window::GetWindowSize();
+	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	//windowSize.x /= 2;
+	//windowSize.y /= 2;
+	//modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
+	//GE::Material material;
+	//material.color = GE::Color::White();
 
-	GE::CameraInfo cameraInfo;
-	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
-	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+	//GE::CameraInfo cameraInfo;
+	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
+	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
-	graphicsDevice.DrawMesh("2DPlane");
+	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	//renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	//renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	//graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
 	GE::GUIManager::EndFrame();

@@ -8,6 +8,8 @@ class SampleScene : public GE::Scene
 private:
 	GE::ICollider* col1, * col2;
 	BossEnemyComponent* bossEnemyComponent;
+
+	GE::GameObjectManager particleManager;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);
