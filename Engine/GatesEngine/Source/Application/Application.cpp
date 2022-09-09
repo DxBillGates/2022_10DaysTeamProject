@@ -199,6 +199,8 @@ bool GE::Application::LoadContents()
 	gaussBlurPixelShader.CompileShaderFileWithoutFormat(L"GaussBlurPixelShader", "ps_5_0");
 	Shader defaultSpriteWithTexturePixelShader;
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
+	Shader spriteTextureForPostEffectPixelShader;
+	spriteTextureForPostEffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPostEffectPixelShader", "ps_5_0");
 
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -252,6 +254,13 @@ bool GE::Application::LoadContents()
 	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_BACK;
 	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(gaussBlurPipeline, "GaussBlurShader");
+	// sprite texture for pre postEffect shader
+	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
+	pipelineInfo.isUseDepthClip = false;
+	GraphicsPipeline* spriteTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&spriteTextureForPostEffectPixelShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
+	spriteTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(spriteTexturePipeline, "SpriteTextureForPostEffectShader");
 
 	// demo layerì¬
 	auto* layerManager = graphicsDevice.GetLayerManager();
