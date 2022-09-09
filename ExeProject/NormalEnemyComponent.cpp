@@ -131,10 +131,15 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				auto* pParticle = SpriteParticleManager::AddParticle();
 				pParticle->SetTextureName("ex");
 				pParticle->SetTextureNum(12);
+				pParticle->SetTexChangeSpeed(1.0f);
 				pParticle->SetScale(64);
-				pParticle->SetIsDrawStopping(true);
-				GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50,50), GE::RandomMaker::GetFloat(-50,50), 0 };
-				pParticle->SetInitPosition(transform->position + random);
+				pParticle->SetLifeTime(12.0f);
+				pParticle->SetIsLoopAnime(true);
+				pParticle->SetVelocity({ 0.5f, -0.5f, 0 });
+				pParticle->SetAccel({ 0, 0.001f, 0 });
+				//GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50,50), GE::RandomMaker::GetFloat(-50,50), 0 };
+				//pParticle->SetInitPosition(transform->position + random);
+				pParticle->SetInitPosition({ 400.0f, 200.0f, 0 });
 				pParticle->StartAnime();
 			}
 		}

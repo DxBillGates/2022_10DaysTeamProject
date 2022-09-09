@@ -15,7 +15,6 @@ private:
 	GE::Math::Vector3 accel = {};				//加速量
 
 	bool isStart = false;						//描画・再生開始したか
-	bool isDrawStopping = false;				//再生停止中に描画するか
 	bool isLoopAnime = false;					//アニメーションをループさせるか
 
 	float moveTimer = 0;						//移動用タイマー
@@ -83,12 +82,6 @@ public:
 	/// </summary>
 	/// <param name="accel">加速量</param>
 	void SetAccel(const GE::Math::Vector3& accel) { this->accel = accel; }
-
-	/// <summary>
-	/// 再生停止中に描画するかを指定
-	/// </summary>
-	/// <param name="isDrawStopping">再生停止中に描画するか</param>
-	void SetIsDrawStopping(bool isDrawStopping) { this->isDrawStopping = isDrawStopping; }
 
 	/// <summary>
 	/// アニメーションをループさせるか指定

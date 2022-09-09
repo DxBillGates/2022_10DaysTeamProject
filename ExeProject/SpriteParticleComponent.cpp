@@ -19,7 +19,7 @@ void SpriteParticleComponent::Update(float deltaTime)
 void SpriteParticleComponent::LateDraw()
 {
 	//Ž€‚ñ‚¾‚ç•`‰æ‚µ‚È‚¢
-	if (isDrawStopping == false && isStart == false) { return; }
+	if (isStart == false) { return; }
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -58,7 +58,6 @@ void SpriteParticleComponent::Initialize()
 	accel = {};
 
 	isStart = false;
-	isDrawStopping = false;
 	isLoopAnime = false;
 
 	moveTimer = 0;
@@ -100,6 +99,8 @@ void SpriteParticleComponent::UpdateTimer(float deltaTime)
 
 void SpriteParticleComponent::UpdatePos()
 {
+	if (isStart == false) { return; }
+
 	velocity += accel;
 	transform->position += velocity;
 }

@@ -142,7 +142,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 
 	//NormalEnemy¶¬
 	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
-	newEnemy->SetName("test_enemy_" + std::to_string(normalEnemies.size()));
+	newEnemy->SetName("normal_enemy_" + std::to_string(normalEnemies.size()));
 	newEnemy->GetTransform()->position = { 0,0,0 };
 	newEnemy->SetDrawAxisEnabled(true);
 	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
