@@ -25,62 +25,30 @@ class NormalEnemyComponent : public GE::Component
 {
 //定数
 private:
-	//初期スケール
-	static const float INIT_SCALE;
-	//一回の移動動作で進む距離
-	static const float WALK_SPEED;
-	//空中浮遊タイマー最大値
-	static const float MAX_FLYING_LOOP_TIMER;
-	//歩行用タイマー最大値
-	static const float MAX_WALK_LOOP_TIMER;
-	//空中浮遊アニメタイマー最大値
-	static const float MAX_FLYING_ANIME_LOOP_TIMER;
-	//空中浮遊アニメタイマー更新倍率
-	static const float FLYING_ANIME_LOOP_TIMER_SPEED;
-	//歩行アニメタイマー最大値
-	static const float MAX_WALKING_ANIME_LOOP_TIMER;
-	//歩行アニメタイマー更新倍率
-	static const float WALKING_ANIME_LOOP_TIMER_SPEED;
+	static const float INIT_SCALE;							//初期スケール
+	static const float WALK_SPEED;							//一回の移動動作で進む距離
+	static const float MAX_FLYING_LOOP_TIMER;				//空中浮遊タイマー最大値
+	static const float MAX_WALK_LOOP_TIMER;					//歩行用タイマー最大値
+	static const float MAX_FLYING_ANIME_LOOP_TIMER;			//空中浮遊アニメタイマー最大値
+	static const float FLYING_ANIME_LOOP_TIMER_SPEED;		//空中浮遊アニメタイマー更新倍率
+	static const float MAX_WALKING_ANIME_LOOP_TIMER;		//歩行アニメタイマー最大値
+	static const float WALKING_ANIME_LOOP_TIMER_SPEED;		//歩行アニメタイマー更新倍率
 
 private:
 
-	//デバッグ用
-	GE::InputDevice* inputDevice = nullptr;
-
-	//状態
-	EnemyState enemyState = EnemyState::GENERATING;
-
-	//生成時の移動前座標
-	GE::Math::Vector3 moveBeforePos = {};
-	//生成時の移動後座標
-	GE::Math::Vector3 moveAfterPos = {};
-
-	//移動用タイマー
-	float moveTimer = 0;
-
-	//空中浮遊用タイマー
-	float flyingLoopTimer = 0;
-
-	//歩行用タイマー
-	float walkingLoopTimer = 0;
-
-	//空中浮遊アニメタイマー
-	float flyingAnimeLoopTimer = 0;
-
-	//歩行アニメタイマー
-	float walkingAnimeLoopTimer = 0;
-
-	//姿勢
-	StanceState stanceState = StanceState::NORMAL;
-
-	//ボスの位置ポインタ
-	GE::Math::Vector3* pBossPosition = nullptr;
-
-	//プレイヤー位置取得用MoveEntityポインタ
-	MoveEntity* pPlayerMoveEntity = nullptr;
-
-	//プレイヤー位置ポインタ
-	GE::Math::Vector3* pPlayerPos = nullptr;
+	GE::InputDevice* inputDevice = nullptr;					//デバッグ用
+	EnemyState enemyState = EnemyState::GENERATING;			//状態
+	GE::Math::Vector3 moveBeforePos = {};					//生成時の移動前座標
+	GE::Math::Vector3 moveAfterPos = {};					//生成時の移動後座標
+	float moveTimer = 0;									//移動用タイマー
+	float flyingLoopTimer = 0;								//空中浮遊用タイマー
+	float walkingLoopTimer = 0;								//歩行用タイマー
+	float flyingAnimeLoopTimer = 0;							//空中浮遊アニメタイマー
+	float walkingAnimeLoopTimer = 0;						//歩行アニメタイマー
+	StanceState stanceState = StanceState::NORMAL;			//姿勢
+	GE::Math::Vector3* pBossPosition = nullptr;				//ボスの位置ポインタ
+	MoveEntity* pPlayerMoveEntity = nullptr;				//プレイヤー位置取得用MoveEntityポインタ
+	GE::Math::Vector3* pPlayerPos = nullptr;				//プレイヤー位置ポインタ
 
 public:
 	void Start() override;

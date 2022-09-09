@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SpriteParticleComponent.cpp" />
     <ClCompile Include="BossEnemyComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -175,8 +176,10 @@
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="ShadowPlayerComponent.cpp" />
+    <ClCompile Include="SpriteParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SpriteParticleComponent.h" />
     <ClInclude Include="BossEnemyComponent.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Game.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="ShadowPlayerComponent.h" />
+    <ClInclude Include="SpriteParticleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultShader.hlsli" />

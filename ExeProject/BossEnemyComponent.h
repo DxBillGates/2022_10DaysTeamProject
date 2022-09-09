@@ -10,50 +10,25 @@
 
 class BossEnemyComponent : public GE::Component
 {
-	//定数
+//定数
 private:
-	//初期スケール
-	static const GE::Math::Vector3 SPRITE_SIZE;
-
-	//最大敵生成回数 (最大ライフ)
-	static const int MAX_GENERATE_COUNT = 10;
-
-	//最小スケール
-	static const float MIN_SCALE;
-
-	//動く速さ
-	static const float MOVE_SPEED;
+	static const GE::Math::Vector3 SPRITE_SIZE;				//初期スケール
+	static const int MAX_GENERATE_COUNT = 10;				//最大敵生成回数 (最大ライフ)
+	static const float MIN_SCALE;							//最小スケール
+	static const float MOVE_SPEED;							//動く速さ
 
 private:
-	//通常エネミー生成用
-	GE::GameObjectManager* pGameObjectManager = nullptr;
-
-	//デバッグ用
-	GE::InputDevice* inputDevice;
-
-	//NormalEnemyの管理コンテナ
-	std::vector<NormalEnemyComponent*> normalEnemies;
-
-	//ライフ
-	int life = MAX_GENERATE_COUNT;
-
-	//横移動用
-	float velocity = 0;	//-1で左、+1で右、0で停止
-
-	//敵生成フラグ
-	bool isGenerate = false;
-
-	//縮小倍率
-	float scaleDownMag = 1.0f;
-
-	//スケール縮小タイマー
-	float scaleDownTimer = 0;
-
-	//プレイヤーMoveEntityポインタ
-	MoveEntity* pPlayerMoveEntity = nullptr;
-
-	//プレイヤー位置ポインタ
-	GE::Math::Vector3* pPlayerPos = nullptr;
+	
+	GE::GameObjectManager* pGameObjectManager = nullptr;	//通常エネミー生成用
+	GE::InputDevice* inputDevice;							//デバッグ用
+	std::vector<NormalEnemyComponent*> normalEnemies;		//NormalEnemyの管理コンテナ
+	int life = MAX_GENERATE_COUNT;							//ライフ
+	float velocity = 0;										//横移動用 -1で左、+1で右、0で停止
+	bool isGenerate = false;								//敵生成フラグ
+	float scaleDownMag = 1.0f;								//縮小倍率
+	float scaleDownTimer = 0;								//スケール縮小タイマー
+	MoveEntity* pPlayerMoveEntity = nullptr;				//プレイヤーMoveEntityポインタ
+	GE::Math::Vector3* pPlayerPos = nullptr;				//プレイヤー位置ポインタ
 
 public:
 	void Start() override;

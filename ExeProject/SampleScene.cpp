@@ -4,6 +4,7 @@
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
 #include "CollisionManager.h"
+#include "SpriteParticleManager.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -74,6 +75,10 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 2 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
 	}
+
+	//パーティクルを最前面に
+	SpriteParticleManager::SetPGameObjectManager(&gameObjectManager);
+	SpriteParticleManager::StaticInitialize();
 }
 
 SampleScene::~SampleScene()
@@ -87,6 +92,8 @@ void SampleScene::Initialize()
 
 	PlayerAttackManager::GetInstance()->Initialize();
 	HitStopManager::GetInstance()->Initialize();
+
+	SpriteParticleManager::AllInit();
 }
 
 void SampleScene::Update(float deltaTime)

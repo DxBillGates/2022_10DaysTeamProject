@@ -1,5 +1,6 @@
 #include "NormalEnemyComponent.h"
 #include "PlayerAttackManager.h"
+#include "SpriteParticleManager.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -26,7 +27,7 @@ void NormalEnemyComponent::Start()
 	flyingLoopTimer = 0;
 	walkingLoopTimer = 0;
 	flyingAnimeLoopTimer = 0;
-	walkingAnimeLoopTimer = 0;
+walkingAnimeLoopTimer = 0;
 }
 
 void NormalEnemyComponent::Update(float deltaTime)
@@ -84,7 +85,7 @@ void NormalEnemyComponent::LateDraw()
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
 
 	//状態によって送る画像を変える
 	if (enemyState == EnemyState::GENERATING ||
@@ -124,6 +125,18 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 			moveTimer = 0;
 			enemyState = EnemyState::FALLING;
+
+			//パーティクル生成
+			for (int i = 0; i < 5; i++){
+				auto* pParticle = SpriteParticleManager::AddParticle();
+				pParticle->SetTextureName("ex");
+				pParticle->SetTextureNum(12);
+				pParticle->SetScale(64);
+				pParticle->SetIsDrawStopping(true);
+				GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50,50), GE::RandomMaker::GetFloat(-50,50), 0 };
+				pParticle->SetInitPosition(transform->position + random);
+				pParticle->StartAnime();
+			}
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
