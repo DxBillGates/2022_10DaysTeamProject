@@ -17,6 +17,7 @@ void HitStopManager::Update(float deltaTime)
 	if (flag.GetOverTimeTrigger())
 	{
 		GameSetting* gameSetting = GameSetting::GetInstance();
+		flag.Initialize();
 		gameSetting->SetTime(1, 0.05f);
 	}
 

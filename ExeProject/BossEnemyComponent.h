@@ -55,10 +55,15 @@ private:
 	//プレイヤー位置ポインタ
 	GE::Math::Vector3* pPlayerPos = nullptr;
 
+	// 1フレーム中にプレイヤーに攻撃されたか
+	bool isHitPlayer;
+	bool beforeIsHitPlayer;
+
 public:
 	void Start() override;
 	void Update(float deltaTime) override;
 	void LateDraw() override;
+	void OnCollision(GE::GameObject* other) override;
 
 	/// <summary>
 	/// 横移動させる

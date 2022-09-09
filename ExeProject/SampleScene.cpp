@@ -71,8 +71,11 @@ SampleScene::SampleScene(const std::string& sceneName)
 		bossEnemyComponent->SetPPlayerMoveEntity(pPlayerMoveEntity);
 		bossEnemyComponent->SetPPlayerPos(pPlayerPos);
 		sampleCollider->SetCenter({ 0,0,0 });
-		sampleCollider->SetSize({ 2 });
+		sampleCollider->SetSize({ 1 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
+
+		testObject->SetTag("Boss");
+		collisionManager->AddEnemy(testObject, sampleCollider);
 	}
 }
 
