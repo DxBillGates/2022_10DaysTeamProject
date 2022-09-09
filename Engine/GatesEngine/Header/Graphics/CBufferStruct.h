@@ -32,4 +32,12 @@ namespace GE
 		Math::Vector4 worldLightDir = { 0,-1,0,0 };
 		Math::Vector4 worldLightColor = { 1 };
 	};
+
+	struct TextureAnimationInfo
+	{
+		// 切り抜きサイズ
+		Math::Vector2 clipSize = { 0,0 };
+		// 切り抜き位置
+		Math::Vector2 pivot;
+	};
 }

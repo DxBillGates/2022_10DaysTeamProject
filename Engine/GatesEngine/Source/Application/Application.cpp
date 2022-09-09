@@ -201,6 +201,8 @@ bool GE::Application::LoadContents()
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
 	Shader spriteTextureForPostEffectPixelShader;
 	spriteTextureForPostEffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPostEffectPixelShader", "ps_5_0");
+	Shader spriteTextureAnimationShader;
+	spriteTextureAnimationShader.CompileShaderFileWithoutFormat(L"DefaultSpriteTextureAnimationPixelShader", "ps_5_0");
 
 	// rootSignature作成
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -219,6 +221,10 @@ bool GE::Application::LoadContents()
 	RootSignature* testRootSignature = new RootSignature();
 	testRootSignature->Create(device, {16,16,0});
 	rootSignatureManager->Add(testRootSignature, "CBV16SRV16");
+	// cbv5srv1ルートシグネチャ
+	RootSignature* cbv4srv1cbv1RootSignature = new RootSignature();
+	cbv4srv1cbv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV,DescriptorRangeType::SRV ,DescriptorRangeType::CBV });
+	rootSignatureManager->Add(cbv4srv1cbv1RootSignature, "CBV4SRV1CBV1");
 
 	// demo graphicsPipeline作成
 	GraphicsPipelineInfo pipelineInfo = GraphicsPipelineInfo();
@@ -261,6 +267,13 @@ bool GE::Application::LoadContents()
 	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
 	spriteTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(spriteTexturePipeline, "SpriteTextureForPostEffectShader");
+	// sprite texture animation shader
+	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
+	pipelineInfo.isUseDepthClip = false;
+	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&spriteTextureAnimationShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
+	dafaultSpriteTextureAnimationPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv4srv1cbv1RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(dafaultSpriteTextureAnimationPipeline, "DefaultSpriteTextureAnimationShader");
 
 	// demo layer作成
 	auto* layerManager = graphicsDevice.GetLayerManager();
