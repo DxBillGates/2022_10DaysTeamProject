@@ -22,6 +22,7 @@ void GE::SphereCollider::Awake()
 
 void GE::SphereCollider::Draw()
 {
+#ifdef _DEBUG
 	if (!drawEnabled)return;
 	ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -58,6 +59,7 @@ void GE::SphereCollider::Draw()
 	worldMatrix = scaleMatrix * rotateMatrix * translateMatrix * transform->GetMatrix();
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0,&worldMatrix,sizeof(Math::Matrix4x4)) });
 	graphicsDevice->DrawMesh("LineCircle");
+#endif
 
 }
 

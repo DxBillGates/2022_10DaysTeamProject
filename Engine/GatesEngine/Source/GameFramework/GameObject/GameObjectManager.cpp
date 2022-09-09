@@ -31,17 +31,31 @@ void GE::GameObjectManager::Start()
 
 void GE::GameObjectManager::Update(float deltaTime)
 {
+	bool isReleaseMode = true;
+#ifdef _DEBUG
+	isReleaseMode = false;
+#endif
+
+
+
 	for (auto& object : gameObjects)
 	{
 		object->Update(deltaTime);
 
-		// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
-		if (hierarchyGui.OnGui(object))
+		if (!isReleaseMode)
 		{
-			inspectorGui.SetCurrentSelectGameObject(object);
+			// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
+			if (hierarchyGui.OnGui(object))
+			{
+				inspectorGui.SetCurrentSelectGameObject(object);
+			}
 		}
 	}
-	inspectorGui.OnGui();
+
+	if (!isReleaseMode)
+	{
+		inspectorGui.OnGui();
+	}
 }
 
 void GE::GameObjectManager::Draw()
