@@ -15,6 +15,11 @@ enum class EnemyState {
 	DEAD		//€–S (íœ‘Ò‚¿)
 };
 
+enum EnemyAnimationState
+{
+	DAMAGED = 3,
+};
+
 ////p¨
 //enum class StanceState
 //{

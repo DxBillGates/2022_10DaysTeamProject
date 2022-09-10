@@ -202,7 +202,7 @@ bool GE::Application::LoadContents()
 	Shader spriteTextureForPostEffectPixelShader;
 	spriteTextureForPostEffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPostEffectPixelShader", "ps_5_0");
 	Shader spriteTextureAnimationShader;
-	spriteTextureAnimationShader.CompileShaderFileWithoutFormat(L"DefaultSpriteTextureAnimationPixelShader", "ps_5_0");
+	spriteTextureAnimationShader.CompileShaderFileWithoutFormat(L"DefaultSpriteTextureAnimationVertexShader", "vs_5_0");
 
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -270,7 +270,7 @@ bool GE::Application::LoadContents()
 	// sprite texture animation shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;
-	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&spriteTextureAnimationShader });
+	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &spriteTextureAnimationShader,nullptr,nullptr,nullptr,&defaultSpritePixelShader });
 	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
 	dafaultSpriteTextureAnimationPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv4srv1cbv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteTextureAnimationPipeline, "DefaultSpriteTextureAnimationShader");

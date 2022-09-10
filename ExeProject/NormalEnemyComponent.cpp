@@ -27,7 +27,7 @@ void NormalEnemyComponent::Start()
 	flyingLoopTimer = 0;
 	walkingLoopTimer = 0;
 	flyingAnimeLoopTimer = 0;
-walkingAnimeLoopTimer = 0;
+	walkingAnimeLoopTimer = 0;
 }
 
 void NormalEnemyComponent::Update(float deltaTime)
@@ -56,6 +56,59 @@ void NormalEnemyComponent::Update(float deltaTime)
 	}
 }
 
+//void NormalEnemyComponent::LateDraw()
+//{
+//	//死んだら描画しない
+//	if (enemyState == EnemyState::DEAD) { return; }
+//
+//	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+//	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+//
+//	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+//
+//	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
+//
+//	if (stanceState == StanceState::NORMAL) {
+//		modelMatrix *= GE::Math::Matrix4x4::RotationZXY({ 0, 0, 0 });
+//	}
+//	else {
+//		modelMatrix *= GE::Math::Matrix4x4::RotationZXY({ 180, 0, 0 });
+//	}
+//
+//	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
+//	GE::Material material;
+//	material.color = GE::Color::White();
+//
+//	GE::CameraInfo cameraInfo;
+//	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
+//	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+//
+//	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+//	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+//	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
+//
+//	//状態によって送る画像を変える
+//	if (enemyState == EnemyState::GENERATING ||
+//		enemyState == EnemyState::FLYING) {
+//		int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
+//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
+//	}
+//	else if (enemyState == EnemyState::FALLING) {
+//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
+//	}
+//	else if (enemyState == EnemyState::WALKING) {
+//		int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
+//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
+//	}
+//	else {
+//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
+//	}
+//
+//
+//
+//	graphicsDevice->DrawMesh("2DPlane");
+//}
+
 void NormalEnemyComponent::LateDraw()
 {
 	//死んだら描画しない
@@ -64,7 +117,7 @@ void NormalEnemyComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
@@ -87,22 +140,53 @@ void NormalEnemyComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
 
+	////状態によって送る画像を変える
+	//if (enemyState == EnemyState::GENERATING ||
+	//	enemyState == EnemyState::FLYING) {
+	//	int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
+	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
+	//}
+	//else if (enemyState == EnemyState::FALLING) {
+	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
+	//}
+	//else if (enemyState == EnemyState::WALKING) {
+	//	int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
+	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
+	//}
+	//else {
+	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
+	//}
+
+	int drawNum = 0;
 	//状態によって送る画像を変える
-	if (enemyState == EnemyState::GENERATING ||
-		enemyState == EnemyState::FLYING) {
-		int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
+	if (enemyState == EnemyState::GENERATING || enemyState == EnemyState::FLYING)
+	{
+		drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("FlyingEnemyAnimationTexture")->GetSRVNumber() });
 	}
-	else if (enemyState == EnemyState::FALLING) {
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
+	else if (enemyState == EnemyState::FALLING)
+	{
+		drawNum = (int)EnemyAnimationState::DAMAGED;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("FlyingEnemyAnimationTexture")->GetSRVNumber() });
 	}
-	else if (enemyState == EnemyState::WALKING) {
-		int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
+	else if (enemyState == EnemyState::WALKING)
+	{
+		drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("WalkingEnemyAnimationTexture")->GetSRVNumber() });
 	}
-	else {
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
+	else
+	{
+		drawNum = (int)EnemyAnimationState::DAMAGED;
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("WalkingEnemyAnimationTexture")->GetSRVNumber() });
 	}
+
+	GE::TextureAnimationInfo animationInfo;
+	animationInfo.textureSize = { 384,96 };
+	animationInfo.clipSize = 96;
+	animationInfo.pivot = { (float)drawNum,0 };
+	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
+
+
 
 	graphicsDevice->DrawMesh("2DPlane");
 }
@@ -127,7 +211,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			enemyState = EnemyState::FALLING;
 
 			//パーティクル生成
-			for (int i = 0; i < 5; i++){
+			for (int i = 0; i < 5; i++) {
 				auto* pParticle = SpriteParticleManager::AddParticle();
 				pParticle->SetTextureName("ex");
 				pParticle->SetTextureNum(12);
@@ -279,7 +363,7 @@ void NormalEnemyComponent::UpdateWalking()
 
 		//移動するならy座標とスケールも変化
 		if (moveBeforePos.x != moveAfterPos.x) {
-			if (stanceState == StanceState::NORMAL){
+			if (stanceState == StanceState::NORMAL) {
 				posY += INIT_SCALE / 8 * GE::Math::Easing::EaseOutQuart(t);
 			}
 			else {
@@ -319,7 +403,7 @@ void NormalEnemyComponent::UpdateWalking()
 		transform->scale.x = scaleX;
 		transform->scale.y = scaleY;
 	}
-	
+
 	//プレイヤーが自身と同じ側に来たらタイマーリセットして動き出すようにする
 	static StanceState prevPlayerStanceState = pPlayerMoveEntity->GetStanceState();
 	if (pPlayerMoveEntity->GetStanceState() != prevPlayerStanceState &&

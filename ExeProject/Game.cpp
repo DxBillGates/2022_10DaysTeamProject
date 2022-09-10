@@ -73,6 +73,20 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(explosionTex, "ex_" + std::to_string(i));
 	}
 
+	// “G(”ò‚ñ‚Å‚éó‘Ô)
+	{
+		GE::Texture* enemyAnimationTexture = new GE::Texture();
+		enemyAnimationTexture->Load("enemy/Enemy_air.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(enemyAnimationTexture, "FlyingEnemyAnimationTexture");
+	}
+	// “G(—Ž‚¿‚Ä‚éó‘Ô)
+	{
+		GE::Texture* enemyAnimationTexture = new GE::Texture();
+		enemyAnimationTexture->Load("enemy/Enemy_walk.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(enemyAnimationTexture, "WalkingEnemyAnimationTexture");
+	}
+
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
 

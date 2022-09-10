@@ -39,5 +39,7 @@ namespace GE
 		Math::Vector2 clipSize = { 0,0 };
 		// 切り抜き位置
 		Math::Vector2 pivot;
+		// 元テクスチャサイズ
+		Math::Vector2 textureSize;
 	};
 }
