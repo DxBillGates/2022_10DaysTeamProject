@@ -71,7 +71,7 @@ void PlayerComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
+	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
