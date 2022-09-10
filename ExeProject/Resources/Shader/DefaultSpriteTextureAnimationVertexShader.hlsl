@@ -17,6 +17,6 @@ DefaultSpriteVSOutput main(DefaultSpriteVSInput input)
 
 	float2 ancerPoint = pivot / (textureSize / clipSize);
 	float2 size = clipSize / textureSize;
-	output.uv = input.uv * size * ancerPoint;
+	output.uv = input.uv * size + ancerPoint;
 	return output;
 }

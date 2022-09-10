@@ -181,11 +181,10 @@ void NormalEnemyComponent::LateDraw()
 	}
 
 	GE::TextureAnimationInfo animationInfo;
-	animationInfo.textureSize = { 384,96 };
 	animationInfo.clipSize = 96;
 	animationInfo.pivot = { (float)drawNum,0 };
+	animationInfo.textureSize = { 384,96 };
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
-
 
 
 	graphicsDevice->DrawMesh("2DPlane");

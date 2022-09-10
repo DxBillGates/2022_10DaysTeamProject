@@ -270,7 +270,7 @@ bool GE::Application::LoadContents()
 	// sprite texture animation shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;
-	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &spriteTextureAnimationShader,nullptr,nullptr,nullptr,&defaultSpritePixelShader });
+	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &spriteTextureAnimationShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
 	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
 	dafaultSpriteTextureAnimationPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv4srv1cbv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteTextureAnimationPipeline, "DefaultSpriteTextureAnimationShader");
