@@ -4,6 +4,8 @@
 #include <GatesEngine/Header/Util/Random.h           >
 #include "NormalEnemyComponent.h"
 #include "CollisionManager.h"
+#include "PlayerAttackManager.h"
+#include "HitStopManager.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -28,6 +30,13 @@ void BossEnemyComponent::Start()
 
 void BossEnemyComponent::Update(float deltaTime)
 {
+	beforeIsHitPlayer = isHitPlayer;
+	if (HitStopManager::GetInstance()->IsActive() == false)
+	{
+		// 前回のフレームのプレイヤーとのヒット状況を保持
+		isHitPlayer = false;
+	}
+
 	//タイマー更新
 	UpdateTimer(deltaTime);
 
@@ -72,6 +81,23 @@ void BossEnemyComponent::LateDraw()
 	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("boss_enemy")->GetSRVNumber() });
 
 	graphicsDevice->DrawMesh("2DPlane");
+}
+
+void BossEnemyComponent::OnCollision(GE::GameObject* other)
+{
+	if (other->GetTag() != "Player")return;
+	if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
+
+	// 前回のフレームでヒットしているならヒット判定を取らない
+	if (beforeIsHitPlayer == true)
+	{
+		isHitPlayer = true;
+		return;
+	}
+
+	isGenerate = true;
+	isHitPlayer = true;
+	HitStopManager::GetInstance()->Active(0.5f);
 }
 
 void BossEnemyComponent::Move()

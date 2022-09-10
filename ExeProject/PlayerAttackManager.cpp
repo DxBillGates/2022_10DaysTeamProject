@@ -1,5 +1,6 @@
 #include "PlayerAttackManager.h"
 #include "GameSetting.h"
+#include "HitStopManager.h"
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -19,6 +20,11 @@ void PlayerAttackManager::Initialize()
 
 void PlayerAttackManager::Update(float deltaTime)
 {
+	if (HitStopManager::GetInstance()->IsActive())
+	{
+		return;
+	}
+
 	TransitionAttackStateProcess();
 	AttackProcess();
 	CoolTimeProcess();
