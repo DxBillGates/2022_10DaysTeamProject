@@ -32,7 +32,7 @@ void GE::Texture::Load(const std::string& filename, ID3D12Device* device, IShade
 	heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 	D3D12_RESOURCE_DESC resDesc = {};
 	resDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
-	resDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	resDesc.Format = metadata.format;
 	resDesc.Width = (UINT64)metadata.width;
 	resDesc.Height = (UINT)metadata.height;
 	resDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
