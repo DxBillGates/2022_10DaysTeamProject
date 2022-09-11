@@ -1,5 +1,6 @@
 #pragma once
 #include <GatesEngine/Header/Util/Math/Vector3.h>
+#include <GatesEngine/Header/Graphics/IGraphicsDeviceDx12.h>
 
 enum class TutorialState {
 	FIRST_ATTACK,
@@ -44,6 +45,10 @@ private:
 	static float tutorialTimer;				//汎用タイマー
 	static int changeStateCount;			//遷移用カウンター
 	static bool attackable;					//攻撃可能フラグ
+	static GE::IGraphicsDeviceDx12* graphicsDevice;
+
+private:
+	static void Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, const std::string& name);
 
 public:
 
@@ -58,6 +63,11 @@ public:
 	/// </summary>
 	/// <param name="deltaTime">時間</param>
 	static void UpdateTimer(float deltaTime);
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	static void Draw();
 
 	/// <summary>
 	/// チュートリアル状況を遷移させるカウンターを減らす 0になったら状態を自動的に次のものにする
@@ -106,5 +116,11 @@ public:
 	/// </summary>
 	/// <param name="attackable">攻撃可能フラグ</param>
 	static void SetAttackable(bool attackable) { Tutorial::attackable = attackable; }
+
+	/// <summary>
+	/// GraphicsDeviceセット
+	/// </summary>
+	/// <param name="gDevice">GraphicsDevice</param>
+	static void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice) { Tutorial::graphicsDevice = gDevice; }
 };
 

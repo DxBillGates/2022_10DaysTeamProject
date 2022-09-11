@@ -86,6 +86,43 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(enemyAnimationTexture, "WalkingEnemyAnimationTexture");
 	}
 
+	//チュートリアル (TTRはtutorialの略)
+	//「Tutorial」文字
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Tutorial.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Tutorial");
+	}
+	//Left
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Left.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Left");
+	}
+	//Right
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Right.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Right");
+	}
+	//Attack
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Attack.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Attack");
+	}
+	//Wait
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Wait.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Wait");
+	}
+	//Grid
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Grid.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Grid");
+	}
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

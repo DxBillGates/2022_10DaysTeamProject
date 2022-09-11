@@ -105,6 +105,7 @@ void SampleScene::Initialize()
 
 	SpriteParticleManager::AllInit();
 
+	Tutorial::SetGraphicsDevice(graphicsDevice);
 	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
 }
 
@@ -131,6 +132,8 @@ void SampleScene::Update(float deltaTime)
 void SampleScene::Draw()
 {
 	gameObjectManager.Draw();
+
+	Tutorial::Draw();
 
 	particleManager.Draw();
 }

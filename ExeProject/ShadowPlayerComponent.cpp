@@ -124,7 +124,7 @@ void ShadowPlayerComponent::UpdateAttackable()
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
 		//‰º‘¤‚É‚¢‚ÄA‰æ–Ê‚Ì¶”¼•ª‚É—ˆ‚½Žž
-		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
+		Tutorial::SetAttackable(Tutorial::GetTutorialTimer() >= 2 && moveEntity.GetStanceState() == StanceState::NORMAL && transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
 		//Player‘¤‚ÅŠÇ—‚·‚é‚Ì‚Å‚È‚É‚à‚µ‚È‚¢
