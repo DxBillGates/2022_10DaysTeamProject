@@ -1,5 +1,6 @@
 #include "ShadowPlayerComponent.h"
 #include "GameSetting.h"
+#include "Tutorial.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -31,7 +32,7 @@ void ShadowPlayerComponent::Update(float deltaTime)
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 	const float MOVE_SPEED = 7;
 
-	if (autoMove == true)
+	if (autoMove == true && ChackMovable() == true)
 	{
 		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
 		{
@@ -47,6 +48,9 @@ void ShadowPlayerComponent::Update(float deltaTime)
 	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
 	moveEntity.UpdateStanceAngle(deltaTime, 1);
+
+	//チュートリアル時攻撃可能かチェック
+	UpdateAttackable();
 }
 
 void ShadowPlayerComponent::LateDraw()
@@ -83,4 +87,49 @@ void ShadowPlayerComponent::OnGui()
 MoveEntity* ShadowPlayerComponent::GetMoveEntity()
 {
 	return &moveEntity;
+}
+
+bool ShadowPlayerComponent::ChackMovable()
+{
+	//チュートリアル状態によって動き方を変える
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		return false;
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//2秒後以降、下側にいて、画面の左半分に来た時に停止
+		return !(Tutorial::GetTutorialTimer() >= 2 &&
+			moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x < Tutorial::SECOND_SHADOW_POS);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//下側にいて、画面の指定位置に来た時に停止
+		return !(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x < Tutorial::THIRD_SHADOW_POS);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//2秒後以降、上側にいて、画面の指定位置に来た時に停止
+		return !(Tutorial::GetTutorialTimer() >= 2 &&
+			moveEntity.GetStanceState() == StanceState::INVERSE &&
+			transform->position.x > Tutorial::FOURTH_SHADOW_POS);
+	}
+	else {
+		return true;
+	}
+}
+
+void ShadowPlayerComponent::UpdateAttackable()
+{
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		//Player側で管理するのでなにもしない
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//下側にいて、画面の左半分に来た時
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//Player側で管理するのでなにもしない
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//Player側で管理するのでなにもしない
+	}
 }

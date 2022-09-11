@@ -29,4 +29,7 @@ public:
 	MoveEntity* GetMoveEntity();
 	void Knockback(const GE::Math::Vector3& otherPosition);
 	void UpdateKnockback(float deltaTime);
+
+	bool CheckMovable();
+	void UpdateAttackable();
 };

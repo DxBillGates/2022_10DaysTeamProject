@@ -177,6 +177,7 @@
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="ShadowPlayerComponent.cpp" />
     <ClCompile Include="SpriteParticleManager.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteParticleComponent.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="ShadowPlayerComponent.h" />
     <ClInclude Include="SpriteParticleManager.h" />
+    <ClInclude Include="Tutorial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultCBuffer.hlsli" />

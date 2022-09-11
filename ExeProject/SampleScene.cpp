@@ -5,6 +5,7 @@
 #include "HitStopManager.h"
 #include "CollisionManager.h"
 #include "SpriteParticleManager.h"
+#include "Tutorial.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -103,6 +104,8 @@ void SampleScene::Initialize()
 	HitStopManager::GetInstance()->Initialize();
 
 	SpriteParticleManager::AllInit();
+
+	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
 }
 
 void SampleScene::Update(float deltaTime)
@@ -121,6 +124,8 @@ void SampleScene::Update(float deltaTime)
 	//}
 
 	CollisionManager::GetInstance()->Update(deltaTime);
+
+	Tutorial::UpdateTimer(deltaTime);
 }
 
 void SampleScene::Draw()

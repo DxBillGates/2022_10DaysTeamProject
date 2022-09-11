@@ -1,6 +1,7 @@
 #include "NormalEnemyComponent.h"
 #include "PlayerAttackManager.h"
 #include "SpriteParticleManager.h"
+#include "Tutorial.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -225,6 +226,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				//pParticle->SetInitPosition({ 400.0f, 200.0f, 0 });
 				pParticle->StartAnime();
 			}
+
+			//チュートリアル状態遷移用
+			if (Tutorial::IsEndTutorial() == false) {
+				Tutorial::DecrementChangeStateCount(2);
+			}
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
@@ -232,6 +238,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
+
+			//チュートリアル状態遷移用
+			if (Tutorial::IsEndTutorial() == false) {
+				Tutorial::DecrementChangeStateCount(2);
+			}
 		}
 	}
 
@@ -350,6 +361,9 @@ void NormalEnemyComponent::UpdateFalling()
 
 void NormalEnemyComponent::UpdateWalking()
 {
+	//チュートリアル中は動かさない
+	if (Tutorial::IsEndTutorial() == false) { return; }
+
 	//プレイヤーに向かって歩く
 	//進行方向に身体をのばす
 	if (walkingLoopTimer < MAX_WALK_LOOP_TIMER / 2) {

@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
+#include "Tutorial.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -98,6 +99,16 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	isGenerate = true;
 	isHitPlayer = true;
 	HitStopManager::GetInstance()->Active(0.5f);
+
+	//チュートリアル状態遷移用
+	if (Tutorial::IsEndTutorial() == false){
+		if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+			Tutorial::DecrementChangeStateCount(1);
+		}
+		else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+			Tutorial::DecrementChangeStateCount(2);
+		}
+	}
 }
 
 void BossEnemyComponent::Move()
@@ -157,15 +168,28 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	//すでに最大生成回数以上であったらreturn
 	if (normalEnemies.size() >= MAX_GENERATE_COUNT) { return; }
 
-	//ランダムで移動座標決定
-	float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
+	//敵生成位置設定
+	GE::Math::Vector3 afterPos = {};
 
-	float y = GE::RandomMaker::GetFloat(100, 300);
-	if (GE::RandomMaker::GetInt(0, 1) == 1) {
-		y *= -1;
+	//チュートリアル中は固定座標に出現させる
+	if ((int)Tutorial::GetTutorialState() == (int)TutorialState::FIRST_ATTACK + 1) {
+		afterPos = Tutorial::POS_GENERATE_ENEMY_1;
 	}
+	else if ((int)Tutorial::GetTutorialState() == (int)TutorialState::SECOND_ATTACK + 1) {
+		afterPos = Tutorial::POS_GENERATE_ENEMY_2;
+	}
+	else {
+		//ボスにだいたい重ならない範囲でランダムに移動座標決定
+		float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
 
-	GE::Math::Vector3 afterPos = { x, 1080 / 2 + y, 0 };
+		float y = GE::RandomMaker::GetFloat(100, 300);
+		if (GE::RandomMaker::GetInt(0, 1) == 1) {
+			y *= -1;
+		}
+		afterPos = { x, 1080 / 2 + y, 0 };
+	}
+	
+
 
 	//NormalEnemy生成
 	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());

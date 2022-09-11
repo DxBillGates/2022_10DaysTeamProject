@@ -1,6 +1,7 @@
 #include "PlayerAttackManager.h"
 #include "GameSetting.h"
 #include "HitStopManager.h"
+#include "Tutorial.h"
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -92,8 +93,8 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 	const float TRANSITION_TIME = 0.5f;
 
 	// キーを押したときにクールタイムが終了していてかつ攻撃遷移がNoneなら攻撃を開始
-	if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) && attackState == PlayerAttackState::NONE
-		&& coolTimeFlag.GetFlag() == false)
+	if (Tutorial::IsAttackable() && GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) && 
+		attackState == PlayerAttackState::NONE && coolTimeFlag.GetFlag() == false)
 	{
 		TransitionAttackState(PRE_TIME, PlayerAttackState::PRE);
 		GameSetting::GetInstance()->SetTime(SLOW_TIME, TRANSITION_TIME);
