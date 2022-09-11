@@ -23,7 +23,7 @@ void ShadowPlayerComponent::Start()
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
-	transform->position = { 1920 * 1 / 8, transform->scale.y / 2,0 };
+	transform->position = { 1920 * 3 / 8, transform->scale.y / 2,0 };
 
 }
 
@@ -93,9 +93,10 @@ bool ShadowPlayerComponent::ChackMovable()
 {
 	//チュートリアル状態によって動き方を変える
 	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
-		//上側にいて、画面の指定位置より右に来た時に停止
-		return !(moveEntity.GetStanceState() == StanceState::INVERSE &&
-			transform->position.x > Tutorial::FIRST_SHADOW_POS_X);
+		return false;
+		////上側にいて、画面の指定位置より右に来た時に停止
+		//return !(moveEntity.GetStanceState() == StanceState::INVERSE &&
+		//	transform->position.x > Tutorial::FIRST_SHADOW_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
 		//下側にいて、画面の指定位置より左に来た時に停止

@@ -24,7 +24,7 @@ void PlayerComponent::Start()
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
 
-	transform->position = { 1920 * 7 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
+	transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 }
 
 void PlayerComponent::Update(float deltaTime)
