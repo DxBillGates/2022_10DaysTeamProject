@@ -137,6 +137,9 @@ GE::GraphicsDeviceDx12::~GraphicsDeviceDx12()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+
+	swapChain->SetFullscreenState(false, NULL);
+
 	COM_RELEASE(dxgiFactory);
 	COM_RELEASE(device);
 	COM_RELEASE(cmdAlloc);
