@@ -194,6 +194,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 {
 	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
 	{
+		if (enemyState == EnemyState::WALKING)
+		{
+			other->OnCollision(gameObject);
+		}
+
 		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
 		if (enemyState == EnemyState::FLYING)
 		{
@@ -232,6 +237,8 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
+
+			other->OnCollision(gameObject);
 		}
 	}
 

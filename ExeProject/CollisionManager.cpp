@@ -13,7 +13,7 @@ void CollisionManager::Update(float deltaTime)
 	{
 		if (GE::CollisionManager::CheckHit(player.collider, enemy.collider))
 		{
-			player.object->OnCollision(enemy.object);
+			//player.object->OnCollision(enemy.object);
 			enemy.object->OnCollision(player.object);
 		}
 

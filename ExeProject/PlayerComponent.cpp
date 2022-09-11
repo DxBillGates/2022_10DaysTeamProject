@@ -24,6 +24,9 @@ void PlayerComponent::Start()
 	transform->scale = SPRITE_SIZE;
 
 	transform->position = { 1920 / 2,GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
+
+	const int MAX_HP = 3;
+	hp = MAX_HP;
 }
 
 void PlayerComponent::Update(float deltaTime)
@@ -31,7 +34,7 @@ void PlayerComponent::Update(float deltaTime)
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 
 	// 移動方向の変更テスト
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT 
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
 	{
 		moveEntity.ChangeMoveDirection();
@@ -75,8 +78,9 @@ void PlayerComponent::LateDraw()
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
-	modelMatrix *= GE::Math::Matrix4x4::RotationZXY(moveEntity.GetAngles());
+	modelMatrix *= GE::Math::Matrix4x4::RotationZXY(transform->rotation);
 	//GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
+	transform->rotation = moveEntity.GetAngles();
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
@@ -97,6 +101,8 @@ void PlayerComponent::LateDraw()
 	//renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 	graphicsDevice->DrawMesh("2DPlane");
+
+	DrawHP();
 }
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
@@ -112,6 +118,8 @@ MoveEntity* PlayerComponent::GetMoveEntity()
 void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 {
 	if (invincibleFlag.GetFlag() == true)return;
+
+	--hp;
 
 	const float POWER = 3;
 	const float KNOCKBACK_TIME = 0.5f;
@@ -148,6 +156,48 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 	knockbackVelocity = GE::Math::Vector3::Lerp(setKnockbackVector, GE::Math::Vector3(), lerpTime);
 
 	knockbackFlag.Update(deltaTime);
+}
+
+void PlayerComponent::DrawHP()
+{
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
+	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
+	
+	GE::Math::Matrix4x4 modelMatrix;
+
+	GE::TextureAnimationInfo animationInfo;
+	animationInfo.textureSize = { 32,16 };
+	animationInfo.clipSize = 16;
+
+	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_player_heart")->GetSRVNumber() });
+
+	const float DRAW_SIZE = 32;
+	const float ANGLE = moveEntity.GetStanceState() == StanceState::NORMAL ? 0 : 180;
+	const float HEIGHT = moveEntity.GetStanceState() == StanceState::NORMAL ? 1 : -1;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		modelMatrix = GE::Math::Matrix4x4::Scale(DRAW_SIZE);
+		modelMatrix *= GE::Math::Matrix4x4::RotationX(GE::Math::ConvertToRadian(ANGLE));
+
+		GE::Math::Vector3 drawPosition;
+		const float SPACE = 32;
+
+		// 3つのHPをプレイヤーの上で分散
+		drawPosition = transform->position - GE::Math::Vector3(1, 0, 0) * SPACE * (i - 1);
+		drawPosition -= GE::Math::Vector3(0, HEIGHT, 0) * (SPACE + DRAW_SIZE);
+		modelMatrix *= GE::Math::Matrix4x4::Translate(drawPosition);
+
+		// 描画するアニメーション番号の指定
+		int drawAnimationNum = (i >= hp) ? 1 : 0;
+		animationInfo.pivot.x = drawAnimationNum;
+
+		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
+		graphicsDevice->DrawMesh("2DPlane");
+	}
 }
 
 //void PlayerComponent::OnGui()

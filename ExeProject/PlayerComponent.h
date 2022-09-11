@@ -17,6 +17,8 @@ private:
 	GE::FlagController knockbackFlag;
 	GE::Math::Vector3 setKnockbackVector;
 	GE::Math::Vector3 knockbackVelocity;
+
+	int hp;
 public:
 	PlayerComponent();
 
@@ -29,4 +31,6 @@ public:
 	MoveEntity* GetMoveEntity();
 	void Knockback(const GE::Math::Vector3& otherPosition);
 	void UpdateKnockback(float deltaTime);
+
+	void DrawHP();
 };

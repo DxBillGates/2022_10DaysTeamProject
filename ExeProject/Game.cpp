@@ -85,6 +85,12 @@ bool Game::LoadContents()
 		enemyAnimationTexture->Load("enemy/Enemy_walk.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 		graphicsDevice.GetTextureManager()->Add(enemyAnimationTexture, "WalkingEnemyAnimationTexture");
 	}
+	// ƒvƒŒƒCƒ„[‚ÌHP
+	{
+		GE::Texture* playerHPTexture = new GE::Texture();
+		playerHPTexture->Load("player_heart.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(playerHPTexture, "texture_player_heart");
+	}
 
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
