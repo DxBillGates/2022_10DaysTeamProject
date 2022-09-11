@@ -159,26 +159,29 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 bool PlayerComponent::CheckMovable()
 {
 	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
-		//左のみ、画面の中央まで移動可能
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
-			transform->position.x > Tutorial::FIRST_PLAYER_POS_X;
+		//左のみ、指定位置まで移動可能
+		return Tutorial::GetTutorialTimer() >= 0.5f && 
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
+			!(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
 	}
 	else if(Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
-		//移動させない
-		return false;
+		//右のみ、指定位置まで移動可能
+		return Tutorial::GetTutorialTimer() >= 0.5f &&
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+			!(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
-		//1秒後、上側の特定の位置以外で移動可能 (そこに誘導させる)
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
-			Tutorial::GetTutorialTimer() >= 1 &&
-			!(moveEntity.GetStanceState() == StanceState::INVERSE &&
-			transform->position.x >= Tutorial::THIRD_PLAYER_POS);
+		//右のみ、下側の指定位置まで移動可能
+		return  Tutorial::GetTutorialTimer() >= 0.5f && 
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
-		//1秒後、上側の特定の位置以外で移動可能 (そこに誘導させる)
-		return Tutorial::GetTutorialTimer() >= 1 &&
-			!(moveEntity.GetStanceState() == StanceState::INVERSE &&
-			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X1 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X2);
+		//下側の特定の位置以外で移動可能
+		return  Tutorial::GetTutorialTimer() >= 0.5f && 
+			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5);
 	}
 
 	//チュートリアル外では自由に移動できる
@@ -188,21 +191,22 @@ bool PlayerComponent::CheckMovable()
 void PlayerComponent::UpdateAttackable()
 {
 	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
-		//画面の中央より左にいるとき攻撃可能
-		Tutorial::SetAttackable(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
+		//指定位置より左にいるとき攻撃可能
+		Tutorial::SetAttackable(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X, 0);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
-		//Shadow側で管理するのでなにもしない
+		//指定位置より右にいるとき攻撃可能
+		Tutorial::SetAttackable(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X, 0);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
-		//上側の特定の位置で攻撃可能
-		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::INVERSE && 
-			transform->position.x >= Tutorial::THIRD_PLAYER_POS);
+		//下側の特定の位置で攻撃可能
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && 
+			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X, 0);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
-		//上側の特定の位置で攻撃可能
-		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::INVERSE &&
-			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X1 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X2);
+		//下側の特定の位置で攻撃可能
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5, 0);
 	}
 }
 
