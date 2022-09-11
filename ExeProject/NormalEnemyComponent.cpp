@@ -194,12 +194,13 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 {
 	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
 	{
+		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
+
 		if (enemyState == EnemyState::WALKING)
 		{
 			other->OnCollision(gameObject);
 		}
 
-		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
 		if (enemyState == EnemyState::FLYING)
 		{
 			//デバッグ用　状態遷移
