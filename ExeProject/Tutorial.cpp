@@ -58,10 +58,6 @@ void Tutorial::UpdateTimer(float deltaTime)
 		tutorialTimer >= PRE_START_TIME) {
 		tutorialState = TutorialState::GAME_START;
 	}
-
-	ImGui::Begin("TutorialState");
-	ImGui::Text("%d", (int)attackable);
-	ImGui::End();
 }
 
 void Tutorial::Draw()

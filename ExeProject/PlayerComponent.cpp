@@ -35,8 +35,8 @@ void PlayerComponent::Update(float deltaTime)
 	if (CheckMovable()) {
 
 		// 移動方向の変更テスト
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
-			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
+		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
+			|| inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
 		{
 			moveEntity.ChangeMoveDirection();
 		}
@@ -168,14 +168,16 @@ bool PlayerComponent::CheckMovable()
 		return false;
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
-		//上側の特定の位置以外で移動可能 (そこに誘導させる)
+		//1秒後、上側の特定の位置以外で移動可能 (そこに誘導させる)
 		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+			Tutorial::GetTutorialTimer() >= 1 &&
 			!(moveEntity.GetStanceState() == StanceState::INVERSE &&
 			transform->position.x >= Tutorial::THIRD_PLAYER_POS);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
-		//上側の特定の位置以外で移動可能 (そこに誘導させる)
-		return !(moveEntity.GetStanceState() == StanceState::INVERSE &&
+		//1秒後、上側の特定の位置以外で移動可能 (そこに誘導させる)
+		return Tutorial::GetTutorialTimer() >= 1 &&
+			!(moveEntity.GetStanceState() == StanceState::INVERSE &&
 			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X1 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X2);
 	}
 

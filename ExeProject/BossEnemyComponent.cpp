@@ -2,6 +2,7 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include <GatesEngine/Header/Util/Random.h           >
+#include <GatesEngine/Header/GUI\GUIManager.h        >
 #include "NormalEnemyComponent.h"
 #include "CollisionManager.h"
 #include "PlayerAttackManager.h"
@@ -111,6 +112,11 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	}
 }
 
+void BossEnemyComponent::OnGui()
+{
+	ImGui::Text("Life:%d", life);
+}
+
 void BossEnemyComponent::Move()
 {
 	//ライフが一定値より低下したら動き出す
@@ -193,7 +199,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 
 	//NormalEnemy生成
 	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
-	newEnemy->SetName("normal_enemy_" + std::to_string(normalEnemies.size()));
+	newEnemy->SetName("NormalEnemy_" + std::to_string(normalEnemies.size()));
 	newEnemy->GetTransform()->position = { 0,0,0 };
 	newEnemy->SetDrawAxisEnabled(true);
 	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();

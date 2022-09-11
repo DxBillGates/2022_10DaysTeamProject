@@ -65,7 +65,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("test3");
+		testObject->SetName("BossEnemy");
 		testObject->GetTransform()->position = { 0,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
