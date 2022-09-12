@@ -8,6 +8,7 @@
 #include "EffectManager.h"
 #include "SlashEffect.h"
 #include "DotExplosionEffect.h"
+#include "Camera2D.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -122,10 +123,14 @@ void SampleScene::Initialize()
 	SpriteParticleManager::AllInit();
 
 	EffectManager::GetInstance()->Initialize();
+
+	Camera2D::GetInstance()->Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
 {
+	Camera2D::GetInstance()->Update(deltaTime);
+
 	bossEnemyComponent->GenerateNormalEnemy();
 	gameObjectManager.Update(deltaTime);
 	particleManager.Update(deltaTime);

@@ -11,6 +11,7 @@
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 	, moveEntity(MoveEntity())
+	, hp(3)
 {
 }
 

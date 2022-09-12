@@ -183,6 +183,7 @@
     <ClCompile Include="SpriteParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera2D.h" />
     <ClInclude Include="DotExplosionEffect.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
