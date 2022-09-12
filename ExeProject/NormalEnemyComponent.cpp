@@ -5,6 +5,7 @@
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
 #include "EffectManager.h"
+#include "Camera2D.h"
 
 const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
@@ -57,59 +58,6 @@ void NormalEnemyComponent::Update(float deltaTime)
 	}
 }
 
-//void NormalEnemyComponent::LateDraw()
-//{
-//	//€‚ñ‚¾‚ç•`‰æ‚µ‚È‚¢
-//	if (enemyState == EnemyState::DEAD) { return; }
-//
-//	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-//	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-//
-//	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
-//
-//	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
-//
-//	if (stanceState == StanceState::NORMAL) {
-//		modelMatrix *= GE::Math::Matrix4x4::RotationZXY({ 0, 0, 0 });
-//	}
-//	else {
-//		modelMatrix *= GE::Math::Matrix4x4::RotationZXY({ 180, 0, 0 });
-//	}
-//
-//	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
-//	GE::Material material;
-//	material.color = GE::Color::White();
-//
-//	GE::CameraInfo cameraInfo;
-//	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-//	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-//
-//	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-//	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-//	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
-//
-//	//ó‘Ô‚É‚æ‚Á‚Ä‘—‚é‰æ‘œ‚ğ•Ï‚¦‚é
-//	if (enemyState == EnemyState::GENERATING ||
-//		enemyState == EnemyState::FLYING) {
-//		int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
-//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
-//	}
-//	else if (enemyState == EnemyState::FALLING) {
-//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
-//	}
-//	else if (enemyState == EnemyState::WALKING) {
-//		int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
-//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
-//	}
-//	else {
-//		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
-//	}
-//
-//
-//
-//	graphicsDevice->DrawMesh("2DPlane");
-//}
-
 void NormalEnemyComponent::LateDraw()
 {
 	//€‚ñ‚¾‚ç•`‰æ‚µ‚È‚¢
@@ -138,25 +86,8 @@ void NormalEnemyComponent::LateDraw()
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
-
-	////ó‘Ô‚É‚æ‚Á‚Ä‘—‚é‰æ‘œ‚ğ•Ï‚¦‚é
-	//if (enemyState == EnemyState::GENERATING ||
-	//	enemyState == EnemyState::FLYING) {
-	//	int drawNum = flyingAnimeLoopTimer * 10 <= 2 ? flyingAnimeLoopTimer * 10 : 2;
-	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_" + std::to_string(drawNum))->GetSRVNumber() });
-	//}
-	//else if (enemyState == EnemyState::FALLING) {
-	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_flying_damage")->GetSRVNumber() });
-	//}
-	//else if (enemyState == EnemyState::WALKING) {
-	//	int drawNum = walkingAnimeLoopTimer * 10 <= 2 ? walkingAnimeLoopTimer * 10 : 2;
-	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_" + std::to_string(drawNum))->GetSRVNumber() });
-	//}
-	//else {
-	//	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("normal_enemy_walking_damage")->GetSRVNumber() });
-	//}
 
 	int drawNum = 0;
 	//ó‘Ô‚É‚æ‚Á‚Ä‘—‚é‰æ‘œ‚ğ•Ï‚¦‚é

@@ -19,6 +19,8 @@ private:
 	float shakePower;
 
 	GE::CameraInfo cameraInfo;
+
+	bool isUpdateCameraInfo;
 public:
 	static Camera2D* GetInstance();
 	void Initialize();

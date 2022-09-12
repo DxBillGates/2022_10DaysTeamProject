@@ -22,6 +22,7 @@ void Camera2D::Initialize()
 
 void Camera2D::Update(float deltaTime)
 {
+	isUpdateCameraInfo = false;
 	UpdateShakeProcess(deltaTime);
 }
 
@@ -48,6 +49,8 @@ void Camera2D::UpdateShakeProcess(float deltaTime)
 	const int SHAKE_FRAME = 4;
 	if (countForShakeFlag % SHAKE_FRAME == 0)shakeState = !shakeState;
 	++countForShakeFlag;
+
+	shakeFlag.Update(deltaTime);
 }
 
 const GE::Math::Vector3& Camera2D::GetOriginPosition()
@@ -62,6 +65,9 @@ const GE::Math::Vector3& Camera2D::GetPosition()
 
 const GE::CameraInfo& Camera2D::GetCameraInfo()
 {
+	if (isUpdateCameraInfo == true)return cameraInfo;
+	isUpdateCameraInfo = true;
+
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo(position, { 0,0,1 }, { 0,1,0 });
 	return cameraInfo;
@@ -83,5 +89,6 @@ Camera2D::Camera2D()
 	, countForShakeFlag(0)
 	, shakePower(1)
 	, cameraInfo()
+	, isUpdateCameraInfo(false)
 {
 }

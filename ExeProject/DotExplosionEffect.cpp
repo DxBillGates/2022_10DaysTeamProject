@@ -1,4 +1,5 @@
 #include "DotExplosionEffect.h"
+#include "Camera2D.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/Util/Math/Easing.h>
 
@@ -40,7 +41,7 @@ void DotExplosionEffect::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("dotEffectTexture")->GetSRVNumber() });
 
