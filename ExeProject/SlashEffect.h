@@ -11,7 +11,6 @@ private:
 
 	GE::Math::Vector3 size;
 
-	GE::Math::Vector3 originPosition;
 	GE::Math::Vector3* startPosition;
 	GE::Math::Vector3* endPosition;
 public:
@@ -19,7 +18,7 @@ public:
 	void Update(float deltaTime) override;
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice) override;
 
-	void Active() override;
+	void Active(const GE::Math::Vector3& position) override;
 
 	void SetStartAndEndPosition(GE::Math::Vector3* start, GE::Math::Vector3* end);
 };

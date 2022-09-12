@@ -89,8 +89,11 @@ SampleScene::SampleScene(const std::string& sceneName)
 	{
 		auto* effectManager = EffectManager::GetInstance();
 
-		auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
-		slashEffect->SetStartAndEndPosition(pPlayerPos, pShadowPlayerPosition);
+		for (int i = 0; i < 3; ++i)
+		{
+			auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
+			slashEffect->SetStartAndEndPosition(pPlayerPos, pShadowPlayerPosition);
+		}
 	}
 
 	//パーティクルを最前面に

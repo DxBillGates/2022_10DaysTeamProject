@@ -2,6 +2,7 @@
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Util/Math/Easing.h>
 #include <GatesEngine/Header/Graphics/Window.h>
+#include <GatesEngine/Header/Util/Random.h>
 #include <cmath>
 
 void SlashEffect::Initialize()
@@ -53,16 +54,16 @@ void SlashEffect::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
-void SlashEffect::Active()
+void SlashEffect::Active(const GE::Math::Vector3& position)
 {
 	isActive.Initialize();
 	isActive.SetFlag(true);
 	isActive.SetMaxTimeProperty(EFFECT_TIME);
 
-	GE::Math::Vector3 position = *startPosition - *endPosition;
-	angle = std::atan2f(-position.x,position.y);
+	GE::Math::Vector3 pos = *startPosition - *endPosition;
+	angle = std::atan2f(GE::RandomMaker::GetFloat(-1, 1), GE::RandomMaker::GetFloat(-1, 1));
 
-	originPosition = *endPosition + position / 2;
+	originPosition = position;
 	originPosition.x = std::fabsf(originPosition.x);
 	originPosition.y = std::fabsf(originPosition.y);
 }

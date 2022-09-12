@@ -10,7 +10,10 @@ void EffectManager::Initialize()
 {
 	for (auto& effect : effects)
 	{
-		effect.second->Initialize();
+		for (auto& e : effect.second)
+		{
+			e->Initialize();
+		}
 	}
 }
 
@@ -18,7 +21,10 @@ void EffectManager::Update(float deltaTime)
 {
 	for (auto& effect : effects)
 	{
-		effect.second->Update(deltaTime);
+		for (auto& e : effect.second)
+		{
+			e->Update(deltaTime);
+		}
 	}
 }
 
@@ -26,15 +32,28 @@ void EffectManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
 	for (auto& effect : effects)
 	{
-		if (effect.second->IsActive() == false)continue;
+		for (auto& e : effect.second)
+		{
+			if (e->IsActive() == false) return;
 
-		effect.second->Draw(graphicsDevice);
+			e->Draw(graphicsDevice);
+		}
 	}
 }
 
-void EffectManager::Active(const std::string& effectName)
+void EffectManager::Active(const std::string& effectName, const GE::Math::Vector3& position)
 {
-	effects.at(effectName)->Active();
+	//effects.at(effectName)->Active();
+	for (auto& effect : effects)
+	{
+		for (auto& e : effect.second)
+		{
+			if (e->IsActive() == true) continue;
+
+			e->Active(position);
+			break;
+		}
+	}
 }
 
 EffectManager::EffectManager()
@@ -45,6 +64,9 @@ EffectManager::~EffectManager()
 {
 	for (auto& effect : effects)
 	{
-		delete effect.second;
+		for (auto& e : effect.second)
+		{
+			delete e;
+		}
 	}
 }

@@ -100,7 +100,7 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	isHitPlayer = true;
 	HitStopManager::GetInstance()->Active(0.5f);
 
-	EffectManager::GetInstance()->Active("slashEffect");
+	EffectManager::GetInstance()->Active("slashEffect",transform->position);
 }
 
 void BossEnemyComponent::Move()

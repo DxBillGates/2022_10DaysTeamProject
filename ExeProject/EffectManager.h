@@ -2,18 +2,19 @@
 #include "Effect.h"
 
 #include <map>
+#include <unordered_map>
 
 class EffectManager
 {
 private:
-	std::map <std::string, Effect*> effects;
+	std::map <std::string, std::vector<Effect*>> effects;
 public:
 	static EffectManager* GetInstance();
 
 	void Initialize();
 	void Update(float deltaTime);
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);
-	void Active(const std::string& effectName);
+	void Active(const std::string& effectName, const GE::Math::Vector3& position);
 
 	template<typename T>
 	T* Add(const std::string& effectName);
@@ -38,7 +39,16 @@ inline T* EffectManager::Add(const std::string& effectName)
 		return nullptr;
 	}
 
-	effects.insert(std::make_pair(effectName, pEffect));
+	// ‚·‚Å‚É‚»‚ÌƒL[‚Ì—v‘f‚ª‚ ‚éê‡
+	decltype(effects)::iterator it = effects.find(effectName);
+	if (it != effects.end())
+	{
+		it->second.push_back(pEffect);
+		return newEffect;
+	}
+
+	effects.insert(std::make_pair(effectName, std::vector<Effect*>()));
+	effects.at(effectName).push_back(pEffect);
 
 	return newEffect;
 }

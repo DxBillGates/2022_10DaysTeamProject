@@ -6,6 +6,8 @@ class Effect
 {
 protected:
 	GE::FlagController isActive;
+
+	GE::Math::Vector3 originPosition;
 public:
 	Effect();
 	virtual ~Effect();
@@ -15,7 +17,7 @@ public:
 	virtual void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);
 
 	// エフェクトを再生開始
-	virtual void Active();
+	virtual void Active(const GE::Math::Vector3& position);
 
 	bool IsActive();
 };
