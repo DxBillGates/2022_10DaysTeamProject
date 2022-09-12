@@ -28,6 +28,9 @@ void BossEnemyComponent::Start()
 
 	//‰Šú‚Í’Êí‚Ì‘å‚«‚³
 	scaleDownMag = 1.0f;
+
+	normalEnemies.clear();
+	isGenerate = false;
 }
 
 void BossEnemyComponent::Update(float deltaTime)
@@ -98,6 +101,7 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	HitStopManager::GetInstance()->Active(0.5f);
 
 	EffectManager::GetInstance()->Active("slashEffect",transform->position);
+	EffectManager::GetInstance()->Active("dotEffect", transform->position);
 }
 
 void BossEnemyComponent::Move()

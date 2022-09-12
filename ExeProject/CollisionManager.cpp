@@ -24,6 +24,11 @@ void CollisionManager::Update(float deltaTime)
 		}
 	}
 
+	if (GE::CollisionManager::CheckHit(player.collider, boss.collider))
+	{
+		boss.object->OnCollision(player.object);
+	}
+
 	//// デバッグ用
 	//if (GE::CollisionManager::CheckHit(player.collider, shadowPlayer.collider))
 	//{
@@ -47,6 +52,17 @@ void CollisionManager::SetShadowPlayer(GE::GameObject* pPlayer, GE::ICollider* c
 void CollisionManager::AddEnemy(GE::GameObject* enemy, GE::ICollider* collider)
 {
 	enemies.push_back({ enemy,collider });
+}
+
+void CollisionManager::AddBoss(GE::GameObject* enemy, GE::ICollider* collider)
+{
+	boss.object = enemy;
+	boss.collider = collider;
+}
+
+void CollisionManager::EraseEnemy()
+{
+	enemies.clear();
 }
 
 CollisionManager::CollisionManager()

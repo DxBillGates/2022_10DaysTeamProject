@@ -12,6 +12,7 @@ class CollisionManager
 private:
 	CollisionInfo player;
 	CollisionInfo shadowPlayer;
+	CollisionInfo boss;
 
 	std::vector<CollisionInfo> enemies;
 public:
@@ -22,6 +23,9 @@ public:
 	void SetPlayer(GE::GameObject* pPlayer, GE::ICollider* collider);
 	void SetShadowPlayer(GE::GameObject* pPlayer, GE::ICollider* collider);
 	void AddEnemy(GE::GameObject* enemy, GE::ICollider* collider);
+	void AddBoss(GE::GameObject* enemy, GE::ICollider* collider);
+
+	void EraseEnemy();
 
 private:
 	CollisionManager();

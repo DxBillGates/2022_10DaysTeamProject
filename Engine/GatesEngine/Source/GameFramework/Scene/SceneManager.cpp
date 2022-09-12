@@ -32,10 +32,9 @@ void GE::SceneManager::Update(float deltaTime)
 
 	// シーンを変更して初期化するか確認
 	ChangeScene(changeSceneInfo.name);
-	changeSceneInfo = ChangeSceneInfo();
-
 	if (!changeSceneInfo.initNextSceneFlag)return;
 
+	changeSceneInfo = ChangeSceneInfo();
 	currentScene->Initialize();
 }
 

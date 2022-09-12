@@ -84,14 +84,14 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetType(GE::ColliderType::OBB);
 
 		testObject->SetTag("Boss");
-		collisionManager->AddEnemy(testObject, sampleCollider);
+		collisionManager->AddBoss(testObject, sampleCollider);
 	}
 
 	// effect ’Ç‰Á
 	{
 		auto* effectManager = EffectManager::GetInstance();
 
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
 			auto* dotEffect = effectManager->Add<DotExplosionEffect>("dotEffect");
@@ -151,6 +151,10 @@ void SampleScene::Update(float deltaTime)
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
 	{
 		gameObjectManager.DeleteGameObjectWithTag("Enemy");
+		collManager->EraseEnemy();
+		changeSceneInfo.flag = true;
+		changeSceneInfo.initNextSceneFlag = true;
+		changeSceneInfo.name = this->name;
 	}
 }
 
