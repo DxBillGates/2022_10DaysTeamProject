@@ -21,14 +21,7 @@ void BossEnemyComponent::Start()
 	transform->scale = SPRITE_SIZE;
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
 
-	//初期ライフは最大敵生成数
-	life = MAX_GENERATE_COUNT;
-
-	//初期状態は動かない
-	velocity = 0;
-
-	//初期は通常の大きさ
-	scaleDownMag = 1.0f;
+	Initialize();
 }
 
 void BossEnemyComponent::Update(float deltaTime)
@@ -118,10 +111,33 @@ void BossEnemyComponent::OnGui()
 	ImGui::Text("Life:%d", life);
 }
 
+void BossEnemyComponent::Initialize()
+{
+	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
+	if (Tutorial::IsSkipTutorial()) {
+		maxGenerateCount -= 2;
+	}
+
+	//初期ライフ
+	life = maxGenerateCount;
+
+	//敵生成カウントリセット
+	generateCount = 0;
+
+	//初期状態は動かない
+	velocity = 0;
+
+	//初期は通常の大きさ
+	scaleDownMag = 1.0f;
+
+	//タイマーは最大値でリセット
+	scaleDownTimer = 1;
+}
+
 void BossEnemyComponent::Move()
 {
-	//ライフが一定値より低下したら動き出す
-	if (life <= MAX_GENERATE_COUNT / 2 && velocity == 0) {
+	//ライフが半分以下になったら動き出す
+	if (life <= maxGenerateCount / 2 && velocity == 0) {
 		velocity = (float)(GE::RandomMaker::GetInt(0, 1) * 2 - 1);
 	}
 
@@ -148,7 +164,7 @@ void BossEnemyComponent::UpdateScale()
 {
 	//イージングかけてスケール倍率変化
 	float t = scaleDownTimer;
-	float beforeScale = scaleDownMag + (1.0 - MIN_SCALE) / MAX_GENERATE_COUNT;
+	float beforeScale = scaleDownMag + (1.0 - MIN_SCALE) / maxGenerateCount;
 	float scaleMag = beforeScale + (scaleDownMag - beforeScale) * GE::Math::Easing::EaseOutQuart(t);
 
 	//自身のスケールを小さくする
@@ -157,12 +173,14 @@ void BossEnemyComponent::UpdateScale()
 
 void BossEnemyComponent::UpdateLife()
 {
-	//エネミーリスト走査して死んでいる個体の数だけライフ値減少させる
-	//(コスト高めなので処理見直したほうがいいかも)
-	life = MAX_GENERATE_COUNT;
-	for (auto& v : normalEnemies) {
-		if (v->IsDead()) {
+	//エネミーリスト走査して死んでいたら削除、ライフ減少
+	for (int i = 0; i < normalEnemies.size();) {
+		if (normalEnemies[i]->IsDead()) {
 			life--;
+			normalEnemies.erase(normalEnemies.begin() + i);
+		}
+		else {
+			i++;
 		}
 	}
 
@@ -178,7 +196,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	if (isGenerate == false) { return; }
 
 	//すでに最大生成回数以上であったらreturn
-	if (normalEnemies.size() >= MAX_GENERATE_COUNT) { return; }
+	if (generateCount >= maxGenerateCount) { return; }
 
 	//敵生成位置設定
 	GE::Math::Vector3 afterPos = {};
@@ -201,7 +219,6 @@ void BossEnemyComponent::GenerateNormalEnemy()
 		afterPos = { x, 1080 / 2 + y, 0 };
 	}
 	
-
 
 	//NormalEnemy生成
 	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
@@ -227,10 +244,13 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	normalEnemies.push_back(normalEnemyComponent);
 
 	//スケール値下げる
-	scaleDownMag -= (1.0 - MIN_SCALE) / MAX_GENERATE_COUNT;
+	scaleDownMag -= (1.0 - MIN_SCALE) / maxGenerateCount;
 
 	//タイマーリセット
 	scaleDownTimer = 0;
+
+	//生成数増やす
+	generateCount++;
 
 	isGenerate = false;
 }

@@ -50,6 +50,7 @@ private:
 	static float tutorialTimer;				//汎用タイマー
 	static int changeStateCount;			//遷移用カウンター
 	static bool attackable[2];				//攻撃可能フラグ (プレイヤーと影の2つ)
+	static bool isSkipTutorial;				//チュートリアルスキップしたか
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
 private:
@@ -91,6 +92,12 @@ public:
 	/// </summary>
 	/// <returns>チュートリアルが終了しているか</returns>
 	static bool IsEndTutorial() { return Tutorial::tutorialState == TutorialState::GAME_START; }
+
+	/// <summary>
+	/// チュートリアルスキップしたか取得
+	/// </summary>
+	/// <returns></returns>
+	static bool IsSkipTutorial() { return isSkipTutorial; }
 
 	/// <summary>
 	/// タイマーの値取得

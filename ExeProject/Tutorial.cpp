@@ -25,6 +25,7 @@ TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
 float Tutorial::tutorialTimer = 0;
 int Tutorial::changeStateCount = 1;
 bool Tutorial::attackable[2] = {false, false};
+bool Tutorial::isSkipTutorial = false;
 
 GE::IGraphicsDeviceDx12* Tutorial::graphicsDevice = nullptr;
 
@@ -38,9 +39,12 @@ const GE::Math::Vector3 SCALE_GRID = { 132, 147, 0 };
 void Tutorial::Initialize(bool isSkipTutorial)
 {
 	tutorialTimer = 0;
+	Tutorial::isSkipTutorial = isSkipTutorial;
 
 	if (isSkipTutorial) {
 		tutorialState = TutorialState::GAME_START;
+		//クリアタイマー開始
+		ClearTimer::Start();
 		attackable[0] = true;
 		attackable[1] = true;
 	}

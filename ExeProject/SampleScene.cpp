@@ -95,6 +95,9 @@ SampleScene::~SampleScene()
 
 void SampleScene::Initialize()
 {
+	Tutorial::SetGraphicsDevice(graphicsDevice);
+	Tutorial::Initialize(true);	//チュートリアルスキップさせるならtrueに
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 
@@ -105,9 +108,6 @@ void SampleScene::Initialize()
 	HitStopManager::GetInstance()->Initialize();
 
 	SpriteParticleManager::AllInit();
-
-	Tutorial::SetGraphicsDevice(graphicsDevice);
-	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
 
 	ClearTimer::Initialize();
 }
