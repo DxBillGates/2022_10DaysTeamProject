@@ -174,9 +174,36 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	//graphicsDevice.SetDefaultRenderTarget();
+	//graphicsDevice.SetShader("SpriteTextureForPostEffectShader");
+	//auto windowSize = GE::Window::GetWindowSize();
+	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	//windowSize.x /= 2;
+	//windowSize.y /= 2;
+	//modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
+	//GE::Material material;
+	//material.color = GE::Color::White();
+
+	//GE::CameraInfo cameraInfo;
+	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
+	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+
+	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	//renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	//renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	//graphicsDevice.DrawMesh("2DPlane");
+
+	//graphicsDevice.ExecuteRenderQueue();
+	//graphicsDevice.ExecuteCommands();
+
+	// ここからポストエフェクト
+	// ひとまず輝度抽出
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
-	graphicsDevice.SetShader("SpriteTextureForPostEffectShader");
+	graphicsDevice.SetShader("BrightnessSamplingShader");
+
 	auto windowSize = GE::Window::GetWindowSize();
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
 	windowSize.x /= 2;
@@ -192,11 +219,16 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+
+	const float BRIGHTNESS = 0.5f;
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
+
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
 	GE::GUIManager::EndFrame();
+
 	graphicsDevice.ExecuteCommands();
 	graphicsDevice.ScreenFlip();
 	return true;

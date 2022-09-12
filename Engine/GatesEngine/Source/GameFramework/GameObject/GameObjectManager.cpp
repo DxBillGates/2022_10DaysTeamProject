@@ -132,7 +132,6 @@ void GE::GameObjectManager::DeleteGameObjectWithTag(const std::string& tag)
 			delete gameObjects[i];
 			gameObjects[i] = nullptr;
 			std::swap(gameObjects[i], gameObjects.back());
-			//gameObjects.erase(gameObjects.begin() + i);
 			gameObjects.pop_back();
 
 			l--;

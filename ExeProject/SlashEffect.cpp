@@ -18,7 +18,7 @@ void SlashEffect::Update(float deltaTime)
 {
 	if (isActive.GetFlag() == false)return;
 
-	const GE::Math::Vector3 START_SIZE = { 500,100,0 };
+	const GE::Math::Vector3 START_SIZE = { 1000,100,0 };
 	const GE::Math::Vector3 END_SIZE = { 200,2000,0 };
 
 	float lerpTime = isActive.GetTime() / isActive.GetMaxTimeProperty();

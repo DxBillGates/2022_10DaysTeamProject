@@ -203,6 +203,8 @@ bool GE::Application::LoadContents()
 	spriteTextureForPostEffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPostEffectPixelShader", "ps_5_0");
 	Shader spriteTextureAnimationShader;
 	spriteTextureAnimationShader.CompileShaderFileWithoutFormat(L"DefaultSpriteTextureAnimationVertexShader", "vs_5_0");
+	Shader brightnessSamlingShader;
+	brightnessSamlingShader.CompileShaderFileWithoutFormat(L"BrightnessSamplingPixelShader", "ps_5_0");
 
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -274,6 +276,10 @@ bool GE::Application::LoadContents()
 	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
 	dafaultSpriteTextureAnimationPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv4srv1cbv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteTextureAnimationPipeline, "DefaultSpriteTextureAnimationShader");
+	// brightness sampling shader
+	GraphicsPipeline* brightnessSamplingPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&brightnessSamlingShader });
+	brightnessSamplingPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(brightnessSamplingPipeline, "BrightnessSamplingShader");
 
 	// demo layerì¬
 	auto* layerManager = graphicsDevice.GetLayerManager();

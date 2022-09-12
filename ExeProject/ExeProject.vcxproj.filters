@@ -191,6 +191,9 @@
     <FxCompile Include="Resources\Shader\DefaultSpriteTextureAnimationVertexShader.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\BrightnessSamplingPixelShader.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ExeProject.rc" />
