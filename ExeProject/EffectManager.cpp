@@ -34,25 +34,23 @@ void EffectManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	{
 		for (auto& e : effect.second)
 		{
-			if (e->IsActive() == false) return;
+			if (e->IsActive() == false) continue;
 
 			e->Draw(graphicsDevice);
 		}
 	}
 }
 
-void EffectManager::Active(const std::string& effectName, const GE::Math::Vector3& position)
+void EffectManager::Active(const std::string& effectName, const GE::Math::Vector3& position, float scale)
 {
 	//effects.at(effectName)->Active();
-	for (auto& effect : effects)
-	{
-		for (auto& e : effect.second)
-		{
-			if (e->IsActive() == true) continue;
 
-			e->Active(position);
-			break;
-		}
+	for (auto& effect : effects.at(effectName))
+	{
+		if (effect->IsActive() == true) continue;
+
+		effect->Active(position,scale);
+		return;
 	}
 }
 

@@ -234,7 +234,10 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				//pParticle->SetInitPosition({ 400.0f, 200.0f, 0 });
 				pParticle->StartAnime();
 			}
-			EffectManager::GetInstance()->Active("slashEffect", transform->position);
+			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
+			EffectManager::GetInstance()->Active("dotEffect", transform->position);
+
+			return;
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
@@ -242,7 +245,8 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
-			EffectManager::GetInstance()->Active("slashEffect", transform->position);
+			EffectManager::GetInstance()->Active("slashEffect", transform->position, EffectScale::HALF);
+			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 		}
 	}
 

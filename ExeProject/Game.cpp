@@ -98,6 +98,12 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(slashEffectTexture, "slashEffectTexture");
 	}
 
+	{
+		GE::Texture* dotEffectTexture = new GE::Texture();
+		dotEffectTexture->Load("Effect/Dot_Effect.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(dotEffectTexture, "dotEffectTexture");
+	}
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

@@ -7,6 +7,7 @@
 #include "SpriteParticleManager.h"
 #include "EffectManager.h"
 #include "SlashEffect.h"
+#include "DotExplosionEffect.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -92,7 +93,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		for (int i = 0; i < 3; ++i)
 		{
 			auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
-			slashEffect->SetStartAndEndPosition(pPlayerPos, pShadowPlayerPosition);
+			auto* dotEffect = effectManager->Add<DotExplosionEffect>("dotEffect");
 		}
 	}
 

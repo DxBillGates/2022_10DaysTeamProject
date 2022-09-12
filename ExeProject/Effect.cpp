@@ -3,6 +3,7 @@
 Effect::Effect()
 	: isActive()
 	, originPosition()
+	, originScale(1)
 {
 }
 
@@ -37,13 +38,11 @@ void Effect::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
 }
 
-void Effect::Active(const GE::Math::Vector3& position)
+void Effect::Active(const GE::Math::Vector3& position, float scale)
 {
 	isActive.Initialize();
 	isActive.SetFlag(true);
-
-	const float EFFECT_TIME = 1;
-	isActive.SetMaxTimeProperty(EFFECT_TIME);
+	originScale = scale;
 
 	originPosition = position;
 }

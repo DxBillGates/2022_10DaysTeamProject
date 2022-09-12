@@ -1,13 +1,11 @@
 #pragma once
-#include "Effect.h"
-#include <GatesEngine/Header/Util/Math/Vector3.h>
 
-class SlashEffect : public Effect
+#include "Effect.h"
+
+class DotExplosionEffect : public Effect
 {
 private:
 	const float EFFECT_TIME = 0.5f;
-
-	float angle;
 
 	GE::Math::Vector3 size;
 public:

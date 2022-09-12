@@ -14,7 +14,7 @@ public:
 	void Initialize();
 	void Update(float deltaTime);
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);
-	void Active(const std::string& effectName, const GE::Math::Vector3& position);
+	void Active(const std::string& effectName, const GE::Math::Vector3& position,float scale = 1);
 
 	template<typename T>
 	T* Add(const std::string& effectName);
