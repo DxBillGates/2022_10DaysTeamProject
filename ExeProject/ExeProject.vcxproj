@@ -163,6 +163,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="SlashEffect.cpp" />
     <ClCompile Include="SpriteParticleComponent.cpp" />
     <ClCompile Include="BossEnemyComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -179,6 +182,9 @@
     <ClCompile Include="SpriteParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="SlashEffect.h" />
     <ClInclude Include="SpriteParticleComponent.h" />
     <ClInclude Include="BossEnemyComponent.h" />
     <ClInclude Include="CollisionManager.h" />

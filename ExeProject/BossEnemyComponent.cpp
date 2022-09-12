@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
+#include "EffectManager.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -98,6 +99,8 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	isGenerate = true;
 	isHitPlayer = true;
 	HitStopManager::GetInstance()->Active(0.5f);
+
+	EffectManager::GetInstance()->Active("slashEffect");
 }
 
 void BossEnemyComponent::Move()

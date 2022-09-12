@@ -92,6 +92,12 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(playerHPTexture, "texture_player_heart");
 	}
 
+	{
+		GE::Texture* slashEffectTexture = new GE::Texture();
+		slashEffectTexture->Load("Effect/slash_effect.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(slashEffectTexture, "slashEffectTexture");
+	}
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

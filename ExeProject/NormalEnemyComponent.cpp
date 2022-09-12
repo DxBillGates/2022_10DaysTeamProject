@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
+#include "EffectManager.h"
 
 const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
@@ -194,12 +195,14 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 {
 	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
 	{
-		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
-
-		if (enemyState == EnemyState::WALKING)
+		if (enemyState == EnemyState::WALKING
+			&& PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)
 		{
 			other->OnCollision(gameObject);
+			return;
 		}
+
+		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
 
 		if (enemyState == EnemyState::FLYING)
 		{
@@ -238,9 +241,8 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
-
-			other->OnCollision(gameObject);
 		}
+		EffectManager::GetInstance()->Active("slashEffect");
 	}
 
 }

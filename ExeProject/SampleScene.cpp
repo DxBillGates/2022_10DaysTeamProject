@@ -5,6 +5,8 @@
 #include "HitStopManager.h"
 #include "CollisionManager.h"
 #include "SpriteParticleManager.h"
+#include "EffectManager.h"
+#include "SlashEffect.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -25,6 +27,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 	auto* collisionManager = CollisionManager::GetInstance();
 	MoveEntity* pPlayerMoveEntity = nullptr;
 	GE::Math::Vector3* pPlayerPos = nullptr;
+	GE::Math::Vector3* pShadowPlayerPosition = nullptr;
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
@@ -60,6 +63,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 		playerAttackManager->SetShadowPlayer(testObject, sampleComponent->GetMoveEntity());
 		collisionManager->SetShadowPlayer(testObject, sampleCollider);
+
+		pShadowPlayerPosition = &testObject->GetTransform()->position;
 	}
 
 	{
@@ -78,6 +83,14 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 		testObject->SetTag("Boss");
 		collisionManager->AddEnemy(testObject, sampleCollider);
+	}
+
+	// effect 追加
+	{
+		auto* effectManager = EffectManager::GetInstance();
+
+		auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
+		slashEffect->SetStartAndEndPosition(pPlayerPos, pShadowPlayerPosition);
 	}
 
 	//パーティクルを最前面に
@@ -103,6 +116,8 @@ void SampleScene::Initialize()
 	HitStopManager::GetInstance()->Initialize();
 
 	SpriteParticleManager::AllInit();
+
+	EffectManager::GetInstance()->Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -111,6 +126,7 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	particleManager.Update(deltaTime);
 
+	EffectManager::GetInstance()->Update(deltaTime);
 	PlayerAttackManager::GetInstance()->Update(deltaTime);
 	HitStopManager::GetInstance()->Update(deltaTime);
 
@@ -134,4 +150,5 @@ void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
 	particleManager.LateDraw();
+	EffectManager::GetInstance()->Draw(graphicsDevice);
 }
