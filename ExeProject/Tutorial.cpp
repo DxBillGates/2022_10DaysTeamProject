@@ -1,5 +1,6 @@
 #include "Tutorial.h"
 #include "PlayerAttackManager.h"
+#include "ClearTimer.h"
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 
@@ -18,7 +19,7 @@ const float Tutorial::THIRD_SHADOW_POS_X = 1920 * 30.5f / 32;
 const float Tutorial::FOURTH_PLAYER_POS_X = 1920 * 2 / 32;
 const float Tutorial::FOURTH_SHADOW_POS_X = 1920 * 30 / 32;
 
-const float Tutorial::PRE_START_TIME = 2.0f;
+const float Tutorial::PRE_START_TIME = 1.0f;
 
 TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
 float Tutorial::tutorialTimer = 0;
@@ -58,6 +59,8 @@ void Tutorial::UpdateTimer(float deltaTime)
 	if (tutorialState == TutorialState::PRE_START &&
 		tutorialTimer >= PRE_START_TIME) {
 		tutorialState = TutorialState::GAME_START;
+		//クリアタイマー開始
+		ClearTimer::Start();
 	}
 }
 
@@ -125,6 +128,11 @@ void Tutorial::Draw()
 	}
 	else {
 		//ゲームスタート！みたいなのいれてもいいかも
+	}
+
+	//Tutorial文字
+	if (IsEndTutorial() == false) {
+		Draw(SCALE_TUTORIAL / 2, SCALE_TUTORIAL, "TTR_Tutorial");
 	}
 }
 

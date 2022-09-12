@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClearTimer.cpp" />
     <ClCompile Include="SpriteParticleComponent.cpp" />
     <ClCompile Include="BossEnemyComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClearTimer.h" />
     <ClInclude Include="SpriteParticleComponent.h" />
     <ClInclude Include="BossEnemyComponent.h" />
     <ClInclude Include="CollisionManager.h" />

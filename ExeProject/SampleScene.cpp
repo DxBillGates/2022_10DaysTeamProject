@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "SpriteParticleManager.h"
 #include "Tutorial.h"
+#include "ClearTimer.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -107,6 +108,8 @@ void SampleScene::Initialize()
 
 	Tutorial::SetGraphicsDevice(graphicsDevice);
 	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
+
+	ClearTimer::Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -127,6 +130,8 @@ void SampleScene::Update(float deltaTime)
 	CollisionManager::GetInstance()->Update(deltaTime);
 
 	Tutorial::UpdateTimer(deltaTime);
+
+	ClearTimer::Update(deltaTime);
 }
 
 void SampleScene::Draw()
@@ -134,6 +139,7 @@ void SampleScene::Draw()
 	gameObjectManager.Draw();
 
 	Tutorial::Draw();
+	ClearTimer::OnGui();
 
 	particleManager.Draw();
 }

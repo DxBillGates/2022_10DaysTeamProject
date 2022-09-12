@@ -13,7 +13,7 @@ class BossEnemyComponent : public GE::Component
 //定数
 private:
 	static const GE::Math::Vector3 SPRITE_SIZE;				//初期スケール
-	static const int MAX_GENERATE_COUNT = 12;				//最大敵生成回数 (最大ライフ)
+	static const int MAX_GENERATE_COUNT = 4;				//最大敵生成回数 (最大ライフ)
 	static const float MIN_SCALE;							//最小スケール
 	static const float MOVE_SPEED;							//動く速さ
 

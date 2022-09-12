@@ -8,6 +8,7 @@
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
 #include "Tutorial.h"
+#include "ClearTimer.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -163,6 +164,11 @@ void BossEnemyComponent::UpdateLife()
 		if (v->IsDead()) {
 			life--;
 		}
+	}
+
+	//ライフ0以下でリザルトへ
+	if (life <= 0) {
+		ClearTimer::Stop();
 	}
 }
 
