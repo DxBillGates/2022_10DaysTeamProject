@@ -1,6 +1,6 @@
 #include "Tutorial.h"
 #include "PlayerAttackManager.h"
-#include "ClearTimer.h"
+#include "GameUtility.h"
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 
@@ -44,7 +44,7 @@ void Tutorial::Initialize(bool isSkipTutorial)
 	if (isSkipTutorial) {
 		tutorialState = TutorialState::GAME_START;
 		//クリアタイマー開始
-		ClearTimer::Start();
+		GameUtility::TimerStart();
 		attackable[0] = true;
 		attackable[1] = true;
 	}
@@ -64,7 +64,7 @@ void Tutorial::UpdateTimer(float deltaTime)
 		tutorialTimer >= PRE_START_TIME) {
 		tutorialState = TutorialState::GAME_START;
 		//クリアタイマー開始
-		ClearTimer::Start();
+		GameUtility::TimerStart();
 	}
 }
 

@@ -8,7 +8,7 @@
 #include "PlayerAttackManager.h"
 #include "HitStopManager.h"
 #include "Tutorial.h"
-#include "ClearTimer.h"
+#include "GameUtility.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -137,7 +137,8 @@ void BossEnemyComponent::Initialize()
 void BossEnemyComponent::Move()
 {
 	//ライフが半分以下になったら動き出す
-	if (life <= maxGenerateCount / 2 && velocity == 0) {
+	const int START_MOVE_LIFE = Tutorial::IsSkipTutorial() ? maxGenerateCount / 2 : (maxGenerateCount - 2) / 2;
+	if (life <= START_MOVE_LIFE && velocity == 0) {
 		velocity = (float)(GE::RandomMaker::GetInt(0, 1) * 2 - 1);
 	}
 
@@ -186,7 +187,8 @@ void BossEnemyComponent::UpdateLife()
 
 	//ライフ0以下でリザルトへ
 	if (life <= 0) {
-		ClearTimer::Stop();
+		GameUtility::TimerStop();
+		GameUtility::SetGameState(GameState::RESULT);
 	}
 }
 

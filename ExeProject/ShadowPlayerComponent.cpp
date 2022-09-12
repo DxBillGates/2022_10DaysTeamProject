@@ -1,6 +1,7 @@
 #include "ShadowPlayerComponent.h"
 #include "GameSetting.h"
 #include "Tutorial.h"
+#include "GameUtility.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -114,7 +115,7 @@ bool ShadowPlayerComponent::ChackMovable()
 			transform->position.x > Tutorial::FOURTH_SHADOW_POS_X);
 	}
 	else {
-		return true;
+		return GameUtility::GetGameState() == GameState::GAME;
 	}
 }
 

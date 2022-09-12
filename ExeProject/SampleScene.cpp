@@ -6,7 +6,8 @@
 #include "CollisionManager.h"
 #include "SpriteParticleManager.h"
 #include "Tutorial.h"
-#include "ClearTimer.h"
+#include "GameUtility.h"
+#include "Result.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -96,6 +97,9 @@ SampleScene::~SampleScene()
 void SampleScene::Initialize()
 {
 	Tutorial::SetGraphicsDevice(graphicsDevice);
+	GameUtility::SetGraphicsDevice(graphicsDevice);
+	Result::SetGraphicsDevice(graphicsDevice);
+
 	Tutorial::Initialize(true);	//チュートリアルスキップさせるならtrueに
 
 	gameObjectManager.Awake();
@@ -109,7 +113,9 @@ void SampleScene::Initialize()
 
 	SpriteParticleManager::AllInit();
 
-	ClearTimer::Initialize();
+	GameUtility::Initialize();
+
+	Result::Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -130,16 +136,20 @@ void SampleScene::Update(float deltaTime)
 	CollisionManager::GetInstance()->Update(deltaTime);
 
 	Tutorial::UpdateTimer(deltaTime);
-
-	ClearTimer::Update(deltaTime);
+	GameUtility::UpdateTimer(deltaTime);
+	Result::UpdateTimer(deltaTime);
 }
 
 void SampleScene::Draw()
 {
+	GameUtility::DrawBackground();
+
+	if (GameUtility::GetGameState() == GameState::RESULT) Result::Draw();
+
 	gameObjectManager.Draw();
 
 	Tutorial::Draw();
-	ClearTimer::OnGui();
+	GameUtility::OnGui();
 
 	particleManager.Draw();
 }
