@@ -145,7 +145,13 @@ void SampleScene::Update(float deltaTime)
 	//	col2->Hit(col1, gameObjectManager.FindGameObject("test1"));
 	//}
 
-	CollisionManager::GetInstance()->Update(deltaTime);
+	auto collManager = CollisionManager::GetInstance();
+	collManager->Update(deltaTime);
+
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
+	{
+		gameObjectManager.DeleteGameObjectWithTag("Enemy");
+	}
 }
 
 void SampleScene::Draw()

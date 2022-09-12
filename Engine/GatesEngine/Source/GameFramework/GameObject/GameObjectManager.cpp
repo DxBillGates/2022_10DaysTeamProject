@@ -106,3 +106,37 @@ GE::GameObject* GE::GameObjectManager::FindGameObjectWithTag(const std::string& 
 	}
 	return returnObject;
 }
+
+void GE::GameObjectManager::DeleteGameObject(const std::string& name)
+{
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetName() == name)
+		{
+			delete gameObject;
+			gameObject = nullptr;
+			std::swap(gameObject, gameObjects.back());
+			gameObjects.pop_back();
+			return;
+		}
+	}
+}
+
+void GE::GameObjectManager::DeleteGameObjectWithTag(const std::string& tag)
+{
+	int l = gameObjects.size();
+	for (int i = 0; i < l; ++i)
+	{
+		if (gameObjects[i]->GetTag() == tag)
+		{
+			delete gameObjects[i];
+			gameObjects[i] = nullptr;
+			std::swap(gameObjects[i], gameObjects.back());
+			//gameObjects.erase(gameObjects.begin() + i);
+			gameObjects.pop_back();
+
+			l--;
+			i--;
+		}
+	}
+}
