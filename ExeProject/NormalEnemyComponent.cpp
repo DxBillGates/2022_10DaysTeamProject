@@ -9,6 +9,7 @@
 #include "Camera2D.h"
 #include "HitStopManager.h"
 #include "GameSetting.h"
+#include "GameUtility.h"
 
 const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
@@ -186,6 +187,9 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
+			//チェイン数加算
+			GameUtility::IncrementNowChain();
+
 			//移動位置セット
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;

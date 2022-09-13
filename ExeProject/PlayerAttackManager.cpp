@@ -2,6 +2,8 @@
 #include "GameSetting.h"
 #include "HitStopManager.h"
 #include "Tutorial.h"
+#include "GameUtility.h"
+#include "BossEnemyComponent.h"
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -100,6 +102,12 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 		GameSetting::GetInstance()->SetTime(SLOW_TIME, TRANSITION_TIME);
 
 		InitializeVibrationInfo();
+
+		//チェイン数リセット
+		GameUtility::ResetNowChain();
+
+		//1回の攻撃で生成された敵数リセット
+		BossEnemyComponent::ResetGenerateCountOneAttack();
 	}
 
 	// 各攻撃状態から次の遷移に移る処理

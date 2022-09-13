@@ -40,8 +40,8 @@ void PlayerComponent::Update(float deltaTime)
 	if (CheckMovable()) {
 
 		// 移動方向の変更テスト
-		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
-			|| inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
+			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
 		{
 			moveEntity.ChangeMoveDirection();
 		}

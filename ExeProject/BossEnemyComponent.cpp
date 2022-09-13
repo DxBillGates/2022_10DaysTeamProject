@@ -16,6 +16,8 @@ const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
 const float BossEnemyComponent::MOVE_SPEED = 0.5f;
 
+int BossEnemyComponent::generateCountOneAttack = 0;
+
 void BossEnemyComponent::Start()
 {
 	inputDevice = GE::InputDevice::GetInstance();
@@ -47,10 +49,12 @@ void BossEnemyComponent::Update(float deltaTime)
 	//移動処理
 	Move();
 
+#ifdef _DEBUG
 	//デバッグ用　ほんとは攻撃されたら呼び出す
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::F1)) {
 		isGenerate = true;
 	}
+#endif // DEBUG
 }
 
 void BossEnemyComponent::LateDraw()
@@ -90,6 +94,7 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	}
 
 	isGenerate = true;
+	generateNum = 1;
 	isHitPlayer = true;
 	HitStopManager::GetInstance()->Active(0.5f);
 
@@ -117,7 +122,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 3;
+	maxGenerateCount = 32;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {
@@ -128,7 +133,10 @@ void BossEnemyComponent::Initialize()
 	life = maxGenerateCount;
 
 	//敵生成カウントリセット
-	generateCount = 0;
+	alreadyGeneratedCount = 0;
+
+	//一度に生成する敵の数リセット
+	generateNum = 1;
 
 	//初期状態は動かない
 	velocity = 0;
@@ -175,7 +183,7 @@ void BossEnemyComponent::UpdateScale()
 {
 	//イージングかけてスケール倍率変化
 	float t = scaleDownTimer;
-	float beforeScale = scaleDownMag + (1.0 - MIN_SCALE) / maxGenerateCount;
+	float beforeScale = scaleDownMag + ((1.0 - MIN_SCALE) / maxGenerateCount) * GameUtility::GetNowChain();
 	float scaleMag = beforeScale + (scaleDownMag - beforeScale) * GE::Math::Easing::EaseOutQuart(t);
 
 	//自身のスケールを小さくする
@@ -184,6 +192,7 @@ void BossEnemyComponent::UpdateScale()
 
 void BossEnemyComponent::UpdateLife()
 {
+	static int prevLife = life;
 	//エネミーリスト走査して死んでいたら削除、ライフ減少
 	for (int i = 0; i < normalEnemies.size();) {
 		if (normalEnemies[i]->IsDead()) {
@@ -195,6 +204,21 @@ void BossEnemyComponent::UpdateLife()
 		}
 	}
 
+	//ライフ変動で敵生成
+	if (life != prevLife) {
+		isGenerate = true;
+
+		generateNum = (prevLife - life);
+		generateCountOneAttack += (prevLife - life);
+
+		//チェイン数によって生成数ボーナスを付ける
+		if (generateCountOneAttack >= 3) {
+			generateNum++;
+		}
+	}
+
+	prevLife = life;
+	
 	//ライフ0以下でリザルトへ
 	if (life <= 0) {
 		GameUtility::TimerStop();
@@ -208,62 +232,67 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	if (isGenerate == false) { return; }
 
 	//すでに最大生成回数以上であったらreturn
-	if (generateCount >= maxGenerateCount) { return; }
+	if (alreadyGeneratedCount >= maxGenerateCount) { return; }
 
-	//敵生成位置設定
-	GE::Math::Vector3 afterPos = {};
+	for (int i = 0; i < generateNum; i++) {
+		//敵生成位置設定
+		GE::Math::Vector3 afterPos = {};
 
-	//チュートリアル中は固定座標に出現させる
-	if ((int)Tutorial::GetTutorialState() == (int)TutorialState::FIRST_ATTACK + 1) {
-		afterPos = Tutorial::POS_GENERATE_ENEMY_1;
-	}
-	else if ((int)Tutorial::GetTutorialState() == (int)TutorialState::SECOND_ATTACK + 1) {
-		afterPos = Tutorial::POS_GENERATE_ENEMY_2;
-	}
-	else {
-		//ボスにだいたい重ならない範囲でランダムに移動座標決定
-		float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
-
-		float y = GE::RandomMaker::GetFloat(100, 300);
-		if (GE::RandomMaker::GetInt(0, 1) == 1) {
-			y *= -1;
+		//チュートリアル中は固定座標に出現させる
+		if ((int)Tutorial::GetTutorialState() == (int)TutorialState::FIRST_ATTACK + 1) {
+			afterPos = Tutorial::POS_GENERATE_ENEMY_1;
 		}
-		afterPos = { x, 1080 / 2 + y, 0 };
+		else if ((int)Tutorial::GetTutorialState() == (int)TutorialState::SECOND_ATTACK + 1) {
+			afterPos = Tutorial::POS_GENERATE_ENEMY_2;
+		}
+		else {
+			//ボスにだいたい重ならない範囲でランダムに移動座標決定
+			float x = GE::RandomMaker::GetFloat(1920 / 4, 1920 / 4 + 1920 / 2);
+
+			float y = GE::RandomMaker::GetFloat(100, 300);
+			if (GE::RandomMaker::GetInt(0, 1) == 1) {
+				y *= -1;
+			}
+			afterPos = { x, 1080 / 2 + y, 0 };
+		}
+
+
+		//NormalEnemy生成
+		auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
+		newEnemy->SetName("NormalEnemy_" + std::to_string(alreadyGeneratedCount));
+		newEnemy->GetTransform()->position = { 0,0,0 };
+		newEnemy->SetDrawAxisEnabled(true);
+		auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
+		auto* normalEnemyComponent = newEnemy->AddComponent<NormalEnemyComponent>();
+		normalEnemyComponent->SetPAudioManager(pAudioManager);
+		normalEnemyComponent->SetPBossPosition(&transform->position);
+		normalEnemyComponent->SetPPlayerMoveEntity(pPlayerMoveEntity);
+		normalEnemyComponent->SetPPlayerPos(pPlayerPos);
+		normalEnemyComponent->SetMovePos(transform->position, afterPos);
+		sampleCollider->SetCenter({ 0,0,0 });
+		sampleCollider->SetSize({ 1 });
+		sampleCollider->SetType(GE::ColliderType::OBB);
+
+		newEnemy->SetTag("Enemy");
+		CollisionManager::GetInstance()->AddEnemy(newEnemy, sampleCollider);
+
+		newEnemy->Awake();
+		newEnemy->Start();
+
+		normalEnemies.push_back(normalEnemyComponent);
+
+		//スケール値下げる
+		scaleDownMag -= (1.0 - MIN_SCALE) / maxGenerateCount;
+
+		//生成数増やす
+		alreadyGeneratedCount++;
+
+		//最大生成数に達したらbreak
+		if (alreadyGeneratedCount >= maxGenerateCount) { break; }
 	}
-	
-
-	//NormalEnemy生成
-	auto* newEnemy = pGameObjectManager->AddGameObject(new GE::GameObject());
-	newEnemy->SetName("NormalEnemy_" + std::to_string(normalEnemies.size()));
-	newEnemy->GetTransform()->position = { 0,0,0 };
-	newEnemy->SetDrawAxisEnabled(true);
-	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
-	auto* normalEnemyComponent = newEnemy->AddComponent<NormalEnemyComponent>();
-	normalEnemyComponent->SetPAudioManager(pAudioManager);
-	normalEnemyComponent->SetPBossPosition(&transform->position);
-	normalEnemyComponent->SetPPlayerMoveEntity(pPlayerMoveEntity);
-	normalEnemyComponent->SetPPlayerPos(pPlayerPos);
-	normalEnemyComponent->SetMovePos(transform->position, afterPos);
-	sampleCollider->SetCenter({ 0,0,0 });
-	sampleCollider->SetSize({ 1 });
-	sampleCollider->SetType(GE::ColliderType::OBB);
-
-	newEnemy->SetTag("Enemy");
-	CollisionManager::GetInstance()->AddEnemy(newEnemy, sampleCollider);
-
-	newEnemy->Awake();
-	newEnemy->Start();
-
-	normalEnemies.push_back(normalEnemyComponent);
-
-	//スケール値下げる
-	scaleDownMag -= (1.0 - MIN_SCALE) / maxGenerateCount;
 
 	//タイマーリセット
 	scaleDownTimer = 0;
-
-	//生成数増やす
-	generateCount++;
 
 	//敵生成タイミングで効果音再生する
 	pAudioManager->Use("Explosion")->Start();
