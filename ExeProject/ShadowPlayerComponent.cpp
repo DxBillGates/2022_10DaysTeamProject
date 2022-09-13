@@ -92,7 +92,7 @@ void ShadowPlayerComponent::LateDraw()
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
-	material.color = GE::Color(0.5f, 0.5f, 0.5f, 1);
+	material.color = GE::Color(1);
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());

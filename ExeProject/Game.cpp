@@ -33,8 +33,12 @@ bool Game::LoadContents()
 
 	//ƒŠƒ\[ƒX’Ç‰Á‚Í‚±‚±‚©‚ç«
 	GE::Texture* playerTexture = new GE::Texture();
-	playerTexture->Load("player.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	playerTexture->Load("Player_stop.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(playerTexture, "texture_player");
+
+	GE::Texture* playerTextureWalk = new GE::Texture();
+	playerTextureWalk->Load("Player_walk.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(playerTextureWalk, "texture_player_walk");
 
 	GE::Texture* shadowPlayerTexture = new GE::Texture();
 	shadowPlayerTexture->Load("Player_Shadow.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());

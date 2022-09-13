@@ -6,6 +6,20 @@
 class PlayerComponent : public GE::Component
 {
 private:
+	// テクスチャアニメーション時に何番までアニメーションさせるか
+	static const int MAX_ANIMATION_NUMBER_WALK;
+	static const int MAX_ANIMATION_NUMBER_STOP;
+	// 何秒でアニメーションを切り替えるか
+	static const float CHANGE_ANIMATION_TIME_WALK;
+	static const float CHANGE_ANIMATION_TIME_STOP;
+
+	static const GE::Math::Vector2 TEXTURE_SIZE_WALK;
+	static const GE::Math::Vector2 TEXTURE_SIZE_STOP;
+	static const GE::Math::Vector2 CLIP_SIZE;
+
+	float drawAnimationTimer;
+	int drawAnimationNumber;
+
 	GE::InputDevice* inputDevice;
 	MoveEntity moveEntity;
 
@@ -19,6 +33,8 @@ private:
 	GE::Math::Vector3 knockbackVelocity;
 
 	int hp;
+
+	bool isMove;
 public:
 	PlayerComponent();
 

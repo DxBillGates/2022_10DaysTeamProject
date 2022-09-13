@@ -10,6 +10,15 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
+const int PlayerComponent::MAX_ANIMATION_NUMBER_WALK = 8;
+const int PlayerComponent::MAX_ANIMATION_NUMBER_STOP = 4;
+const float PlayerComponent::CHANGE_ANIMATION_TIME_WALK = 0.25f / 2;
+const float PlayerComponent::CHANGE_ANIMATION_TIME_STOP = 0.25f;
+
+const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_WALK = { 768,96 };
+const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_STOP = { 384,96 };
+const GE::Math::Vector2 PlayerComponent::CLIP_SIZE = { 96 };
+
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 	, moveEntity(MoveEntity())
@@ -47,14 +56,40 @@ void PlayerComponent::Update(float deltaTime)
 		}
 
 		const float MOVE_SPEED = 5;
+
+		bool isBeforeIsMove = isMove;
+		isMove = false;
 		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
 		{
+			isMove = true;
 			transform->position.x -= MOVE_SPEED * GAME_TIME;
 		}
 		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
 		{
+			isMove = true;
 			transform->position.x += MOVE_SPEED * GAME_TIME;
 		}
+
+		// アニメーションリセット
+		if (isMove != isBeforeIsMove)
+		{
+			drawAnimationNumber = 0;
+		}
+
+		const float MAX_ANIMATION_TIME = isMove ? CHANGE_ANIMATION_TIME_WALK : CHANGE_ANIMATION_TIME_STOP;
+		if (drawAnimationTimer >= MAX_ANIMATION_TIME)
+		{
+			drawAnimationTimer = 0;
+			++drawAnimationNumber;
+
+			const int MAX_ANIMATION_NUMBER = isMove ? MAX_ANIMATION_NUMBER_WALK : MAX_ANIMATION_NUMBER_STOP;
+			if (drawAnimationNumber > MAX_ANIMATION_NUMBER)
+			{
+				drawAnimationNumber = 0;
+			}
+		}
+
+		drawAnimationTimer += deltaTime;
 	}
 
 	transform->position += knockbackVelocity * GAME_TIME;
@@ -82,7 +117,7 @@ void PlayerComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
@@ -101,12 +136,16 @@ void PlayerComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_player")->GetSRVNumber() });
 
-	//GE::TextureAnimationInfo animationInfo;
-	//animationInfo.clipSize = 64;
-	//animationInfo.pivot = { 1,1 };
-	//renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
+
+	int resourceNumber = isMove ? graphicsDevice->GetTextureManager()->Get("texture_player_walk")->GetSRVNumber() : graphicsDevice->GetTextureManager()->Get("texture_player")->GetSRVNumber();
+	renderQueue->AddSetShaderResource({ 4,resourceNumber });
+
+	GE::TextureAnimationInfo animationInfo;
+	animationInfo.clipSize = CLIP_SIZE;
+	animationInfo.pivot = { (float)drawAnimationNumber,0 };
+	animationInfo.textureSize = isMove ? TEXTURE_SIZE_WALK : TEXTURE_SIZE_STOP;
+	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 	graphicsDevice->DrawMesh("2DPlane");
 
