@@ -20,6 +20,10 @@ private:
 	float moveTimer = 0;						//移動用タイマー
 	float animeTimer = 0;						//アニメ切り替え用タイマー
 
+	bool isStartDelay;
+	float startDelay;
+	float delayTimer;
+
 public:
 	void Start() override;
 	void Update(float deltaTime) override;
@@ -33,7 +37,7 @@ public:
 	/// <summary>
 	/// 再生開始
 	/// </summary>
-	void StartAnime();
+	void StartAnime(bool isDelay = false,float delayTime = 0);
 
 	/// <summary>
 	/// タイマー更新
@@ -45,6 +49,8 @@ public:
 	/// 位置更新
 	/// </summary>
 	void UpdatePos();
+
+	void UpdateDelayTimer(float deltaTime);
 
 	/// <summary>
 	/// アニメーションに使用するテクスチャの名前指定

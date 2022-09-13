@@ -12,6 +12,7 @@
 #include "Tutorial.h"
 #include "GameUtility.h"
 #include "Result.h"
+#include "SpriteParticleManager.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -214,6 +215,8 @@ void BossEnemyComponent::UpdateScale()
 void BossEnemyComponent::UpdateLife()
 {
 	static int prevLife = life;
+
+	GE::Math::Vector3 effectPosition;
 	//エネミーリスト走査して死んでいたら削除、ライフ減少
 	for (int i = 0; i < normalEnemies.size();) {
 		if (normalEnemies[i]->IsDead()) {
@@ -228,6 +231,21 @@ void BossEnemyComponent::UpdateLife()
 	//ライフ変動で敵生成
 	if (life != prevLife) {
 		isGenerate = true;
+
+		effectPosition = { GE::RandomMaker::GetFloat(-128,128),GE::RandomMaker::GetFloat(-128,128),0 };
+		effectPosition += transform->position;
+
+		//パーティクル生成
+		for (int i = 0; i < 5; i++) {
+			auto* pParticle = SpriteParticleManager::AddParticle();
+			pParticle->SetTextureName("ex");
+			pParticle->SetTextureNum(12);
+			pParticle->SetScale(64);
+			GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50,50) * 3, GE::RandomMaker::GetFloat(-50,50)* 3, 0 };
+			pParticle->SetInitPosition(transform->position + random);
+			pParticle->StartAnime(true,GE::RandomMaker::GetFloat(0.2f,0.8f));
+		}
+		EffectManager::GetInstance()->Active("bossCrushingEffect", effectPosition);
 
 		generateNum = (prevLife - life);
 		generateCountOneAttack += (prevLife - life);

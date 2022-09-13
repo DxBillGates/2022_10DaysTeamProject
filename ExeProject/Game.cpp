@@ -112,6 +112,12 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(dotEffectTexture, "dotEffectTexture");
 	}
 
+	{
+		GE::Texture* explosionEffect = new GE::Texture();
+		explosionEffect->Load("Effect/howa2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(explosionEffect, "explosionEffectTexture");
+	}
+
 	//チュートリアル (TTRはtutorialの略)
 	//「Tutorial」文字
 	{
