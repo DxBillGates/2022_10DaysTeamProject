@@ -17,6 +17,14 @@ const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
 const float BossEnemyComponent::MOVE_SPEED = 0.5f;
 
+const int BossEnemyComponent::MAX_ANIMATION_NUMBER = 3;
+const int BossEnemyComponent::DAMAGE_ANIMATION_NUMBER = 3;
+
+const float BossEnemyComponent::CHANGE_ANIMATION_TIME = 0.25f;
+
+const GE::Math::Vector2 BossEnemyComponent::TEXTURE_SIZE = {2048,384};
+const GE::Math::Vector2 BossEnemyComponent::CLIP_SIZE = {512,384};
+
 int BossEnemyComponent::generateCountOneAttack = 0;
 
 void BossEnemyComponent::Start()
@@ -27,6 +35,9 @@ void BossEnemyComponent::Start()
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
 
 	Initialize();
+
+	damageFlag.Initialize();
+	damageFlag.SetMaxTimeProperty(1);
 }
 
 void BossEnemyComponent::Update(float deltaTime)
@@ -56,6 +67,9 @@ void BossEnemyComponent::Update(float deltaTime)
 		isGenerate = true;
 	}
 #endif // DEBUG
+
+	UpdateAnimation(deltaTime);
+	UpdateDamageFlag(deltaTime);
 }
 
 void BossEnemyComponent::LateDraw()
@@ -66,7 +80,7 @@ void BossEnemyComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
@@ -78,6 +92,12 @@ void BossEnemyComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("boss_enemy")->GetSRVNumber() });
+
+	GE::TextureAnimationInfo animationInfo;
+	animationInfo.clipSize = CLIP_SIZE;
+	animationInfo.pivot = { (float)drawAnimationNumber,0 };
+	animationInfo.textureSize = TEXTURE_SIZE;
+	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 	graphicsDevice->DrawMesh("2DPlane");
 }
@@ -229,6 +249,36 @@ void BossEnemyComponent::UpdateLife()
 	}
 }
 
+void BossEnemyComponent::UpdateDamageFlag(float deltaTime)
+{
+	if (damageFlag.GetOverTimeTrigger())
+	{
+		damageFlag.SetFlag(false);
+		damageFlag.SetTime(0);
+	}
+	if (damageFlag.GetFlag() == true)
+	{
+		drawAnimationNumber = DAMAGE_ANIMATION_NUMBER;
+	}
+
+	damageFlag.Update(deltaTime);
+}
+void BossEnemyComponent::UpdateAnimation(float deltaTime)
+
+{
+	// アニメーション用のタイマー更新
+	if (drawAnimationTimer >= CHANGE_ANIMATION_TIME)
+	{
+		drawAnimationTimer = 0;
+		drawAnimationNumber++;
+		if (drawAnimationNumber >= DAMAGE_ANIMATION_NUMBER)
+		{
+			drawAnimationNumber = 0;
+		}
+	}
+	drawAnimationTimer += deltaTime;
+}
+
 void BossEnemyComponent::GenerateNormalEnemy()
 {
 	//前フレームで生成フラグ立ってなかったらreturn
@@ -301,4 +351,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	pAudioManager->Use("Explosion")->Start();
 
 	isGenerate = false;
+
+	damageFlag.SetFlag(true);
+	damageFlag.SetTime(0);
 }
