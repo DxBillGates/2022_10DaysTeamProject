@@ -131,7 +131,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 	if (other->GetTag() == "Player" || other->GetTag() == "ShadowPlayer")
 	{
 		if (enemyState == EnemyState::WALKING
-			&& PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)
+			&& PlayerAttackManager::GetInstance()->GetAttackState() == PlayerAttackState::NONE)
 		{
 			other->OnCollision(gameObject);
 			return;
