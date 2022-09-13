@@ -86,6 +86,23 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(enemyAnimationTexture, "WalkingEnemyAnimationTexture");
 	}
 
+	//効果音「Hit01」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit01.wav"), "Hit01Data");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Hit01"));
+	}
+
+	//効果音「Hit02」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit02.wav"), "Hit02Data");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Hit02"));
+	}
+
+	//効果音「Explosion」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Explosion07.wav"), "ExplosionData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Explosion"));
+	}
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

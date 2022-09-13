@@ -99,6 +99,8 @@ void SampleScene::Initialize()
 	particleManager.Awake();
 	particleManager.Start();
 
+	bossEnemyComponent->SetPAudioManager(audioManager);
+
 	PlayerAttackManager::GetInstance()->Initialize();
 	HitStopManager::GetInstance()->Initialize();
 

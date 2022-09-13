@@ -51,7 +51,7 @@ void NormalEnemyComponent::Update(float deltaTime)
 	else if (enemyState == EnemyState::WALKING) {
 		UpdateWalking();
 	}
-	else {
+	else if (enemyState == EnemyState::DEADING) {
 		UpdateDeading();
 	}
 }
@@ -197,7 +197,6 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 		if (PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::ACTIVE)return;
 		if (enemyState == EnemyState::FLYING)
 		{
-			//デバッグ用　状態遷移
 			//上に落ちる
 			if (transform->position.y < 1080 / 2) {
 				SetMovePos(transform->position, { transform->position.x, transform->scale.y / 2, 0 });
@@ -225,13 +224,19 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				//pParticle->SetInitPosition({ 400.0f, 200.0f, 0 });
 				pParticle->StartAnime();
 			}
+
+			//効果音再生
+			pAudioManager->Use("Explosion")->Start();
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
-			//デバッグ用　状態遷移
+			//移動位置セット
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
+
+			//効果音再生
+			pAudioManager->Use("Hit02")->Start();
 		}
 	}
 
@@ -435,6 +440,9 @@ void NormalEnemyComponent::UpdateDeading()
 	//移動終わったら死ぬ
 	if (moveTimer >= 1.0f) {
 		enemyState = EnemyState::DEAD;
+
+		//効果音再生
+		pAudioManager->Use("Explosion")->Start();
 	}
 }
 

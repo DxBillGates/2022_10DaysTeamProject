@@ -21,7 +21,7 @@ namespace GE
 		{
 		}
 
-		SceneInitializer(AudioManager* audioManager, InputDevice* inputDevice,IGraphicsDeviceDx12* grpahicsDevice)
+		SceneInitializer(AudioManager* audioManager, InputDevice* inputDevice,IGraphicsDeviceDx12* graphicsDevice)
 			: audioManager(audioManager)
 			, inputDevice(inputDevice)
 			, graphicsDevice(graphicsDevice)
