@@ -247,6 +247,8 @@ bool Game::Initialize()
 		gaussValue *= 2.0f;
 	}
 
+	timer.SetFrameRate(60);
+
 	return true;
 }
 
@@ -256,9 +258,9 @@ bool Game::Update()
 	GameSetting::GetInstance()->ChangingGameTime(timer.GetElapsedTime());
 	Application::Update();
 
-	//ImGui::Begin("Test");
-	//ImGui::Text("%f", 1.0f / timer.GetElapsedTime());
-	//ImGui::End();
+	ImGui::Begin("Framerate");
+	ImGui::Text("%f", 1.0f / timer.GetElapsedTime());
+	ImGui::End();
 
 	return true;
 }

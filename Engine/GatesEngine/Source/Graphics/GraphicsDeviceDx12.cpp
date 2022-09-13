@@ -66,6 +66,8 @@ void GE::GraphicsDeviceDx12::CreateSwapChain(HWND hwnd)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	result = dxgiFactory->CreateSwapChainForHwnd(cmdQueue, hwnd, &swapChainDesc, nullptr, nullptr, (IDXGISwapChain1**)&swapChain);
+
+	swapChain->SetFullscreenState(true, nullptr);
 }
 
 void GE::GraphicsDeviceDx12::CreateRTV()
