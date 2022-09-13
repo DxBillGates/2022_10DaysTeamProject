@@ -1,11 +1,13 @@
 #pragma once
 #include <GatesEngine/Header/Graphics/IGraphicsDeviceDx12.h>
+#include <array>
 
 class Result
 {
 private:
 	static float timer;
 	static bool isStartTimer;
+	static std::array<float, 5> ranking;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
@@ -18,6 +20,8 @@ public:
 	static void UpdateTimer(float deltaTime);
 
 	static void Draw();
+
+	static void SendScore(float time);
 
 	static void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice) { Result::graphicsDevice = gDevice; }
 };

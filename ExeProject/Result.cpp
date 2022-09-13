@@ -1,9 +1,23 @@
 #include "Result.h"
 #include "GameUtility.h"
 #include <GatesEngine/Header/GUI/GUIManager.h>
+#include <cpprest/filestream.h>
+#include <cpprest/http_client.h>
+#include <cpprest/json.h>
+#include <fstream>
+
+using namespace utility;
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace concurrency::streams;
+
+const std::wstring BASE_URL = L"https://tendaysjamapi.herokuapp.com/";
 
 float Result::timer = 0;
 bool Result::isStartTimer = false;
+
+std::array<float, 5> Result::ranking;
 
 GE::IGraphicsDeviceDx12* Result::graphicsDevice = nullptr;
 
@@ -44,6 +58,43 @@ void Result::Draw()
 	if (timer >= 1.0f) {
 		std::string num = std::to_string(GameUtility::GetClearTime());
 		DrawNum(num.substr(0, num.find(".") + 5), POS_NUMBER_LEFT, SCALE_NUMBER, 0);
+	}
+}
+
+void Result::SendScore(float time)
+{
+	//ランキングDBにデータ登録
+	try {
+		auto serverStatusCode = pplx::create_task([=]
+			{
+				//クライアントの設定
+				http_client client(BASE_URL + L"/score");
+
+				//送信データの作成
+				json::value postData;
+				postData[L"score"] = json::value::number(time);
+
+				//トークン設定用
+				http_request request;
+				request.set_method(methods::POST);
+				request.set_body(postData.serialize(), L"application/json");
+
+				//リクエスト送信
+				return client.request(request);
+			})
+			.then([](http_response response) {
+				//ステータスコード判定
+				if (response.status_code() == status_codes::OK) {
+					//jsonを返す
+					return response.extract_json();
+				}
+				})
+				.then([](json::value json) {
+					return json[L"serverStatus"].as_integer();
+					}).wait();
+	}
+	catch (...) {
+		return;
 	}
 }
 
