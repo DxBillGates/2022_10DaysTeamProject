@@ -213,7 +213,7 @@ void BossEnemyComponent::UpdateLife()
 
 		//チェイン数によって生成数ボーナスを付ける
 		if (generateCountOneAttack >= 3) {
-			generateNum++;
+			generateNum += (prevLife - life);
 		}
 	}
 
