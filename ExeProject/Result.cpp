@@ -23,12 +23,16 @@ GE::IGraphicsDeviceDx12* Result::graphicsDevice = nullptr;
 
 const GE::Math::Vector3 SCALE_CLEAR_TIME = { 512, 96, 0 };
 const GE::Math::Vector3 SCALE_NUMBER = { 32, 64, 0 };
+const GE::Math::Vector3 SCALE_WORLD_RANKING = { 512, 96, 0 };
+const GE::Math::Vector3 SCALE_RANKING_NUM = { 16, 32, 0 };
 
 const GE::Math::Vector3 POS_BASE_MONITOR_LEFT = { 12, 348, 0 };
 const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
 
 const GE::Math::Vector3 POS_CLEAR_TIME = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(16, 0, 0) + SCALE_CLEAR_TIME / 2;
 const GE::Math::Vector3 POS_NUMBER_LEFT = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486 / 2 - 32 * 7 / 2, 150, 0) + SCALE_NUMBER / 2;
+const GE::Math::Vector3 POS_WORLD_RANKING = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(50, 8, 0) + SCALE_WORLD_RANKING / 2;
+const GE::Math::Vector3 POS_RANKING_NUM_1ST = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(5, 40, 0) + SCALE_RANKING_NUM / 2;
 
 
 void Result::Initialize()
@@ -58,6 +62,14 @@ void Result::Draw()
 	if (timer >= 1.0f) {
 		std::string num = std::to_string(GameUtility::GetClearTime());
 		DrawNum(num.substr(0, num.find(".") + 5), POS_NUMBER_LEFT, SCALE_NUMBER, 0);
+	}
+
+	if (timer >= 1.5f) {
+		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING, "WorldRanking");
+
+		for (int i = 0; i < ranking.size(); i++) {
+			DrawNum(std::to_string(i + 1) + ": " + std::to_string(ranking[i]), POS_NUMBER_LEFT + GE::Math::Vector3(0, 32, 0), SCALE_NUMBER / 2, 0);
+		}
 	}
 }
 
@@ -98,6 +110,45 @@ void Result::SendScore(float time)
 	}
 }
 
+void Result::GetRanking()
+{
+	//ランキングデータベースからデータ取得
+	//降順に5つデータを返すようになっている
+	auto json = pplx::create_task([=]
+		{
+			//クライアントの設定
+			http_client client(BASE_URL + L"/score");
+
+			//リクエスト設定
+			http_request request;
+			request.set_method(methods::GET);
+
+			//リクエスト送信
+			return client.request(request);
+		})
+		.then([](http_response response) {
+			//ステータスコード判定
+			if (response.status_code() == status_codes::OK) {
+				//jsonを返す
+				return response.extract_json();
+			}
+			}).get();
+
+			auto& array = json.as_array();
+
+			//arrayに要素格納し返す
+			std::array<float, 5> result = {};
+			for (int i = 0; i < result.size(); i++) {
+				if (i >= array.size()) {
+					result[i] = 0;
+				}
+
+				result[i] = array[i].at(U("score")).as_double();
+			}
+
+			ranking = result;
+}
+
 void Result::Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, const std::string& name)
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -128,6 +179,12 @@ void Result::DrawNum(const std::string& num, const GE::Math::Vector3& pos, const
 	for (int i = 0; i < num.size(); i++) {
 		if (num[i] != '.') {
 			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Number_" + num.substr(i, 1));
+		}
+		else if (num[i] != ' ') {
+			continue;
+		}
+		else if (num[i] != ':') {
+			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Colon");
 		}
 		else {
 			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Dot");

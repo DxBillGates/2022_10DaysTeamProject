@@ -23,6 +23,7 @@ public:
 
 	static void SendScore(float time);
 
+	static void GetRanking();
+
 	static void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice) { Result::graphicsDevice = gDevice; }
 };
-
