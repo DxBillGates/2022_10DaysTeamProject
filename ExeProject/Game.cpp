@@ -147,6 +147,11 @@ bool Game::Update()
 	GE::GUIManager::StartFrame();
 	GameSetting::GetInstance()->ChangingGameTime(timer.GetElapsedTime());
 	Application::Update();
+
+	//ImGui::Begin("Test");
+	//ImGui::Text("%f", 1.0f / timer.GetElapsedTime());
+	//ImGui::End();
+
 	return true;
 }
 
