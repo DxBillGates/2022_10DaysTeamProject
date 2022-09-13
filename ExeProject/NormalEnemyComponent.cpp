@@ -226,7 +226,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 
 			//Œø‰Ê‰¹Ä¶
-			pAudioManager->Use("Explosion")->Start();
+			pAudioManager->Use("Hit")->Start();
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
@@ -236,7 +236,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			enemyState = EnemyState::DEADING;
 
 			//Œø‰Ê‰¹Ä¶
-			pAudioManager->Use("Hit02")->Start();
+			pAudioManager->Use("Hit")->Start();
 		}
 	}
 

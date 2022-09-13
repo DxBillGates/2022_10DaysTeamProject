@@ -198,7 +198,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	scaleDownTimer = 0;
 
 	//敵生成タイミングで効果音再生する
-	pAudioManager->Use("Hit01")->Start();
+	pAudioManager->Use("Explosion")->Start();
 
 	isGenerate = false;
 }
