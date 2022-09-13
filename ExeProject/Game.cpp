@@ -36,6 +36,10 @@ bool Game::LoadContents()
 	playerTexture->Load("player.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(playerTexture, "texture_player");
 
+	GE::Texture* shadowPlayerTexture = new GE::Texture();
+	shadowPlayerTexture->Load("Player_Shadow.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(shadowPlayerTexture, "Player_Shadow");
+
 	//テストテクスチャ
 	GE::Texture* bossEnemyTexture = new GE::Texture();
 	bossEnemyTexture->Load("boss_enemy.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());

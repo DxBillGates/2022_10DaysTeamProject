@@ -16,7 +16,7 @@ float4 main(DefaultSpriteVSOutput input) : SV_TARGET
 	float4 resultColor = float4(0,0,0,1);
 
 	resultColor.rgb += defaultLayerTexture.Sample(clampLinearSampler, input.uv);
-	resultColor.rgb += effectLayerTexture.Sample(clampLinearSampler, input.uv)/2;
+	resultColor.rgb += effectLayerTexture.Sample(clampLinearSampler, input.uv)/ 2;
 	resultColor.rgb += blurLayerTexture1.Sample(clampLinearSampler, input.uv) / 2;
 	resultColor.rgb += blurLayerTexture2.Sample(clampLinearSampler, input.uv) / 2;
 	resultColor.rgb += blurLayerTexture3.Sample(clampLinearSampler, input.uv) / 2;

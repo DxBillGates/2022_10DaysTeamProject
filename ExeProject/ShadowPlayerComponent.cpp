@@ -11,7 +11,8 @@
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
 const int ShadowPlayerComponent::MAX_ANIMATION_NUMBER = 4;
-const float ShadowPlayerComponent::ADD_DRAW_ANIMATION_NUMBER_TIME = 0.25f;
+const float ShadowPlayerComponent::CHANGE_ANIMATION_TIME_WALK = 0.25f / 2;
+const float ShadowPlayerComponent::CHANGE_ANIMATION_TIME_STOP = 0.25f;
 const GE::Math::Vector2 ShadowPlayerComponent::TEXTURE_SIZE = { 384,96 };
 const GE::Math::Vector2 ShadowPlayerComponent::CLIP_SIZE = { 96 };
 
@@ -39,6 +40,7 @@ void ShadowPlayerComponent::Update(float deltaTime)
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 	const float MOVE_SPEED = 7;
 
+	bool isMove = false;
 	if (autoMove == true && ChackMovable() == true)
 	{
 		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
@@ -49,9 +51,12 @@ void ShadowPlayerComponent::Update(float deltaTime)
 		{
 			transform->position.x -= MOVE_SPEED * GAME_TIME;
 		}
+
+		isMove = true;
 	}
 
-	if (drawAnimationTimer >= ADD_DRAW_ANIMATION_NUMBER_TIME)
+	const float MAX_ANIMATION_TIME = isMove ? CHANGE_ANIMATION_TIME_WALK : CHANGE_ANIMATION_TIME_STOP;
+	if (drawAnimationTimer >= MAX_ANIMATION_TIME)
 	{
 		drawAnimationTimer = 0;
 		++drawAnimationNumber;
@@ -95,7 +100,7 @@ void ShadowPlayerComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_player")->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("Player_Shadow")->GetSRVNumber() });
 
 	GE::TextureAnimationInfo animationInfo;
 	animationInfo.clipSize = CLIP_SIZE;

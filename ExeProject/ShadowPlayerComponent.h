@@ -12,7 +12,8 @@ private:
 	// テクスチャアニメーション時に何番までアニメーションさせるか
 	static const int MAX_ANIMATION_NUMBER;
 	// 何秒でアニメーションを切り替えるか
-	static const float ADD_DRAW_ANIMATION_NUMBER_TIME;
+	static const float CHANGE_ANIMATION_TIME_WALK;
+	static const float CHANGE_ANIMATION_TIME_STOP;
 
 	static const GE::Math::Vector2 TEXTURE_SIZE;
 	static const GE::Math::Vector2 CLIP_SIZE;
