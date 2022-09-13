@@ -1,6 +1,7 @@
 #pragma once
 #include "MoveEntity.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 
 enum class PlayerAttackState
 {
@@ -19,6 +20,8 @@ struct PlayerInfo
 class PlayerAttackManager
 {
 private:
+	GE::AudioManager* pAudioManager = nullptr;				//オーディオ再生用
+
 	PlayerInfo player;
 	PlayerInfo shadowPlayer;
 
@@ -49,6 +52,8 @@ public:
 	PlayerAttackState GetAttackState();
 	void SetPlayer(GE::GameObject* pPlayer,MoveEntity* moveEntity);
 	void SetShadowPlayer(GE::GameObject* pPlayer, MoveEntity* moveEntity);
+
+	void SetPAudioManager(GE::AudioManager* pAudioManager) { this->pAudioManager = pAudioManager; }
 private:
 	PlayerAttackManager();
 	PlayerAttackManager(const PlayerAttackManager&) = delete;

@@ -108,6 +108,8 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 		{
 		case PlayerAttackState::PRE:
 			TransitionAttackState(ACTIVE_TIME, PlayerAttackState::ACTIVE);
+			//Œø‰Ê‰¹Ä¶
+			pAudioManager->Use("Dash")->Start();
 			break;
 		case PlayerAttackState::ACTIVE:
 			TransitionAttackState(END_TIME, PlayerAttackState::END);

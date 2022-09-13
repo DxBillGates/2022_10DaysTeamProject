@@ -98,6 +98,13 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Explosion"));
 	}
 
+	//å¯â âπÅuDashÅv
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Dash.wav"), "DashData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Dash"));
+	}
+
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
 

@@ -99,12 +99,13 @@ void SampleScene::Initialize()
 	particleManager.Awake();
 	particleManager.Start();
 
-	bossEnemyComponent->SetPAudioManager(audioManager);
-
 	PlayerAttackManager::GetInstance()->Initialize();
 	HitStopManager::GetInstance()->Initialize();
 
 	SpriteParticleManager::AllInit();
+
+	bossEnemyComponent->SetPAudioManager(audioManager);
+	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
 }
 
 void SampleScene::Update(float deltaTime)
