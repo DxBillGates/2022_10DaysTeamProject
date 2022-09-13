@@ -415,7 +415,10 @@ void NormalEnemyComponent::UpdateDeading()
 		enemyState = EnemyState::DEAD;
 
 		//Œø‰Ê‰¹Ä¶
-		pAudioManager->Use("Explosion")->Start();
+		if (GameUtility::IsPlaySE() == false) {
+			pAudioManager->Use("Explosion")->Start();
+			GameUtility::SetIsPlaySE(true);
+		}
 	}
 }
 

@@ -13,6 +13,7 @@ private:
 	static bool isStartTimer;
 	static int nowChain;
 	static GameState gameState;
+	static bool isPlaySE;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
@@ -34,11 +35,17 @@ public:
 
 	static void ResetNowChain() { nowChain = 0; }
 
+
 	static float GetClearTime() { return timer; }
+
 	static const GameState& GetGameState() { return gameState; }
+
+	static bool IsPlaySE() { return isPlaySE; }
 
 	static void SetGameState(const GameState& state) { gameState = state; }
 
 	static void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice) { GameUtility::graphicsDevice = gDevice; }
+
+	static void SetIsPlaySE(bool isPlaySE) { GameUtility::isPlaySE = isPlaySE; }
 };
 

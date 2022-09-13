@@ -12,12 +12,12 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
 
-const std::wstring BASE_URL = L"https://tendaysjamapi.herokuapp.com/";
+const std::wstring BASE_URL = L"https://tendaysjamapi.herokuapp.com";
 
 float Result::timer = 0;
 bool Result::isStartTimer = false;
 
-std::array<float, 5> Result::ranking;
+std::array<float, 8> Result::ranking;
 
 GE::IGraphicsDeviceDx12* Result::graphicsDevice = nullptr;
 
@@ -32,7 +32,7 @@ const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
 const GE::Math::Vector3 POS_CLEAR_TIME = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(16, 0, 0) + SCALE_CLEAR_TIME / 2;
 const GE::Math::Vector3 POS_NUMBER_LEFT = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486 / 2 - 32 * 7 / 2, 150, 0) + SCALE_NUMBER / 2;
 const GE::Math::Vector3 POS_WORLD_RANKING = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(50, 8, 0) + SCALE_WORLD_RANKING / 2;
-const GE::Math::Vector3 POS_RANKING_NUM_1ST = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(5, 40, 0) + SCALE_RANKING_NUM / 2;
+const GE::Math::Vector3 POS_RANKING_NUM_1ST = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(150, 80, 0) + SCALE_RANKING_NUM / 2;
 
 
 void Result::Initialize()
@@ -68,7 +68,8 @@ void Result::Draw()
 		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING, "WorldRanking");
 
 		for (int i = 0; i < ranking.size(); i++) {
-			DrawNum(std::to_string(i + 1) + ": " + std::to_string(ranking[i]), POS_NUMBER_LEFT + GE::Math::Vector3(0, 32, 0), SCALE_NUMBER / 2, 0);
+			std::string num = std::to_string(ranking[i]);
+			DrawNum(std::to_string(i + 1) + ": " + num.substr(0, num.find(".") + 5), POS_RANKING_NUM_1ST + GE::Math::Vector3(0, 32 * i, 0), SCALE_NUMBER / 2, 0);
 		}
 	}
 }
@@ -77,7 +78,7 @@ void Result::SendScore(float time)
 {
 	//ƒ‰ƒ“ƒLƒ“ƒODB‚Éƒf[ƒ^“o˜^
 	try {
-		auto serverStatusCode = pplx::create_task([=]
+		bool result = pplx::create_task([=]
 			{
 				//ƒNƒ‰ƒCƒAƒ“ƒg‚ÌÝ’è
 				http_client client(BASE_URL + L"/score");
@@ -102,7 +103,7 @@ void Result::SendScore(float time)
 				}
 				})
 				.then([](json::value json) {
-					return json[L"serverStatus"].as_integer();
+					return true;
 					}).wait();
 	}
 	catch (...) {
@@ -137,10 +138,11 @@ void Result::GetRanking()
 			auto& array = json.as_array();
 
 			//array‚É—v‘fŠi”[‚µ•Ô‚·
-			std::array<float, 5> result = {};
+			std::array<float, 8> result = {};
 			for (int i = 0; i < result.size(); i++) {
 				if (i >= array.size()) {
 					result[i] = 0;
+					continue;
 				}
 
 				result[i] = array[i].at(U("score")).as_double();
@@ -177,17 +179,17 @@ void Result::Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, 
 void Result::DrawNum(const std::string& num, const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, float padding)
 {
 	for (int i = 0; i < num.size(); i++) {
-		if (num[i] != '.') {
-			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Number_" + num.substr(i, 1));
+		if (num[i] == '.') {
+			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Dot");
 		}
-		else if (num[i] != ' ') {
-			continue;
-		}
-		else if (num[i] != ':') {
+		else if (num[i] == ':') {
 			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Colon");
 		}
+		else if (num[i] == ' ') {
+			continue;
+		}
 		else {
-			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Dot");
+			Draw(pos + GE::Math::Vector3(i * scale.x + padding, 0, 0), scale, "Number_" + num.substr(i, 1));
 		}
 	}
 }

@@ -123,7 +123,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 32;
+	maxGenerateCount = 3;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {
@@ -221,7 +221,7 @@ void BossEnemyComponent::UpdateLife()
 	prevLife = life;
 	
 	//ライフ0以下でリザルトへ
-	if (life <= 0) {
+	if (life <= 0 && GameUtility::GetGameState() == GameState::GAME) {
 		GameUtility::TimerStop();
 		Result::SendScore(GameUtility::GetClearTime());
 		Result::GetRanking();

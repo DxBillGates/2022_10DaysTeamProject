@@ -209,26 +209,23 @@ bool PlayerComponent::CheckMovable()
 {
 	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
 		//左のみ、指定位置まで移動可能
-		return Tutorial::GetTutorialTimer() >= 0.5f && 
-			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
+		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
 			!(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
 	}
 	else if(Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
 		//右のみ、指定位置まで移動可能
-		return Tutorial::GetTutorialTimer() >= 0.5f &&
-			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
 			!(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
 		//右のみ、下側の指定位置まで移動可能
-		return  Tutorial::GetTutorialTimer() >= 0.5f && 
-			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
 			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
 			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
-		//下側の特定の位置以外で移動可能
-		return  Tutorial::GetTutorialTimer() >= 0.5f && 
+		//右のみ、下側の特定の位置以外で移動可能
+		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
 			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
 			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5);
 	}

@@ -4,6 +4,7 @@
 float GameUtility::timer = 0;
 bool GameUtility::isStartTimer = false;
 int GameUtility::nowChain = 0;
+bool GameUtility::isPlaySE = true;
 GameState GameUtility::gameState = GameState::GAME;
 
 GE::IGraphicsDeviceDx12* GameUtility::graphicsDevice = nullptr;

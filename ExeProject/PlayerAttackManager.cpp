@@ -108,6 +108,9 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 
 		//1回の攻撃で生成された敵数リセット
 		BossEnemyComponent::ResetGenerateCountOneAttack();
+
+		//効果音再生状況リセット
+		GameUtility::SetIsPlaySE(false);
 	}
 
 	// 各攻撃状態から次の遷移に移る処理
@@ -132,12 +135,23 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 				shadowPlayer.moveEntity->ChangeStanceState();
 			}
 
-			if (shadowPlayer.moveEntity->GetDirectionState() != player.moveEntity->GetDirectionState())
-			{
-				shadowPlayer.moveEntity->ChangeMoveDirection();
+			//チュートリアル中は移動の向きを固定する
+			if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK ||
+				Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+				shadowPlayer.moveEntity->SetDirectionState(MoveDirectionState::LEFT);
+			}
+			else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK ||
+				Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+				shadowPlayer.moveEntity->SetDirectionState(MoveDirectionState::RIGHT);
+			}
+			else {
+				if (shadowPlayer.moveEntity->GetDirectionState() != player.moveEntity->GetDirectionState())
+				{
+					shadowPlayer.moveEntity->ChangeMoveDirection();
+				}
 			}
 
-			shadowPlayer.moveEntity->SetDirectionState(player.moveEntity->GetDirectionState());
+			//shadowPlayer.moveEntity->SetDirectionState(player.moveEntity->GetDirectionState());
 
 			break;
 		case PlayerAttackState::END:

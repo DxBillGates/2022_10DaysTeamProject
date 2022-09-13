@@ -23,7 +23,7 @@ private:
 	GE::AudioManager* pAudioManager = nullptr;				//オーディオ再生用
 	GE::InputDevice* inputDevice;							//デバッグ用
 	std::vector<NormalEnemyComponent*> normalEnemies;		//NormalEnemyの管理コンテナ
-	int maxGenerateCount = 12;				//最大敵生成回数 (最大ライフ)
+	int maxGenerateCount = 32;				//最大敵生成回数 (最大ライフ)
 	int life = maxGenerateCount;							//ライフ
 	float velocity = 0;										//横移動用 -1で左、+1で右、0で停止
 	bool isGenerate = false;								//敵生成フラグ

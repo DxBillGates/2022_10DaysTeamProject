@@ -117,9 +117,8 @@ void Tutorial::Draw()
 	}
 	else if (tutorialState == TutorialState::FOURTH_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
-			//Left, Right
-			Draw(GE::Math::Vector3(POS_INSTRUCTIONS.x / 2, POS_INSTRUCTIONS.y, 0), SCALE_LEFT / 2, "TTR_Left");
-			Draw(GE::Math::Vector3(POS_INSTRUCTIONS.x * 3 / 2, POS_INSTRUCTIONS.y, 0), SCALE_RIGHT / 2, "TTR_Right");
+			//Right
+			Draw(POS_INSTRUCTIONS, SCALE_RIGHT, "TTR_Right");
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { FOURTH_PLAYER_POS_X, 933 + SCALE_GRID.y / 2,0 };

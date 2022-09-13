@@ -7,7 +7,7 @@ class Result
 private:
 	static float timer;
 	static bool isStartTimer;
-	static std::array<float, 5> ranking;
+	static std::array<float, 8> ranking;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
