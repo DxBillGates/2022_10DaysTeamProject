@@ -10,6 +10,8 @@ private:
 	BossEnemyComponent* bossEnemyComponent;
 
 	GE::GameObjectManager particleManager;
+
+	bool isSkipTutorial = false;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);

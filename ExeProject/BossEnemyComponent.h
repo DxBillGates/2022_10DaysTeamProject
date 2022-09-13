@@ -23,11 +23,12 @@ private:
 	GE::AudioManager* pAudioManager = nullptr;				//オーディオ再生用
 	GE::InputDevice* inputDevice;							//デバッグ用
 	std::vector<NormalEnemyComponent*> normalEnemies;		//NormalEnemyの管理コンテナ
-	int maxGenerateCount = 3;				//最大敵生成回数 (最大ライフ)
+	int maxGenerateCount = 12;				//最大敵生成回数 (最大ライフ)
 	int life = maxGenerateCount;							//ライフ
 	float velocity = 0;										//横移動用 -1で左、+1で右、0で停止
 	bool isGenerate = false;								//敵生成フラグ
-	int generateCount = 0;									//敵生成数
+	int alreadyGeneratedCount = 0;							//敵を生成した数
+	int generateNum = 1;									//一度に生成する敵の数
 	float scaleDownMag = 1.0f;								//縮小倍率
 	float scaleDownTimer = 0;								//スケール縮小タイマー
 	MoveEntity* pPlayerMoveEntity = nullptr;				//プレイヤーMoveEntityポインタ
@@ -36,6 +37,8 @@ private:
 	// 1フレーム中にプレイヤーに攻撃されたか
 	bool isHitPlayer;
 	bool beforeIsHitPlayer;
+
+	static int generateCountOneAttack;						//1回の攻撃で生成した敵の数　生成ボーナス適用に使用
 
 public:
 	void Start() override;
@@ -102,5 +105,7 @@ public:
 	/// 自身が死んでいるか
 	/// </summary>
 	bool IsDead()const { return life <= 0; }
+
+	static void ResetGenerateCountOneAttack() { generateCountOneAttack = 0; }
 };
 

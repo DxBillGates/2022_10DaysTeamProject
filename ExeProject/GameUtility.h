@@ -11,6 +11,7 @@ class GameUtility
 private:
 	static float timer;
 	static bool isStartTimer;
+	static int nowChain;
 	static GameState gameState;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
@@ -26,6 +27,12 @@ public:
 	static void OnGui();
 
 	static void DrawBackground();
+
+	static int GetNowChain() { return nowChain; }
+
+	static void IncrementNowChain() { nowChain++; }
+
+	static void ResetNowChain() { nowChain = 0; }
 
 	static float GetClearTime() { return timer; }
 	static const GameState& GetGameState() { return gameState; }

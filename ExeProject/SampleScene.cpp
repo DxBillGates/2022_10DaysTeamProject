@@ -119,7 +119,7 @@ void SampleScene::Initialize()
 	GameUtility::SetGraphicsDevice(graphicsDevice);
 	Result::SetGraphicsDevice(graphicsDevice);
 
-	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
+	Tutorial::Initialize(isSkipTutorial);	//チュートリアルスキップさせるならtrueに
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
@@ -176,6 +176,9 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 		changeSceneInfo.name = this->name;
+
+		//2回目以降はチュートリアルスキップ
+		isSkipTutorial = true;
 	}
 }
 

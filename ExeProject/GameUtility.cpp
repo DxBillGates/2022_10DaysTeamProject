@@ -3,6 +3,7 @@
 
 float GameUtility::timer = 0;
 bool GameUtility::isStartTimer = false;
+int GameUtility::nowChain = 0;
 GameState GameUtility::gameState = GameState::GAME;
 
 GE::IGraphicsDeviceDx12* GameUtility::graphicsDevice = nullptr;
@@ -30,8 +31,8 @@ void GameUtility::TimerStop()
 
 void GameUtility::OnGui()
 {
-	ImGui::Begin("GameState");
-	ImGui::Text("GameState:%s", gameState == GameState::GAME ? "Game" : "Result");
+	ImGui::Begin("Chain");
+	ImGui::Text("Chain:%d", nowChain);
 	ImGui::End();
 }
 
