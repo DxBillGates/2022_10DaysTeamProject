@@ -1,6 +1,8 @@
 #include "ShadowPlayerComponent.h"
 #include "GameSetting.h"
 #include "Camera2D.h"
+#include "Tutorial.h"
+#include "GameUtility.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -23,7 +25,7 @@ void ShadowPlayerComponent::Start()
 
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
-	transform->position = { 1920 / 2,transform->scale.y / 2,0 };
+	transform->position = { 1920 * 3 / 8, transform->scale.y / 2,0 };
 
 }
 
@@ -32,7 +34,7 @@ void ShadowPlayerComponent::Update(float deltaTime)
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 	const float MOVE_SPEED = 7;
 
-	if (autoMove == true)
+	if (autoMove == true && ChackMovable() == true)
 	{
 		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT)
 		{
@@ -48,6 +50,9 @@ void ShadowPlayerComponent::Update(float deltaTime)
 	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
 	moveEntity.UpdateStanceAngle(deltaTime, 1);
+
+	//チュートリアル時攻撃可能かチェック
+	UpdateAttackable();
 }
 
 void ShadowPlayerComponent::LateDraw()
@@ -84,4 +89,53 @@ void ShadowPlayerComponent::OnGui()
 MoveEntity* ShadowPlayerComponent::GetMoveEntity()
 {
 	return &moveEntity;
+}
+
+bool ShadowPlayerComponent::ChackMovable()
+{
+	//チュートリアル状態によって動き方を変える
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		return false;
+		////上側にいて、画面の指定位置より右に来た時に停止
+		//return !(moveEntity.GetStanceState() == StanceState::INVERSE &&
+		//	transform->position.x > Tutorial::FIRST_SHADOW_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//下側にいて、画面の指定位置より左に来た時に停止
+		return !(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x < Tutorial::SECOND_SHADOW_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//上側にいて、画面の指定位置より右に来た時に停止
+		return !(moveEntity.GetStanceState() == StanceState::INVERSE &&
+			transform->position.x > Tutorial::THIRD_SHADOW_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//下側にいて、画面の指定位置より右に来た時に停止
+		return !(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x > Tutorial::FOURTH_SHADOW_POS_X);
+	}
+	else {
+		return GameUtility::GetGameState() == GameState::GAME;
+	}
+}
+
+void ShadowPlayerComponent::UpdateAttackable()
+{
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		//上側にいて、指定の位置よち右に来た時
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::INVERSE && transform->position.x >= Tutorial::FIRST_SHADOW_POS_X, 1);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//下側にいて、指定の位置より左に来た時
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && transform->position.x <= Tutorial::SECOND_SHADOW_POS_X, 1);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//上側にいて、指定の位置よち右に来た時
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::INVERSE && transform->position.x >= Tutorial::THIRD_SHADOW_POS_X, 1);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//下側にいて、指定の位置よち右に来た時
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && transform->position.x >= Tutorial::FOURTH_SHADOW_POS_X, 1);
+	}
 }

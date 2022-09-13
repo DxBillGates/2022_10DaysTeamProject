@@ -104,6 +104,74 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(dotEffectTexture, "dotEffectTexture");
 	}
 
+	//チュートリアル (TTRはtutorialの略)
+	//「Tutorial」文字
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Tutorial.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Tutorial");
+	}
+	//Left
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Left.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Left");
+	}
+	//Right
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Right.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Right");
+	}
+	//Attack
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Attack.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Attack");
+	}
+	//Wait
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Wait.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Wait");
+	}
+	//Grid
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Tutorial/Grid.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "TTR_Grid");
+	}
+
+	//リザルト関連
+	//Background
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Background.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Background");
+	}
+
+	//数字
+	for (int i = 0; i < 10; i++)
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Number/" + std::to_string(i) + ".png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Number_" + std::to_string(i));
+	}
+
+	//「.」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Number/Dot.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Dot");
+	}
+
+	//「ClearTime」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("ClearTime.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "ClearTime");
+	}
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

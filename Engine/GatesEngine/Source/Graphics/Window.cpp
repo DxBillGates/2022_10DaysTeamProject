@@ -136,7 +136,7 @@ bool GE::Window::Create(const WindowData& windowData)
 
 void GE::Window::PreviewWindow()
 {
-	ShowWindow(hwnd, SW_MAXIMIZE);
+	//ShowWindow(hwnd, SW_MAXIMIZE);
 	ShowWindow(hwnd, SW_SHOW);
 }
 

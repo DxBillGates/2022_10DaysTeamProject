@@ -1,3 +1,4 @@
+
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include "ShadowPlayerComponent.h"
@@ -9,6 +10,9 @@
 #include "SlashEffect.h"
 #include "DotExplosionEffect.h"
 #include "Camera2D.h"
+#include "Tutorial.h"
+#include "GameUtility.h"
+#include "Result.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -71,7 +75,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("test3");
+		testObject->SetName("BossEnemy");
 		testObject->GetTransform()->position = { 0,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
@@ -111,6 +115,12 @@ SampleScene::~SampleScene()
 
 void SampleScene::Initialize()
 {
+	Tutorial::SetGraphicsDevice(graphicsDevice);
+	GameUtility::SetGraphicsDevice(graphicsDevice);
+	Result::SetGraphicsDevice(graphicsDevice);
+
+	Tutorial::Initialize(true);	//チュートリアルスキップさせるならtrueに
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 
@@ -125,6 +135,10 @@ void SampleScene::Initialize()
 	EffectManager::GetInstance()->Initialize();
 
 	Camera2D::GetInstance()->Initialize();
+	
+	GameUtility::Initialize();
+
+	Result::Initialize();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -144,6 +158,10 @@ void SampleScene::Update(float deltaTime)
 	//	col1->Hit(col2, gameObjectManager.FindGameObject("test2"));
 	//	col2->Hit(col1, gameObjectManager.FindGameObject("test1"));
 	//}
+	Tutorial::UpdateTimer(deltaTime);
+	GameUtility::UpdateTimer(deltaTime);
+	Result::UpdateTimer(deltaTime);
+	
 
 	auto collManager = CollisionManager::GetInstance();
 	collManager->Update(deltaTime);
@@ -160,7 +178,14 @@ void SampleScene::Update(float deltaTime)
 
 void SampleScene::Draw()
 {
+	GameUtility::DrawBackground();
+
+	if (GameUtility::GetGameState() == GameState::RESULT) Result::Draw();
+
 	gameObjectManager.Draw();
+
+	Tutorial::Draw();
+	GameUtility::OnGui();
 
 	particleManager.Draw();
 }

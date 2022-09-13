@@ -13,7 +13,6 @@ class BossEnemyComponent : public GE::Component
 //定数
 private:
 	static const GE::Math::Vector3 SPRITE_SIZE;				//初期スケール
-	static const int MAX_GENERATE_COUNT = 10;				//最大敵生成回数 (最大ライフ)
 	static const float MIN_SCALE;							//最小スケール
 	static const float MOVE_SPEED;							//動く速さ
 
@@ -22,9 +21,11 @@ private:
 	GE::GameObjectManager* pGameObjectManager = nullptr;	//通常エネミー生成用
 	GE::InputDevice* inputDevice;							//デバッグ用
 	std::vector<NormalEnemyComponent*> normalEnemies;		//NormalEnemyの管理コンテナ
-	int life = MAX_GENERATE_COUNT;							//ライフ
+	int maxGenerateCount = 3;				//最大敵生成回数 (最大ライフ)
+	int life = maxGenerateCount;							//ライフ
 	float velocity = 0;										//横移動用 -1で左、+1で右、0で停止
 	bool isGenerate = false;								//敵生成フラグ
+	int generateCount = 0;									//敵生成数
 	float scaleDownMag = 1.0f;								//縮小倍率
 	float scaleDownTimer = 0;								//スケール縮小タイマー
 	MoveEntity* pPlayerMoveEntity = nullptr;				//プレイヤーMoveEntityポインタ
@@ -39,6 +40,12 @@ public:
 	void Update(float deltaTime) override;
 	void LateDraw() override;
 	void OnCollision(GE::GameObject* other) override;
+	void OnGui() override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
 
 	/// <summary>
 	/// 横移動させる

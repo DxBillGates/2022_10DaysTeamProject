@@ -1,6 +1,7 @@
 #include "NormalEnemyComponent.h"
 #include "PlayerAttackManager.h"
 #include "SpriteParticleManager.h"
+#include "Tutorial.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -169,6 +170,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 
 
+			//チュートリアル状態遷移用
+			if (Tutorial::IsEndTutorial() == false) {
+				Tutorial::DecrementChangeStateCount(2);
+			}
+
 			Camera2D::GetInstance()->Shake(0.4f, 20);
 			HitStopManager::GetInstance()->Active(0.25f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
@@ -182,6 +188,11 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
+
+			//チュートリアル状態遷移用
+			if (Tutorial::IsEndTutorial() == false) {
+				Tutorial::DecrementChangeStateCount(2);
+			}
 
 			Camera2D::GetInstance()->Shake(0.4f, 20);
 			HitStopManager::GetInstance()->Active(0.25f);
@@ -305,6 +316,9 @@ void NormalEnemyComponent::UpdateFalling()
 
 void NormalEnemyComponent::UpdateWalking()
 {
+	//チュートリアル中は動かさない
+	if (Tutorial::IsEndTutorial() == false) { return; }
+
 	//プレイヤーに向かって歩く
 	//進行方向に身体をのばす
 	if (walkingLoopTimer < MAX_WALK_LOOP_TIMER / 2) {

@@ -33,4 +33,7 @@ public:
 	void UpdateKnockback(float deltaTime);
 
 	void DrawHP();
+
+	bool CheckMovable();
+	void UpdateAttackable();
 };

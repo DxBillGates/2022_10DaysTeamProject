@@ -17,4 +17,7 @@ public:
 	void OnGui() override;
 
 	MoveEntity* GetMoveEntity();
+
+	bool ChackMovable();
+	void UpdateAttackable();
 };

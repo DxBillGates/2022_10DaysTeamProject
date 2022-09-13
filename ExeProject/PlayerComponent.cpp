@@ -2,6 +2,7 @@
 #include "GameSetting.h"
 #include "HitStopManager.h"
 #include "Camera2D.h"
+#include "Tutorial.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -25,7 +26,7 @@ void PlayerComponent::Start()
 	const float SPRITE_SIZE = 100;
 	transform->scale = SPRITE_SIZE;
 
-	transform->position = { 1920 / 2,GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
+		transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 
 	const int MAX_HP = 3;
 	hp = MAX_HP;
@@ -35,23 +36,25 @@ void PlayerComponent::Update(float deltaTime)
 {
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
 
-	// 移動方向の変更テスト
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
-	{
-		moveEntity.ChangeMoveDirection();
-	}
+	//チュートリアルなどで移動不可状態かチェック
+	if (CheckMovable()) {
 
+		// 移動方向の変更テスト
+		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
+			|| inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
+		{
+			moveEntity.ChangeMoveDirection();
+		}
 
-
-	const float MOVE_SPEED = 5;
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
-	{
-		transform->position.x -= MOVE_SPEED * GAME_TIME;
-	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
-	{
-		transform->position.x += MOVE_SPEED * GAME_TIME;
+		const float MOVE_SPEED = 5;
+		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
+		{
+			transform->position.x -= MOVE_SPEED * GAME_TIME;
+		}
+		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
+		{
+			transform->position.x += MOVE_SPEED * GAME_TIME;
+		}
 	}
 
 	transform->position += knockbackVelocity * GAME_TIME;
@@ -69,6 +72,9 @@ void PlayerComponent::Update(float deltaTime)
 	invincibleFlag.Update(deltaTime * GAME_TIME);
 
 	UpdateKnockback(deltaTime * GAME_TIME);
+
+	//チュートリアル時攻撃可能かチェック
+	UpdateAttackable();
 }
 
 void PlayerComponent::LateDraw()
@@ -158,6 +164,60 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 	knockbackVelocity = GE::Math::Vector3::Lerp(setKnockbackVector, GE::Math::Vector3(), lerpTime);
 
 	knockbackFlag.Update(deltaTime);
+}
+
+bool PlayerComponent::CheckMovable()
+{
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		//左のみ、指定位置まで移動可能
+		return Tutorial::GetTutorialTimer() >= 0.5f && 
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
+			!(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
+	}
+	else if(Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//右のみ、指定位置まで移動可能
+		return Tutorial::GetTutorialTimer() >= 0.5f &&
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+			!(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//右のみ、下側の指定位置まで移動可能
+		return  Tutorial::GetTutorialTimer() >= 0.5f && 
+			inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//下側の特定の位置以外で移動可能
+		return  Tutorial::GetTutorialTimer() >= 0.5f && 
+			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5);
+	}
+
+	//チュートリアル外では自由に移動できる
+	return true;
+}
+
+void PlayerComponent::UpdateAttackable()
+{
+	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
+		//指定位置より左にいるとき攻撃可能
+		Tutorial::SetAttackable(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X, 0);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+		//指定位置より右にいるとき攻撃可能
+		Tutorial::SetAttackable(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X, 0);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
+		//下側の特定の位置で攻撃可能
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && 
+			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X, 0);
+	}
+	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
+		//下側の特定の位置で攻撃可能
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL &&
+			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5, 0);
+	}
 }
 
 void PlayerComponent::DrawHP()

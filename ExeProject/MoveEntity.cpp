@@ -4,7 +4,7 @@
 
 MoveEntity::MoveEntity()
 	: stanceState(StanceState::NORMAL)
-	, moveDirectionState(MoveDirectionState::RIGHT)
+	, moveDirectionState(MoveDirectionState::LEFT)
 	, changeMoveDirectionFlag(GE::FlagController())
 	, angles()
 {
@@ -18,7 +18,7 @@ void MoveEntity::Initialize()
 	changeMoveDirectionFlag.SetMaxTimeProperty(CHANGE_DIRECTION_TIME);
 
 	stanceState = StanceState::NORMAL;
-	moveDirectionState = MoveDirectionState::RIGHT;
+	moveDirectionState = MoveDirectionState::LEFT;
 }
 
 void MoveEntity::CheckTeleport(GE::Math::Vector3& pos,const GE::Math::Vector3 size)
