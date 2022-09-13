@@ -169,6 +169,7 @@ void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
 
+	graphicsDevice->ClearLayer("EffectLayer");
 	graphicsDevice->SetLayer("EffectLayer");
 
 	particleManager.LateDraw();
