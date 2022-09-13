@@ -17,6 +17,15 @@ private:
 	static const float MIN_SCALE;							//最小スケール
 	static const float MOVE_SPEED;							//動く速さ
 
+	// テクスチャアニメーション時に何番までアニメーションさせるか
+	static const int MAX_ANIMATION_NUMBER;
+	static const int DAMAGE_ANIMATION_NUMBER;
+	// 何秒でアニメーションを切り替えるか
+	static const float CHANGE_ANIMATION_TIME;
+
+	static const GE::Math::Vector2 TEXTURE_SIZE;
+	static const GE::Math::Vector2 CLIP_SIZE;
+
 private:
 	
 	GE::GameObjectManager* pGameObjectManager = nullptr;	//通常エネミー生成用
@@ -39,6 +48,9 @@ private:
 	bool beforeIsHitPlayer;
 
 	static int generateCountOneAttack;						//1回の攻撃で生成した敵の数　生成ボーナス適用に使用
+
+	float drawAnimationTimer;
+	int drawAnimationNumber;
 
 public:
 	void Start() override;
