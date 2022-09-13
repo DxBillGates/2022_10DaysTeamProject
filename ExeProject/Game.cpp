@@ -173,11 +173,25 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "Dot");
 	}
 
+	//「:」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Number/Colon.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Colon");
+	}
+
 	//「ClearTime」
 	{
 		GE::Texture* texture = new GE::Texture();
 		texture->Load("ClearTime.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 		graphicsDevice.GetTextureManager()->Add(texture, "ClearTime");
+	}
+
+	//「WorldRanking」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("WorldRanking.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "WorldRanking");
 	}
 
 	//効果音「Hit」

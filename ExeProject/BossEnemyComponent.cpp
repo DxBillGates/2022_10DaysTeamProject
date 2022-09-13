@@ -11,6 +11,7 @@
 #include "Camera2D.h"
 #include "Tutorial.h"
 #include "GameUtility.h"
+#include "Result.h"
 
 const GE::Math::Vector3 BossEnemyComponent::SPRITE_SIZE = { 512, 384, 0 };
 const float BossEnemyComponent::MIN_SCALE = 0.5f;
@@ -222,6 +223,8 @@ void BossEnemyComponent::UpdateLife()
 	//ライフ0以下でリザルトへ
 	if (life <= 0) {
 		GameUtility::TimerStop();
+		Result::SendScore(GameUtility::GetClearTime());
+		Result::GetRanking();
 		GameUtility::SetGameState(GameState::RESULT);
 	}
 }
