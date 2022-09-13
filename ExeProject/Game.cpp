@@ -244,7 +244,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("EffectLayer")->GetRenderTexture()->GetSRVNumber() });
 
-	const float BRIGHTNESS = 0.6f;
+	const float BRIGHTNESS = 0.1f;
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 
 	graphicsDevice.DrawMesh("2DPlane");

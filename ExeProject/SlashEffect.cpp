@@ -1,5 +1,6 @@
 #include "SlashEffect.h"
 #include "Camera2D.h"
+#include "GameSetting.h"
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Util/Math/Easing.h>
 #include <GatesEngine/Header/Graphics/Window.h>

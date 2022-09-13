@@ -7,6 +7,7 @@
 #include "EffectManager.h"
 #include "Camera2D.h"
 #include "HitStopManager.h"
+#include "GameSetting.h"
 
 const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
@@ -192,7 +193,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 }
 void NormalEnemyComponent::UpdateTimer(float deltaTime)
 {
-	moveTimer += deltaTime;
+	moveTimer += deltaTime * GameSetting::GetInstance()->GetTime();
 
 	flyingLoopTimer += deltaTime;
 	if (flyingLoopTimer >= MAX_FLYING_LOOP_TIMER) {
