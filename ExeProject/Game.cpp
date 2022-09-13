@@ -117,6 +117,28 @@ bool Game::Initialize()
 
 	GameSetting::GetInstance()->Initialize();
 
+	float gaussValue = 2.5f;
+	GE::Math::Vector2 right = { 1,0 };
+	GE::Math::Vector2 up = { 0,1 };
+	GE::Math::Vector2 windowSize = GE::Window::GetWindowSize();
+	for (int i = 0; i < 6; ++i)
+	{
+		GE::Math::Vector2 vector = {};
+		if (i % 2 == 0)
+		{
+			windowSize /= 2;
+			vector = right;
+		}
+		else
+		{
+			vector = up;
+		}
+
+		GE::Math::SetGaussFilterData(windowSize, vector, gaussValue, &gaussFilterData[i], 0);
+
+		gaussValue *= 2.0f;
+	}
+
 	return true;
 }
 
@@ -201,7 +223,8 @@ bool Game::Draw()
 	// ここからポストエフェクト
 	// ひとまず輝度抽出
 	graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.ClearLayer("demoLayer");
+	graphicsDevice.SetLayer("demoLayer");
 	graphicsDevice.SetShader("BrightnessSamplingShader");
 
 	auto windowSize = GE::Window::GetWindowSize();
@@ -219,14 +242,54 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("EffectLayer")->GetRenderTexture()->GetSRVNumber() });
 
-	const float BRIGHTNESS = 0.5f;
+	const float BRIGHTNESS = 0.6f;
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 
 	graphicsDevice.DrawMesh("2DPlane");
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+
+	// ここからブラー
+
+	for (int i = 0; i < 6; ++i)
+	{
+		graphicsDevice.SetShaderResourceDescriptorHeap();
+		graphicsDevice.SetLayer("BloomLayer_" + std::to_string(i));
+		graphicsDevice.SetShader("GaussBlurShader");
+
+		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(5,&gaussFilterData[i],sizeof(GE::Math::GaussFilterData)) });
+
+		if (i == 0)
+		{
+			renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("demoLayer")->GetRenderTexture()->GetSRVNumber() });
+		}
+		else
+		{
+			renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(i - 1))->GetRenderTexture()->GetSRVNumber() });
+		}
+
+		graphicsDevice.DrawMesh("2DPlane");
+		graphicsDevice.ExecuteRenderQueue();
+		graphicsDevice.ExecuteCommands();
+	}
+
+	// ブラーした結果を元画像に合成
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.SetShader("MixedTextureShader");
+
+
+	renderQueue->AddSetShaderResource({ 3,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("EffectLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(1))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 6,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(3))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 7,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(5))->GetRenderTexture()->GetSRVNumber() });
+	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
+
 	GE::GUIManager::EndFrame();
 
 	graphicsDevice.ExecuteCommands();

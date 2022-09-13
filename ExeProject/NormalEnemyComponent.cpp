@@ -6,6 +6,7 @@
 #include <GatesEngine/Header/Util/Random.h>
 #include "EffectManager.h"
 #include "Camera2D.h"
+#include "HitStopManager.h"
 
 const float NormalEnemyComponent::INIT_SCALE = 100;
 const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
@@ -165,6 +166,10 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				//pParticle->SetInitPosition({ 400.0f, 200.0f, 0 });
 				pParticle->StartAnime();
 			}
+
+
+			Camera2D::GetInstance()->Shake(0.4f, 20);
+			HitStopManager::GetInstance()->Active(0.25f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
@@ -176,6 +181,9 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
+
+			Camera2D::GetInstance()->Shake(0.4f, 20);
+			HitStopManager::GetInstance()->Active(0.25f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position, EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 		}

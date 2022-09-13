@@ -100,6 +100,9 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	isHitPlayer = true;
 	HitStopManager::GetInstance()->Active(0.5f);
 
+
+	Camera2D::GetInstance()->Shake(0.4f, 50);
+	HitStopManager::GetInstance()->Active(1.f);
 	EffectManager::GetInstance()->Active("slashEffect",transform->position);
 	EffectManager::GetInstance()->Active("dotEffect", transform->position);
 }
