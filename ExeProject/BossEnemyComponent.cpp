@@ -35,6 +35,9 @@ void BossEnemyComponent::Start()
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
 
 	Initialize();
+
+	damageFlag.Initialize();
+	damageFlag.SetMaxTimeProperty(1);
 }
 
 void BossEnemyComponent::Update(float deltaTime)
@@ -75,7 +78,20 @@ void BossEnemyComponent::Update(float deltaTime)
 			drawAnimationNumber = 0;
 		}
 	}
+
+
+	if (damageFlag.GetOverTimeTrigger())
+	{
+		damageFlag.SetFlag(false);
+		damageFlag.SetTime(0);
+	}
+	if (damageFlag.GetFlag() == true)
+	{
+		drawAnimationNumber = DAMAGE_ANIMATION_NUMBER;
+	}
 	drawAnimationTimer += deltaTime;
+
+	damageFlag.Update(deltaTime);
 }
 
 void BossEnemyComponent::LateDraw()
@@ -327,4 +343,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	pAudioManager->Use("Explosion")->Start();
 
 	isGenerate = false;
+
+	damageFlag.SetFlag(true);
+	damageFlag.SetTime(0);
 }

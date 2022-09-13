@@ -52,6 +52,8 @@ private:
 	float drawAnimationTimer;
 	int drawAnimationNumber;
 
+	GE::FlagController damageFlag;
+
 public:
 	void Start() override;
 	void Update(float deltaTime) override;
