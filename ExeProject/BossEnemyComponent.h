@@ -87,6 +87,16 @@ public:
 	void UpdateLife();
 
 	/// <summary>
+	/// ダメージ受けたかどうかの管理フラグを更新
+	/// </summary>
+	void UpdateDamageFlag(float deltaTime);
+
+	/// <summary>
+	/// アニメーション関係の更新
+	/// </summary>
+	void UpdateAnimation(float deltaTime);
+
+	/// <summary>
 	/// 通常エネミー生成
 	/// </summary>
 	void GenerateNormalEnemy();

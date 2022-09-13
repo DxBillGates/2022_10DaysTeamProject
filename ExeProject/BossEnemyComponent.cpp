@@ -68,30 +68,8 @@ void BossEnemyComponent::Update(float deltaTime)
 	}
 #endif // DEBUG
 
-	// アニメーション用のタイマー更新
-	if (drawAnimationTimer >= CHANGE_ANIMATION_TIME)
-	{
-		drawAnimationTimer = 0;
-		drawAnimationNumber++;
-		if (drawAnimationNumber >= DAMAGE_ANIMATION_NUMBER)
-		{
-			drawAnimationNumber = 0;
-		}
-	}
-
-
-	if (damageFlag.GetOverTimeTrigger())
-	{
-		damageFlag.SetFlag(false);
-		damageFlag.SetTime(0);
-	}
-	if (damageFlag.GetFlag() == true)
-	{
-		drawAnimationNumber = DAMAGE_ANIMATION_NUMBER;
-	}
-	drawAnimationTimer += deltaTime;
-
-	damageFlag.Update(deltaTime);
+	UpdateAnimation(deltaTime);
+	UpdateDamageFlag(deltaTime);
 }
 
 void BossEnemyComponent::LateDraw()
@@ -269,6 +247,36 @@ void BossEnemyComponent::UpdateLife()
 		Result::GetRanking();
 		GameUtility::SetGameState(GameState::RESULT);
 	}
+}
+
+void BossEnemyComponent::UpdateDamageFlag(float deltaTime)
+{
+	if (damageFlag.GetOverTimeTrigger())
+	{
+		damageFlag.SetFlag(false);
+		damageFlag.SetTime(0);
+	}
+	if (damageFlag.GetFlag() == true)
+	{
+		drawAnimationNumber = DAMAGE_ANIMATION_NUMBER;
+	}
+
+	damageFlag.Update(deltaTime);
+}
+void BossEnemyComponent::UpdateAnimation(float deltaTime)
+
+{
+	// アニメーション用のタイマー更新
+	if (drawAnimationTimer >= CHANGE_ANIMATION_TIME)
+	{
+		drawAnimationTimer = 0;
+		drawAnimationNumber++;
+		if (drawAnimationNumber >= DAMAGE_ANIMATION_NUMBER)
+		{
+			drawAnimationNumber = 0;
+		}
+	}
+	drawAnimationTimer += deltaTime;
 }
 
 void BossEnemyComponent::GenerateNormalEnemy()
