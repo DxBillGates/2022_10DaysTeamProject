@@ -236,6 +236,7 @@ void BossEnemyComponent::GenerateNormalEnemy()
 	newEnemy->SetDrawAxisEnabled(true);
 	auto* sampleCollider = newEnemy->AddComponent<GE::BoxCollider>();
 	auto* normalEnemyComponent = newEnemy->AddComponent<NormalEnemyComponent>();
+	normalEnemyComponent->SetPAudioManager(pAudioManager);
 	normalEnemyComponent->SetPBossPosition(&transform->position);
 	normalEnemyComponent->SetPPlayerMoveEntity(pPlayerMoveEntity);
 	normalEnemyComponent->SetPPlayerPos(pPlayerPos);
@@ -260,6 +261,9 @@ void BossEnemyComponent::GenerateNormalEnemy()
 
 	//生成数増やす
 	generateCount++;
+
+	//敵生成タイミングで効果音再生する
+	pAudioManager->Use("Explosion")->Start();
 
 	isGenerate = false;
 }

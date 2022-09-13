@@ -56,7 +56,7 @@ void NormalEnemyComponent::Update(float deltaTime)
 	else if (enemyState == EnemyState::WALKING) {
 		UpdateWalking();
 	}
-	else {
+	else if (enemyState == EnemyState::DEADING) {
 		UpdateDeading();
 	}
 }
@@ -140,7 +140,6 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 
 		if (enemyState == EnemyState::FLYING)
 		{
-			//デバッグ用　状態遷移
 			//上に落ちる
 			if (transform->position.y < 1080 / 2) {
 				SetMovePos(transform->position, { transform->position.x, transform->scale.y / 2, 0 });
@@ -169,7 +168,6 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				pParticle->StartAnime();
 			}
 
-
 			//チュートリアル状態遷移用
 			if (Tutorial::IsEndTutorial() == false) {
 				Tutorial::DecrementChangeStateCount(2);
@@ -180,11 +178,15 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
+			//効果音再生
+			pAudioManager->Use("Hit")->Start();
+
 			return;
+
 		}
 		else if (enemyState == EnemyState::WALKING)
 		{
-			//デバッグ用　状態遷移
+			//移動位置セット
 			SetMovePos(transform->position, *pBossPosition);
 			moveTimer = 0;
 			enemyState = EnemyState::DEADING;
@@ -198,6 +200,9 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			HitStopManager::GetInstance()->Active(0.25f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position, EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
+
+			//効果音再生
+			pAudioManager->Use("Hit")->Start();
 		}
 	}
 
@@ -404,6 +409,9 @@ void NormalEnemyComponent::UpdateDeading()
 	//移動終わったら死ぬ
 	if (moveTimer >= 1.0f) {
 		enemyState = EnemyState::DEAD;
+
+		//効果音再生
+		pAudioManager->Use("Explosion")->Start();
 	}
 }
 

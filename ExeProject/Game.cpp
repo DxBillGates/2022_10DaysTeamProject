@@ -172,6 +172,24 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "ClearTime");
 	}
 
+	//効果音「Hit」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit.wav"), "HitData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Hit"));
+	}
+
+	//効果音「Explosion」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Explosion07.wav"), "ExplosionData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Explosion"));
+	}
+
+	//効果音「Dash」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Dash.wav"), "DashData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Dash"));
+	}
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

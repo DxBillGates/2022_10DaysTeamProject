@@ -139,6 +139,9 @@ void SampleScene::Initialize()
 	GameUtility::Initialize();
 
 	Result::Initialize();
+
+	bossEnemyComponent->SetPAudioManager(audioManager);
+	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
 }
 
 void SampleScene::Update(float deltaTime)

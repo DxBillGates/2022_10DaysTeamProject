@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 #include <vector>
 #include "NormalEnemyComponent.h"
 #include "MoveEntity.h"
@@ -19,6 +20,7 @@ private:
 private:
 	
 	GE::GameObjectManager* pGameObjectManager = nullptr;	//通常エネミー生成用
+	GE::AudioManager* pAudioManager = nullptr;				//オーディオ再生用
 	GE::InputDevice* inputDevice;							//デバッグ用
 	std::vector<NormalEnemyComponent*> normalEnemies;		//NormalEnemyの管理コンテナ
 	int maxGenerateCount = 3;				//最大敵生成回数 (最大ライフ)
@@ -77,6 +79,12 @@ public:
 	/// </summary>
 	/// <param name="pGameObjectManager"></param>
 	void SetPGameObjectManager(GE::GameObjectManager* pGameObjectManager) { this->pGameObjectManager = pGameObjectManager; }
+
+	/// <summary>
+	/// オーディオマネージャセット
+	/// </summary>
+	/// <param name=""></param>
+	void SetPAudioManager(GE::AudioManager* pAudioManager) { this->pAudioManager = pAudioManager; }
 
 	/// <summary>
 	/// プレイヤーのMoveEntityポインタセット

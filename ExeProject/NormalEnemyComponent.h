@@ -1,6 +1,7 @@
 #pragma once
 #include "MoveEntity.h"
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 
 //デバッグ用
 #include <GatesEngine/Header/Input/InputDevice.h>
@@ -42,6 +43,7 @@ private:
 private:
 
 	GE::InputDevice* inputDevice = nullptr;					//デバッグ用
+	GE::AudioManager* pAudioManager = nullptr;				//オーディオ再生用
 	EnemyState enemyState = EnemyState::GENERATING;			//状態
 	GE::Math::Vector3 moveBeforePos = {};					//生成時の移動前座標
 	GE::Math::Vector3 moveAfterPos = {};					//生成時の移動後座標
@@ -126,5 +128,11 @@ public:
 	/// </summary>
 	/// <param name="pPlayerPos">プレイヤーの位置ポインタ</param>
 	void SetPPlayerPos(GE::Math::Vector3* pPlayerPos) { this->pPlayerPos = pPlayerPos; }
+
+	/// <summary>
+	/// オーディオマネージャセット
+	/// </summary>
+	/// <param name=""></param>
+	void SetPAudioManager(GE::AudioManager* pAudioManager) { this->pAudioManager = pAudioManager; }
 };
 
