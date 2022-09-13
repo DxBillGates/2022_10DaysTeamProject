@@ -10,6 +10,11 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
+const int ShadowPlayerComponent::MAX_ANIMATION_NUMBER = 4;
+const float ShadowPlayerComponent::ADD_DRAW_ANIMATION_NUMBER_TIME = 0.25f;
+const GE::Math::Vector2 ShadowPlayerComponent::TEXTURE_SIZE = { 384,96 };
+const GE::Math::Vector2 ShadowPlayerComponent::CLIP_SIZE = { 96 };
+
 ShadowPlayerComponent::ShadowPlayerComponent()
 	: moveEntity(MoveEntity())
 	, autoMove(true)
@@ -46,6 +51,19 @@ void ShadowPlayerComponent::Update(float deltaTime)
 		}
 	}
 
+	if (drawAnimationTimer >= ADD_DRAW_ANIMATION_NUMBER_TIME)
+	{
+		drawAnimationTimer = 0;
+		++drawAnimationNumber;
+
+		if (drawAnimationNumber > MAX_ANIMATION_NUMBER)
+		{
+			drawAnimationNumber = 0;
+		}
+	}
+
+	drawAnimationTimer += deltaTime;
+
 	// 移動オブジェクト用の各種更新処理
 	moveEntity.CheckTeleport(transform->position, transform->scale);
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, 1);
@@ -60,7 +78,7 @@ void ShadowPlayerComponent::LateDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(transform->scale);
 
@@ -78,6 +96,13 @@ void ShadowPlayerComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_player")->GetSRVNumber() });
+
+	GE::TextureAnimationInfo animationInfo;
+	animationInfo.clipSize = CLIP_SIZE;
+	animationInfo.pivot = { (float)drawAnimationNumber,0 };
+	animationInfo.textureSize = TEXTURE_SIZE;
+	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
+
 	graphicsDevice->DrawMesh("2DPlane");
 }
 
