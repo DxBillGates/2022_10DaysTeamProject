@@ -119,7 +119,7 @@ void SampleScene::Initialize()
 	GameUtility::SetGraphicsDevice(graphicsDevice);
 	Result::SetGraphicsDevice(graphicsDevice);
 
-	Tutorial::Initialize(true);	//チュートリアルスキップさせるならtrueに
+	Tutorial::Initialize(false);	//チュートリアルスキップさせるならtrueに
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
