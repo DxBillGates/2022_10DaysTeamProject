@@ -2,6 +2,7 @@
 #include "MoveEntity.h"
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 
 class PlayerComponent : public GE::Component
 {
@@ -17,6 +18,11 @@ private:
 	static const GE::Math::Vector2 TEXTURE_SIZE_STOP;
 	static const GE::Math::Vector2 CLIP_SIZE;
 
+	static const float FLASHING_TIME;
+
+	static const int   MAX_HP;
+	static const float MOVE_SPEED;
+
 	float drawAnimationTimer;
 	int drawAnimationNumber;
 
@@ -26,6 +32,9 @@ private:
 
 	// 無敵時間を管理
 	GE::FlagController invincibleFlag;
+	// 無敵時間中点滅用
+	float flashingTimer;
+	bool isFlashing;
 
 	// ノックバック関連
 	GE::FlagController knockbackFlag;
@@ -35,6 +44,10 @@ private:
 	int hp;
 
 	bool isMove;
+	bool isDead;
+
+	GE::AudioManager* audioManager;
+
 public:
 	PlayerComponent();
 
@@ -52,4 +65,9 @@ public:
 
 	bool CheckMovable();
 	void UpdateAttackable();
+
+	void SetAudioManager(GE::AudioManager* pAudioManager);
+private:
+	void UpdateInvinsible(float deltaTime);
+	void Move(const float GAME_TIME);
 };

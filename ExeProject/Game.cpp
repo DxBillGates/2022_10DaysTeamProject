@@ -112,6 +112,12 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(dotEffectTexture, "dotEffectTexture");
 	}
 
+	{
+		GE::Texture* explosionEffect = new GE::Texture();
+		explosionEffect->Load("Effect/howa2.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(explosionEffect, "explosionEffectTexture");
+	}
+
 	//チュートリアル (TTRはtutorialの略)
 	//「Tutorial」文字
 	{
@@ -210,6 +216,11 @@ bool Game::LoadContents()
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Dash.wav"), "DashData");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Dash"));
+	}
+
+	//効果音「Player用Hit」
+	{
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitData"), "PlayerHit"));
 	}
 
 

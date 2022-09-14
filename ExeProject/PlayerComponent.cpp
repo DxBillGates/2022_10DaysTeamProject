@@ -3,6 +3,7 @@
 #include "HitStopManager.h"
 #include "Camera2D.h"
 #include "Tutorial.h"
+#include "EffectManager.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -18,6 +19,11 @@ const float PlayerComponent::CHANGE_ANIMATION_TIME_STOP = 0.25f;
 const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_WALK = { 768,96 };
 const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_STOP = { 384,96 };
 const GE::Math::Vector2 PlayerComponent::CLIP_SIZE = { 96 };
+
+const float PlayerComponent::FLASHING_TIME = 0.2f;
+
+const int PlayerComponent::MAX_HP = 3;
+const float PlayerComponent::MOVE_SPEED = 5;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -37,38 +43,17 @@ void PlayerComponent::Start()
 
 		transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 
-	const int MAX_HP = 3;
 	hp = MAX_HP;
 }
 
 void PlayerComponent::Update(float deltaTime)
 {
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
+	bool isBeforeIsMove = isMove;
 
 	//チュートリアルなどで移動不可状態かチェック
 	if (CheckMovable()) {
-
-		// 移動方向の変更テスト
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
-			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
-		{
-			moveEntity.ChangeMoveDirection();
-		}
-
-		const float MOVE_SPEED = 5;
-
-		bool isBeforeIsMove = isMove;
-		isMove = false;
-		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A))
-		{
-			isMove = true;
-			transform->position.x -= MOVE_SPEED * GAME_TIME;
-		}
-		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D))
-		{
-			isMove = true;
-			transform->position.x += MOVE_SPEED * GAME_TIME;
-		}
+		Move(GAME_TIME);
 
 		// アニメーションリセット
 		if (isMove != isBeforeIsMove)
@@ -99,12 +84,7 @@ void PlayerComponent::Update(float deltaTime)
 	moveEntity.UpdateChangeDirectionFlag(deltaTime, GAME_TIME);
 	moveEntity.UpdateStanceAngle(deltaTime, GAME_TIME);
 
-
-	if (invincibleFlag.GetOverTimeTrigger())
-	{
-		invincibleFlag.Initialize();
-	}
-	invincibleFlag.Update(deltaTime * GAME_TIME);
+	UpdateInvinsible(deltaTime * GAME_TIME);
 
 	UpdateKnockback(deltaTime * GAME_TIME);
 
@@ -128,6 +108,10 @@ void PlayerComponent::LateDraw()
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
 	material.color = GE::Color::White();
+	if (isFlashing)
+	{
+		material.color = GE::Color(0.5f, 1);
+	}
 
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
@@ -167,10 +151,11 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 	if (invincibleFlag.GetFlag() == true)return;
 
 	--hp;
+	if (hp <= 0)isDead = true;
 
-	const float POWER = 3;
+	const float POWER = 10;
 	const float KNOCKBACK_TIME = 0.5f;
-	const float INVINCIBLE_TIME = 1.0f;
+	const float INVINCIBLE_TIME = 2.0f;
 
 	setKnockbackVector = knockbackVelocity = GE::Math::Vector3::Normalize(transform->position - otherPosition) * POWER;
 	setKnockbackVector.y = knockbackVelocity.y = 0;
@@ -186,6 +171,8 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 	invincibleFlag.SetFlag(true);
 
 	HitStopManager::GetInstance()->Active(0.5f);
+	EffectManager::GetInstance()->Active("dotEffect", transform->position + -knockbackVelocity);
+	audioManager->Use("PlayerHit")->Start();
 }
 
 void PlayerComponent::UpdateKnockback(float deltaTime)
@@ -254,6 +241,64 @@ void PlayerComponent::UpdateAttackable()
 		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL &&
 			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5, 0);
 	}
+}
+
+void PlayerComponent::SetAudioManager(GE::AudioManager* pAudioManager)
+{
+	audioManager = pAudioManager;
+}
+
+void PlayerComponent::UpdateInvinsible(float deltaTime)
+{
+	if (invincibleFlag.GetFlag() == false)return;
+
+	// 点滅切り替え
+	if (flashingTimer > FLASHING_TIME)
+	{
+		isFlashing = !isFlashing;
+		flashingTimer = 0;
+	}
+
+	// 無敵時間終了
+	if (invincibleFlag.GetOverTimeTrigger())
+	{
+		invincibleFlag.Initialize();
+		isFlashing = false;
+		flashingTimer = 0;
+	}
+
+	flashingTimer += deltaTime;
+	invincibleFlag.Update(deltaTime);
+}
+
+void PlayerComponent::Move(const float GAME_TIME)
+{
+	// 移動方向の変更テスト
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
+	{
+		moveEntity.ChangeMoveDirection();
+	}
+
+	isMove = false;
+	auto keyboard = inputDevice->GetKeyboard();
+	auto ctrler = inputDevice->GetXCtrler();
+
+	GE::Math::Vector3 moveVector = {0,0,0};
+	if (keyboard->CheckHitKey(GE::Keys::A))
+	{
+		isMove = true;
+		moveVector = { -1,0,0 };
+		moveVector *= MOVE_SPEED * GAME_TIME;
+	}
+	if (keyboard->CheckHitKey(GE::Keys::D))
+	{
+		isMove = true;
+		moveVector = { 1,0,0 };
+		moveVector *= MOVE_SPEED * GAME_TIME;
+	}
+
+	transform->position += moveVector;
 }
 
 void PlayerComponent::DrawHP()

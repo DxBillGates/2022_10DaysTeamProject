@@ -9,6 +9,7 @@
 #include "EffectManager.h"
 #include "SlashEffect.h"
 #include "DotExplosionEffect.h"
+#include "BossCrushingEffect.h"
 #include "Camera2D.h"
 #include "Tutorial.h"
 #include "GameUtility.h"
@@ -52,6 +53,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 		playerAttackManager->SetPlayer(testObject, pPlayerMoveEntity);
 		collisionManager->SetPlayer(testObject, sampleCollider);
+		playerComponent = sampleComponent;
 	}
 
 	{
@@ -99,6 +101,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		{
 			auto* slashEffect = effectManager->Add<SlashEffect>("slashEffect");
 			auto* dotEffect = effectManager->Add<DotExplosionEffect>("dotEffect");
+			auto* bossCrushingEffect = effectManager->Add<BossCrushingEffect>("bossCrushingEffect");
 		}
 	}
 
@@ -140,6 +143,7 @@ void SampleScene::Initialize()
 
 	Result::Initialize();
 
+	playerComponent->SetAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
 	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
 }

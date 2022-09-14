@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BossCrushingEffect.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="DotExplosionEffect.cpp" />
     <ClCompile Include="Effect.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BossCrushingEffect.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="DotExplosionEffect.h" />
     <ClInclude Include="Effect.h" />

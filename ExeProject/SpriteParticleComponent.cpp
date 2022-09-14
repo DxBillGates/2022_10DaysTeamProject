@@ -11,6 +11,8 @@ void SpriteParticleComponent::Start()
 
 void SpriteParticleComponent::Update(float deltaTime)
 {
+	UpdateDelayTimer(deltaTime);
+
 	//タイマー更新
 	UpdateTimer(deltaTime);
 
@@ -66,7 +68,7 @@ void SpriteParticleComponent::Initialize()
 	animeTimer = 0;
 }
 
-void SpriteParticleComponent::StartAnime()
+void SpriteParticleComponent::StartAnime(bool isDelay, float delayTime)
 {
 	moveTimer = 0;
 	animeTimer = 0;
@@ -74,10 +76,15 @@ void SpriteParticleComponent::StartAnime()
 	transform->position = initPosition;
 
 	isStart = true;
+
+	isStartDelay = isDelay;
+	startDelay = delayTime;
 }
 
 void SpriteParticleComponent::UpdateTimer(float deltaTime)
 {
+	if (isStartDelay == true)return;
+
 	moveTimer += deltaTime;
 
 	//描画時間を過ぎたら停止
@@ -101,8 +108,23 @@ void SpriteParticleComponent::UpdateTimer(float deltaTime)
 
 void SpriteParticleComponent::UpdatePos()
 {
-	if (isStart == false) { return; }
+	if (isStart == false || isStartDelay == true) { return; }
 
 	velocity += accel;
 	transform->position += velocity;
+}
+
+void SpriteParticleComponent::UpdateDelayTimer(float deltaTime)
+{
+	if (isStartDelay == false)return;
+
+	if (delayTimer > startDelay) 
+	{
+		isStartDelay = false;
+		startDelay = 0;
+		isStart = true;
+		return;
+	}
+
+	delayTimer += deltaTime;
 }

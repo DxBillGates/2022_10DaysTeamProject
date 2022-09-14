@@ -16,7 +16,7 @@ namespace GE
 		~AudioManager();
 		Audio* AddAudio(Audio* newAudio);
 		AudioData* AddAudioData(AudioData* newAudioData,const std::string& tag);
-		AudioData* GetAudioData(std::string& tag);
+		AudioData* GetAudioData(const std::string& tag);
 		Audio* Use(const std::string& tag);
 	};
 }

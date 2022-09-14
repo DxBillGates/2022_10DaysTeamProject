@@ -25,6 +25,7 @@ private:
 
 	static const GE::Math::Vector2 TEXTURE_SIZE;
 	static const GE::Math::Vector2 CLIP_SIZE;
+	static const float EXPLOSION_TIME_SPACE;
 
 private:
 	
@@ -53,6 +54,10 @@ private:
 	int drawAnimationNumber;
 
 	GE::FlagController damageFlag;
+
+	GE::FlagController deadAnimationFlag;
+	float deadAmimationTimer;
+	bool isEndDeadAnimation;
 
 public:
 	void Start() override;
@@ -96,6 +101,8 @@ public:
 	/// </summary>
 	void UpdateAnimation(float deltaTime);
 
+	void UpdateDeadAnimation(float deltaTime);
+
 	/// <summary>
 	/// 通常エネミー生成
 	/// </summary>
@@ -128,7 +135,7 @@ public:
 	/// <summary>
 	/// 自身が死んでいるか
 	/// </summary>
-	bool IsDead()const { return life <= 0; }
+	bool IsDead()const { return life <= 0 && isEndDeadAnimation; }
 
 	static void ResetGenerateCountOneAttack() { generateCountOneAttack = 0; }
 };
