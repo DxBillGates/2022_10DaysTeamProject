@@ -42,7 +42,7 @@ const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
 
 const GE::Math::Vector3 POS_RIGHT = GE::Math::Vector3(54, 402, 0) + SCALE_RIGHT / 2;
 const GE::Math::Vector3 POS_ATTACK = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486, 353, 0) / 2;
-const GE::Math::Vector3 POS_TUTORIAL = GE::Math::Vector3(1516, 286, 0) + SCALE_TUTORIAL / 2;
+const GE::Math::Vector3 POS_TUTORIAL = GE::Math::Vector3(1516, 368, 0) + SCALE_TUTORIAL / 2;
 
 void Tutorial::Initialize(bool isSkipTutorial)
 {
@@ -79,11 +79,15 @@ void Tutorial::UpdateTimer(float deltaTime)
 void Tutorial::Draw()
 {
 	bool isAttacking = PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::NONE;
-	static bool prevIsAttackable = IsAttackable() ^ isAttacking;
+	static bool prevIsAttackable = !(IsAttackable() ^ isAttacking);
 
 	//エフェクトタイマーのリセットかける
 	if (prevIsAttackable != (IsAttackable() ^ isAttacking)) {
 		MonitorEffect::StartEffect("Tutorial_Left");
+	}
+
+	if (MonitorEffect::IsStart("Tutorial_Right") == false) {
+		MonitorEffect::StartEffect("Tutorial_Right");
 	}
 
 	if (tutorialState == TutorialState::FIRST_ATTACK && isAttacking == false) {

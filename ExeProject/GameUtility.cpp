@@ -1,4 +1,5 @@
 #include "GameUtility.h"
+#include "MonitorEffect.h"
 #include <GatesEngine/Header/GUI/GUIManager.h>
 
 float GameUtility::timer = 0;
@@ -8,6 +9,11 @@ bool GameUtility::isPlaySE = true;
 GameState GameUtility::gameState = GameState::GAME;
 
 GE::IGraphicsDeviceDx12* GameUtility::graphicsDevice = nullptr;
+
+const GE::Math::Vector3 SCALE_TITLE = GE::Math::Vector3(804, 192, 0) * 0.6;
+
+const GE::Math::Vector3 POS_TITLE = GE::Math::Vector3(1430, 215, 0) + SCALE_TITLE / 2;
+
 
 void GameUtility::Initialize()
 {
@@ -41,7 +47,14 @@ void GameUtility::OnGui()
 
 void GameUtility::DrawBackground()
 {
+	//BG
 	Draw({ 1920 / 2,1080 / 2,0 }, { 1920, 1080, 0 }, "Background");
+
+	//Title
+	if (MonitorEffect::IsDraw("Tutorial_Right") &&
+		(gameState == GameState::GAME)) {
+		Draw(POS_TITLE, SCALE_TITLE, "Title");
+	}
 }
 
 void GameUtility::Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, const std::string& name)
