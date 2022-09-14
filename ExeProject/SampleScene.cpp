@@ -53,6 +53,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 		playerAttackManager->SetPlayer(testObject, pPlayerMoveEntity);
 		collisionManager->SetPlayer(testObject, sampleCollider);
+		playerComponent = sampleComponent;
 	}
 
 	{
@@ -142,6 +143,7 @@ void SampleScene::Initialize()
 
 	Result::Initialize();
 
+	playerComponent->SetAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
 	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
 }

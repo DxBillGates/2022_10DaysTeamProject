@@ -218,6 +218,11 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Dash"));
 	}
 
+	//å¯â âπÅuPlayerópHitÅv
+	{
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitData"), "PlayerHit"));
+	}
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
