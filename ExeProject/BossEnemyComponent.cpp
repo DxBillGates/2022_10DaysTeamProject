@@ -127,8 +127,8 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 	HitStopManager::GetInstance()->Active(0.5f);
 
 
-	Camera2D::GetInstance()->Shake(0.4f, 50);
-	HitStopManager::GetInstance()->Active(0.75f);
+	Camera2D::GetInstance()->Shake(0.4f, 40);
+	HitStopManager::GetInstance()->Active(0.55f);
 	EffectManager::GetInstance()->Active("slashEffect",transform->position);
 	EffectManager::GetInstance()->Active("dotEffect", transform->position);
 	//チュートリアル状態遷移用
@@ -150,7 +150,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 3;
+	maxGenerateCount = 45;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {
@@ -196,7 +196,7 @@ void BossEnemyComponent::Move()
 	if (life <= 0)return;
 
 	//ライフが半分以下になったら動き出す
-	const int START_MOVE_LIFE = Tutorial::IsSkipTutorial() ? maxGenerateCount / 2 : (maxGenerateCount - 2) / 2;
+	const int START_MOVE_LIFE = Tutorial::IsSkipTutorial() ? maxGenerateCount / 1.15f : (maxGenerateCount - 2) / 1.15f;
 	if (life <= START_MOVE_LIFE && velocity == 0) {
 		velocity = (float)(GE::RandomMaker::GetInt(0, 1) * 2 - 1);
 	}

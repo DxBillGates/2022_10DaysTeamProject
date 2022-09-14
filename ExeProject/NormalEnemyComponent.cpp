@@ -11,8 +11,8 @@
 #include "GameSetting.h"
 #include "GameUtility.h"
 
-const float NormalEnemyComponent::INIT_SCALE = 100;
-const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE;
+const float NormalEnemyComponent::INIT_SCALE = 96;
+const float NormalEnemyComponent::WALK_SPEED = INIT_SCALE/2;
 const float NormalEnemyComponent::MAX_FLYING_LOOP_TIMER = 2.0f;
 const float NormalEnemyComponent::MAX_WALK_LOOP_TIMER = 1.5f;
 const float NormalEnemyComponent::MAX_FLYING_ANIME_LOOP_TIMER = 0.3f;
@@ -175,7 +175,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 
 			Camera2D::GetInstance()->Shake(0.4f, 20);
-			HitStopManager::GetInstance()->Active(0.25f);
+			HitStopManager::GetInstance()->Active(0.4f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
@@ -200,8 +200,8 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 				Tutorial::DecrementChangeStateCount(2);
 			}
 
-			Camera2D::GetInstance()->Shake(0.4f, 20);
-			HitStopManager::GetInstance()->Active(0.25f);
+			Camera2D::GetInstance()->Shake(0.4f, 50);
+			HitStopManager::GetInstance()->Active(0.45f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position, EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 

@@ -29,7 +29,7 @@ void ShadowPlayerComponent::Start()
 
 	autoMove = true;
 
-	const float SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = 96;
 	transform->scale = SPRITE_SIZE;
 	transform->position = { 1920 * 3 / 8, transform->scale.y / 2,0 };
 
@@ -38,7 +38,7 @@ void ShadowPlayerComponent::Start()
 void ShadowPlayerComponent::Update(float deltaTime)
 {
 	const float GAME_TIME = GameSetting::GetInstance()->GetTime();
-	const float MOVE_SPEED = 7;
+	const float MOVE_SPEED = 12;
 
 	bool isMove = false;
 	if (autoMove == true && ChackMovable() == true)
