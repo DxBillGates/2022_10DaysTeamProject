@@ -128,7 +128,7 @@ void BossEnemyComponent::OnCollision(GE::GameObject* other)
 
 
 	Camera2D::GetInstance()->Shake(0.4f, 40);
-	HitStopManager::GetInstance()->Active(0.55f);
+	HitStopManager::GetInstance()->Active(0.45f);
 	EffectManager::GetInstance()->Active("slashEffect",transform->position);
 	EffectManager::GetInstance()->Active("dotEffect", transform->position);
 	//チュートリアル状態遷移用
@@ -150,7 +150,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 45;
+	maxGenerateCount = 40;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {
