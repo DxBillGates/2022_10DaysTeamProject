@@ -27,7 +27,7 @@ void Effect::Update(float deltaTime)
 
 	if (isActive.GetOverTimeTrigger() == true) 
 	{
-		isActive.SetTime(isActive.GetMaxTimeProperty());
+		isActive.SetTime(1);
 		isActive.SetFlag(false);
 	}
 

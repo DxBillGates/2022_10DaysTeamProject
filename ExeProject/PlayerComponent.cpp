@@ -342,10 +342,6 @@ void PlayerComponent::UpdateTrueDeadFlag(float deltaTime)
 		isTrueDead = true;
 		GameUtility::SetGameState(GameState::RESULT_GAMEOVER);
 	}
-
-	ImGui::Begin("aaa");
-	ImGui::Text("isTrueTimer %f", deltaTime);
-	ImGui::End();
 	isTrueDeadFlagContrller.Update(deltaTime);
 }
 
