@@ -114,6 +114,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 SampleScene::~SampleScene()
 {
+	Result::JoinThread();
 }
 
 void SampleScene::Initialize()

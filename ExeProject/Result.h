@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/Graphics/IGraphicsDeviceDx12.h>
 #include <array>
+#include <future>
 
 class Result
 {
@@ -8,6 +9,8 @@ private:
 	static float timer;
 	static bool isStartTimer;
 	static std::array<float, 8> ranking;
+	static bool isGetRanking;
+	static std::thread thread;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
@@ -20,6 +23,12 @@ public:
 	static void UpdateTimer(float deltaTime);
 
 	static void Draw();
+
+	static void EndLoadRanking() { isGetRanking = true; }
+
+	static void StartThread();
+
+	static void JoinThread();
 
 	static void SendScore(float time);
 
