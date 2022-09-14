@@ -247,7 +247,7 @@ void BossEnemyComponent::UpdateLife()
 	}
 
 	//ƒ‰ƒCƒt•Ï“®‚Å“G¶¬
-	if (life != prevLife) {
+	if (life < prevLife) {
 		isGenerate = true;
 
 		GE::Math::Vector3 effectPosition;
