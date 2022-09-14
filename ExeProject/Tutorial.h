@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/Util/Math/Vector3.h>
 #include <GatesEngine/Header/Graphics/IGraphicsDeviceDx12.h>
+#include "GameUtility.h"
 
 enum class TutorialState {
 	FIRST_ATTACK,
@@ -109,7 +110,7 @@ public:
 	/// 攻撃可能か取得
 	/// </summary>
 	/// <returns>攻撃可能フラグ (チュートリアルでないときは常時true)</returns>
-	static bool IsAttackable() { return (attackable[0] && attackable[1]) || IsEndTutorial(); }
+	static bool IsAttackable() { return (attackable[0] && attackable[1]) || (IsEndTutorial() && GameUtility::GetGameState() == GameState::GAME); }
 
 	/// <summary>
 	/// チュートリアル状況セット

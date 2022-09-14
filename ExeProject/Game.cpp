@@ -249,10 +249,16 @@ bool Game::LoadContents()
 	}
 
 
-	//効果音「Hit」
+	//効果音「HitNormal」
 	{
-		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit.wav"), "HitData");
-		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "Hit"));
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/HitNormal.wav"), "HitNormalData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "HitNormal"));
+	}
+
+	//効果音「HitBoss」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/HitBoss.wav"), "HitBossData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "HitBoss"));
 	}
 
 	//効果音「Explosion」
@@ -269,8 +275,15 @@ bool Game::LoadContents()
 
 	//効果音「Player用Hit」
 	{
-		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitData"), "PlayerHit"));
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitNormalData"), "PlayerHit"));
 	}
+
+	//効果音「CursolDecide」
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/CursolDecide.wav"), "CursolDecideData");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "CursolDecide"));
+	}
+
 
 	//モニターエフェクト用
 	MonitorEffect::Add("Tutorial_Left");

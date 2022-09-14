@@ -217,10 +217,18 @@ void SampleScene::UpdateCursol()
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN))
 	{
+		//効果音再生
+		audioManager->Use("CursolDecide")->Start();
+
+		//カーソルチェンジ (2つしか項目ないのでこれで十分)
 		cursol = cursol == 0 ? 1 : 0;
 	}
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN)) {
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) ||
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN)) {
+		//効果音再生
+		audioManager->Use("CursolDecide")->Start();
+
 		//Restart
 		if (cursol == 0) {
 			gameObjectManager.DeleteGameObjectWithTag("Enemy");

@@ -180,7 +180,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
 			//Œø‰Ê‰¹Ä¶
-			pAudioManager->Use("Hit")->Start();
+			pAudioManager->Use("HitNormal")->Start();
 
 			return;
 
@@ -206,7 +206,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
 			//Œø‰Ê‰¹Ä¶
-			pAudioManager->Use("Hit")->Start();
+			pAudioManager->Use("HitNormal")->Start();
 		}
 	}
 

@@ -1,6 +1,5 @@
 #include "Tutorial.h"
 #include "PlayerAttackManager.h"
-#include "GameUtility.h"
 #include "MonitorEffect.h"
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Graphics/Window.h>
