@@ -356,11 +356,11 @@ void PlayerComponent::Move(const float GAME_TIME)
 	// 移動方向の変更テスト
 	if (PlayerAttackManager::GetInstance()->GetAttackState() == PlayerAttackState::NONE)
 	{
-		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT && (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0))
+		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT && (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < -0.15f))
 		{
 			moveEntity.ChangeMoveDirection();
 		}
-		else if (moveEntity.GetDirectionState() == MoveDirectionState::LEFT && (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0))
+		else if (moveEntity.GetDirectionState() == MoveDirectionState::LEFT && (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0.15f))
 		{
 			moveEntity.ChangeMoveDirection();
 		}
