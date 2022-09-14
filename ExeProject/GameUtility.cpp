@@ -32,9 +32,11 @@ void GameUtility::TimerStop()
 
 void GameUtility::OnGui()
 {
+#ifdef _DEBUG
 	ImGui::Begin("Chain");
 	ImGui::Text("Chain:%d", nowChain);
 	ImGui::End();
+#endif
 }
 
 void GameUtility::DrawBackground()

@@ -21,12 +21,14 @@ void PlayerAttackManager::Initialize()
 	coolTimeFlag.Initialize();
 }
 
-void PlayerAttackManager::Update(float deltaTime)
+void PlayerAttackManager::Update(float deltaTime, bool isPlayerDead)
 {
 	if (HitStopManager::GetInstance()->IsActive())
 	{
 		return;
 	}
+
+	if (isPlayerDead == true)return;
 
 	TransitionAttackStateProcess();
 	AttackProcess();

@@ -40,6 +40,11 @@ bool Game::LoadContents()
 	playerTextureWalk->Load("Player_walk.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(playerTextureWalk, "texture_player_walk");
 
+	GE::Texture* playerTextureDead = new GE::Texture();
+	playerTextureDead->Load("Player_Die.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+	graphicsDevice.GetTextureManager()->Add(playerTextureDead, "texture_player_dead");
+
+
 	GE::Texture* shadowPlayerTexture = new GE::Texture();
 	shadowPlayerTexture->Load("Player_Shadow.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
 	graphicsDevice.GetTextureManager()->Add(shadowPlayerTexture, "Player_Shadow");
@@ -268,10 +273,6 @@ bool Game::Update()
 	GE::GUIManager::StartFrame();
 	GameSetting::GetInstance()->ChangingGameTime(timer.GetElapsedTime());
 	Application::Update();
-
-	ImGui::Begin("Framerate");
-	ImGui::Text("%f", 1.0f / timer.GetElapsedTime());
-	ImGui::End();
 
 	return true;
 }

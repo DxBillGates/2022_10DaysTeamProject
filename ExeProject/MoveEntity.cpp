@@ -94,7 +94,7 @@ void MoveEntity::UpdateChangeDirectionFlag(float deltaTime,float gameTime)
 
 	angles.y = GE::Math::Lerp(startAngleValue, endAngleValue, lerpTime * gameTime);
 
-	changeMoveDirectionFlag.Update(deltaTime);
+	changeMoveDirectionFlag.Update(deltaTime * gameTime);
 }
 
 void MoveEntity::ChangeMoveDirection()

@@ -4,6 +4,7 @@
 #include "Camera2D.h"
 #include "Tutorial.h"
 #include "EffectManager.h"
+#include "PlayerAttackManager.h"
 
 #include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
@@ -13,11 +14,15 @@
 
 const int PlayerComponent::MAX_ANIMATION_NUMBER_WALK = 8;
 const int PlayerComponent::MAX_ANIMATION_NUMBER_STOP = 4;
+const int PlayerComponent::MAX_ANIMATION_NUMBER_DEAD = 2;
+
 const float PlayerComponent::CHANGE_ANIMATION_TIME_WALK = 0.25f / 2;
 const float PlayerComponent::CHANGE_ANIMATION_TIME_STOP = 0.25f;
+const float PlayerComponent::CHANGE_ANIMATION_TIME_DEAD = 1.5f;
 
 const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_WALK = { 768,96 };
 const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_STOP = { 384,96 };
+const GE::Math::Vector2 PlayerComponent::TEXTURE_SIZE_DEAD = { 192,96 };
 const GE::Math::Vector2 PlayerComponent::CLIP_SIZE = { 96 };
 
 const float PlayerComponent::FLASHING_TIME = 0.2f;
@@ -44,6 +49,18 @@ void PlayerComponent::Start()
 		transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 
 	hp = MAX_HP;
+
+	isMove = false;
+	isDead = false;
+
+	flashingTimer = 0;
+	isFlashing = false;
+
+	invincibleFlag.Initialize();
+
+	isTrueDeadFlagContrller.SetFlag(false);
+	isTrueDeadFlagContrller.SetTime(0);
+	isTrueDeadFlagContrller.SetMaxTimeProperty(CHANGE_ANIMATION_TIME_DEAD * 2);
 }
 
 void PlayerComponent::Update(float deltaTime)
@@ -61,16 +78,22 @@ void PlayerComponent::Update(float deltaTime)
 			drawAnimationNumber = 0;
 		}
 
-		const float MAX_ANIMATION_TIME = isMove ? CHANGE_ANIMATION_TIME_WALK : CHANGE_ANIMATION_TIME_STOP;
+		float MAX_ANIMATION_TIME = isMove ? CHANGE_ANIMATION_TIME_WALK : CHANGE_ANIMATION_TIME_STOP;
+		MAX_ANIMATION_TIME = isDead || isTrueDead ? CHANGE_ANIMATION_TIME_DEAD : MAX_ANIMATION_TIME;
 		if (drawAnimationTimer >= MAX_ANIMATION_TIME)
 		{
 			drawAnimationTimer = 0;
 			++drawAnimationNumber;
 
-			const int MAX_ANIMATION_NUMBER = isMove ? MAX_ANIMATION_NUMBER_WALK : MAX_ANIMATION_NUMBER_STOP;
+			int MAX_ANIMATION_NUMBER = isMove ? MAX_ANIMATION_NUMBER_WALK : MAX_ANIMATION_NUMBER_STOP;
+			MAX_ANIMATION_NUMBER = isDead || isTrueDead ? MAX_ANIMATION_NUMBER_DEAD : MAX_ANIMATION_NUMBER;
 			if (drawAnimationNumber >= MAX_ANIMATION_NUMBER)
 			{
 				drawAnimationNumber = 0;
+				if (isDead || isTrueDead)
+				{
+					drawAnimationNumber = MAX_ANIMATION_NUMBER_DEAD - 1;
+				}
 			}
 		}
 
@@ -90,6 +113,8 @@ void PlayerComponent::Update(float deltaTime)
 
 	//チュートリアル時攻撃可能かチェック
 	UpdateAttackable();
+
+	UpdateTrueDeadFlag(deltaTime);
 }
 
 void PlayerComponent::LateDraw()
@@ -123,12 +148,15 @@ void PlayerComponent::LateDraw()
 
 
 	int resourceNumber = isMove ? graphicsDevice->GetTextureManager()->Get("texture_player_walk")->GetSRVNumber() : graphicsDevice->GetTextureManager()->Get("texture_player")->GetSRVNumber();
+	resourceNumber = isDead || isTrueDead ? graphicsDevice->GetTextureManager()->Get("texture_player_dead")->GetSRVNumber() : resourceNumber;
+
 	renderQueue->AddSetShaderResource({ 4,resourceNumber });
 
 	GE::TextureAnimationInfo animationInfo;
 	animationInfo.clipSize = CLIP_SIZE;
 	animationInfo.pivot = { (float)drawAnimationNumber,0 };
 	animationInfo.textureSize = isMove ? TEXTURE_SIZE_WALK : TEXTURE_SIZE_STOP;
+	animationInfo.textureSize = isDead || isTrueDead ? TEXTURE_SIZE_DEAD : animationInfo.textureSize;
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&animationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 	graphicsDevice->DrawMesh("2DPlane");
@@ -138,6 +166,8 @@ void PlayerComponent::LateDraw()
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
+	if (isDead == true)return;
+
 	Knockback(other->GetTransform()->position);
 }
 
@@ -151,11 +181,24 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 	if (invincibleFlag.GetFlag() == true)return;
 
 	--hp;
-	if (hp <= 0)isDead = true;
 
-	const float POWER = 10;
+	float POWER = 10;
 	const float KNOCKBACK_TIME = 0.5f;
 	const float INVINCIBLE_TIME = 2.0f;
+
+	HitStopManager::GetInstance()->Active(0.5f);
+	EffectManager::GetInstance()->Active("dotEffect", transform->position + -knockbackVelocity);
+	audioManager->Use("PlayerHit")->Start();
+
+	if (hp <= 0)
+	{
+		isDead = true;
+		HitStopManager::GetInstance()->Active(1.f);
+		POWER = 20;
+		isTrueDeadFlagContrller.SetFlag(true);
+		isTrueDeadFlagContrller.SetTime(0);
+		drawAnimationNumber = 0;
+	}
 
 	setKnockbackVector = knockbackVelocity = GE::Math::Vector3::Normalize(transform->position - otherPosition) * POWER;
 	setKnockbackVector.y = knockbackVelocity.y = 0;
@@ -166,13 +209,12 @@ void PlayerComponent::Knockback(const GE::Math::Vector3& otherPosition)
 	knockbackFlag.SetFlag(true);
 
 	// 無敵時間用のフラグ初期化
-	invincibleFlag.Initialize();
-	invincibleFlag.SetMaxTimeProperty(INVINCIBLE_TIME);
-	invincibleFlag.SetFlag(true);
-
-	HitStopManager::GetInstance()->Active(0.5f);
-	EffectManager::GetInstance()->Active("dotEffect", transform->position + -knockbackVelocity);
-	audioManager->Use("PlayerHit")->Start();
+	if (isDead == false)
+	{
+		invincibleFlag.Initialize();
+		invincibleFlag.SetMaxTimeProperty(INVINCIBLE_TIME);
+		invincibleFlag.SetFlag(true);
+	}
 }
 
 void PlayerComponent::UpdateKnockback(float deltaTime)
@@ -248,6 +290,11 @@ void PlayerComponent::SetAudioManager(GE::AudioManager* pAudioManager)
 	audioManager = pAudioManager;
 }
 
+bool PlayerComponent::IsDead()
+{
+	return isDead | isTrueDead;
+}
+
 void PlayerComponent::UpdateInvinsible(float deltaTime)
 {
 	if (invincibleFlag.GetFlag() == false)return;
@@ -271,20 +318,42 @@ void PlayerComponent::UpdateInvinsible(float deltaTime)
 	invincibleFlag.Update(deltaTime);
 }
 
+void PlayerComponent::UpdateTrueDeadFlag(float deltaTime)
+{
+	if (isTrueDead == true)
+	{
+		drawAnimationNumber = MAX_ANIMATION_NUMBER_DEAD - 1;
+	}
+
+	if (isTrueDeadFlagContrller.GetFlag() == false)return;
+
+	if (isTrueDeadFlagContrller.GetOverTimeTrigger())
+	{
+		isTrueDead = true;
+	}
+
+	isTrueDeadFlagContrller.Update(deltaTime);
+}
+
 void PlayerComponent::Move(const float GAME_TIME)
 {
+	if (isDead || isTrueDead)return;
+
 	isMove = false;
 	auto keyboard = inputDevice->GetKeyboard();
 	auto ctrler = inputDevice->GetXCtrler();
 
 	// 移動方向の変更テスト
-	if(moveEntity.GetDirectionState() == MoveDirectionState::RIGHT && (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0))
+	if (PlayerAttackManager::GetInstance()->GetAttackState() == PlayerAttackState::NONE)
 	{
-		moveEntity.ChangeMoveDirection();
-	}
-	else if (moveEntity.GetDirectionState() == MoveDirectionState::LEFT && (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0))
-	{
-		moveEntity.ChangeMoveDirection();
+		if (moveEntity.GetDirectionState() == MoveDirectionState::RIGHT && (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0))
+		{
+			moveEntity.ChangeMoveDirection();
+		}
+		else if (moveEntity.GetDirectionState() == MoveDirectionState::LEFT && (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0))
+		{
+			moveEntity.ChangeMoveDirection();
+		}
 	}
 
 

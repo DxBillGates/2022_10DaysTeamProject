@@ -157,7 +157,7 @@ void SampleScene::Update(float deltaTime)
 	particleManager.Update(deltaTime);
 
 	EffectManager::GetInstance()->Update(deltaTime);
-	PlayerAttackManager::GetInstance()->Update(deltaTime);
+	PlayerAttackManager::GetInstance()->Update(deltaTime,playerComponent->IsDead());
 	HitStopManager::GetInstance()->Update(deltaTime);
 
 	//if (GE::CollisionManager::CheckHit(col1, col2))

@@ -47,7 +47,7 @@ public:
 	static PlayerAttackManager* GetInstance();
 
 	void Initialize();
-	void Update(float deltaTime);
+	void Update(float deltaTime,bool isPlayerDead);
 
 	PlayerAttackState GetAttackState();
 	void SetPlayer(GE::GameObject* pPlayer,MoveEntity* moveEntity);

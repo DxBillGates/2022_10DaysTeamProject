@@ -220,7 +220,7 @@ void NormalEnemyComponent::UpdateTimer(float deltaTime)
 		flyingLoopTimer -= MAX_FLYING_LOOP_TIMER;
 	}
 
-	walkingLoopTimer += deltaTime;
+	walkingLoopTimer += deltaTime * GameSetting::GetInstance()->GetTime();
 	if (walkingLoopTimer >= MAX_WALK_LOOP_TIMER) {
 		walkingLoopTimer -= MAX_WALK_LOOP_TIMER;
 

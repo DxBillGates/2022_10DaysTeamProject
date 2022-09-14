@@ -10,12 +10,16 @@ private:
 	// テクスチャアニメーション時に何番までアニメーションさせるか
 	static const int MAX_ANIMATION_NUMBER_WALK;
 	static const int MAX_ANIMATION_NUMBER_STOP;
+	static const int MAX_ANIMATION_NUMBER_DEAD;
+
 	// 何秒でアニメーションを切り替えるか
 	static const float CHANGE_ANIMATION_TIME_WALK;
 	static const float CHANGE_ANIMATION_TIME_STOP;
+	static const float CHANGE_ANIMATION_TIME_DEAD;
 
 	static const GE::Math::Vector2 TEXTURE_SIZE_WALK;
 	static const GE::Math::Vector2 TEXTURE_SIZE_STOP;
+	static const GE::Math::Vector2 TEXTURE_SIZE_DEAD;
 	static const GE::Math::Vector2 CLIP_SIZE;
 
 	static const float FLASHING_TIME;
@@ -45,6 +49,10 @@ private:
 
 	bool isMove;
 	bool isDead;
+	
+	// 本当に死んだ判定させるためのフラグ管理用
+	GE::FlagController isTrueDeadFlagContrller;
+	bool isTrueDead;
 
 	GE::AudioManager* audioManager;
 
@@ -67,7 +75,10 @@ public:
 	void UpdateAttackable();
 
 	void SetAudioManager(GE::AudioManager* pAudioManager);
+
+	bool IsDead();
 private:
 	void UpdateInvinsible(float deltaTime);
+	void UpdateTrueDeadFlag(float deltaTime);
 	void Move(const float GAME_TIME);
 };
