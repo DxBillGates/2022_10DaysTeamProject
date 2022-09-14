@@ -55,7 +55,7 @@ const GE::Math::Vector3 POS_CURSOL_EXIT = POS_BASE_MONITOR_LEFT + GE::Math::Vect
 
 const GE::Math::Vector3 POS_GAMEOVER = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(73, 153, 0) + SCALE_GAMEOVER / 2;
 
-const float NEXT_TEXT_TIME = 5.0f;
+const float Result::NEXT_TEXT_TIME = 5.0f;
 
 void Result::Initialize()
 {
@@ -92,7 +92,7 @@ void Result::Draw()
 	}
 
 	//¶‘¤
-	if (timer >= (GameUtility::GetGameState() == GameState::RESULT_CLEAR ? NEXT_TEXT_TIME : NEXT_TEXT_TIME - 3.0f)) {
+	if (IsEnableMoveCursol()) {
 		if (MonitorEffect::IsStart("Select") == false) {
 			MonitorEffect::StartEffect("Select");
 		}
@@ -222,6 +222,11 @@ void Result::JoinThread()
 	if (thread.joinable()) {
 		thread.join();
 	}
+}
+
+bool Result::IsEnableMoveCursol()
+{
+	return timer >= (GameUtility::GetGameState() == GameState::RESULT_CLEAR ? NEXT_TEXT_TIME : NEXT_TEXT_TIME - 3.0f);
 }
 
 void Result::SendScore(float time)

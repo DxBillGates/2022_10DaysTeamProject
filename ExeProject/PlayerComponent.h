@@ -74,7 +74,7 @@ public:
 	bool CheckMovable();
 	void UpdateAttackable();
 
-	void SetAudioManager(GE::AudioManager* pAudioManager);
+	void SetPAudioManager(GE::AudioManager* pAudioManager);
 
 	bool IsDead();
 private:

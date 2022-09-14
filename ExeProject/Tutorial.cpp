@@ -4,6 +4,14 @@
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 
+TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
+float Tutorial::tutorialTimer = 0;
+int Tutorial::changeStateCount = 1;
+bool Tutorial::attackable[2] = { false, false };
+bool Tutorial::isSkipTutorial = false;
+
+GE::IGraphicsDeviceDx12* Tutorial::graphicsDevice = nullptr;
+
 const GE::Math::Vector3 Tutorial::POS_GENERATE_ENEMY_1 = { 1920 * 25 / 32, 1080 / 2 + 50, 0 };
 const GE::Math::Vector3 Tutorial::POS_GENERATE_ENEMY_2 = { 1920 * 23 / 32, 1080 / 2 + 200, 0 };
 
@@ -20,14 +28,6 @@ const float Tutorial::FOURTH_PLAYER_POS_X = 1920 * 2 / 32;
 const float Tutorial::FOURTH_SHADOW_POS_X = 1920 * 30 / 32;
 
 const float Tutorial::PRE_START_TIME = 1.0f;
-
-TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
-float Tutorial::tutorialTimer = 0;
-int Tutorial::changeStateCount = 1;
-bool Tutorial::attackable[2] = {false, false};
-bool Tutorial::isSkipTutorial = false;
-
-GE::IGraphicsDeviceDx12* Tutorial::graphicsDevice = nullptr;
 
 const GE::Math::Vector3 SCALE_TUTORIAL = { 320, 64, 0 };
 const GE::Math::Vector3 SCALE_LEFT = { 512,256,0 };

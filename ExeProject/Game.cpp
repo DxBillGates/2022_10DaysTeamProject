@@ -291,6 +291,12 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "CursolDecide"));
 	}
 
+	//BGM
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/BGM.wav"), "BGM");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "BGM"));
+	}
+
 
 	//モニターエフェクト用
 	MonitorEffect::Add("Tutorial_Left");

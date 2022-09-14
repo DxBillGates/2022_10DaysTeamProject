@@ -149,7 +149,7 @@ void SampleScene::Initialize()
 
 	MonitorEffect::Initialize();
 
-	playerComponent->SetAudioManager(audioManager);
+	playerComponent->SetPAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
 	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
 
@@ -159,6 +159,11 @@ void SampleScene::Initialize()
 void SampleScene::Update(float deltaTime)
 {
 	Camera2D::GetInstance()->Update(deltaTime);
+
+	if (Tutorial::IsEndTutorial() && GameUtility::GetClearTime() >= 0.5f) {
+		//BGMÄ¶ (‚¢‚Á‚½‚ñ–ˆƒtƒŒ[ƒ€ŽÀs)
+		audioManager->Use("BGM")->Start();
+	}
 
 	bossEnemyComponent->GenerateNormalEnemy();
 	gameObjectManager.Update(deltaTime);
@@ -180,8 +185,9 @@ void SampleScene::Update(float deltaTime)
 	auto collManager = CollisionManager::GetInstance();
 	collManager->Update(deltaTime);
 
-	if (GameUtility::GetGameState() == GameState::RESULT_CLEAR ||
-		GameUtility::GetGameState() == GameState::RESULT_GAMEOVER) {
+	if ((GameUtility::GetGameState() == GameState::RESULT_CLEAR ||
+		GameUtility::GetGameState() == GameState::RESULT_GAMEOVER) &&
+		Result::IsEnableMoveCursol()) {
 		UpdateCursol();
 	}
 }

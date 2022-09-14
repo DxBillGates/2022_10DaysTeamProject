@@ -21,6 +21,8 @@ private:
 	static void DrawNum(const std::string& num, const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, float padding = 0);
 
 public:
+	static const float NEXT_TEXT_TIME;
+
 	static void Initialize();
 	static void Update(float deltaTime);
 
@@ -35,6 +37,8 @@ public:
 	static void StartThread();
 
 	static void JoinThread();
+
+	static bool IsEnableMoveCursol();
 
 	static void SendScore(float time);
 

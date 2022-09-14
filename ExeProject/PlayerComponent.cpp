@@ -287,7 +287,7 @@ void PlayerComponent::UpdateAttackable()
 	}
 }
 
-void PlayerComponent::SetAudioManager(GE::AudioManager* pAudioManager)
+void PlayerComponent::SetPAudioManager(GE::AudioManager* pAudioManager)
 {
 	audioManager = pAudioManager;
 }

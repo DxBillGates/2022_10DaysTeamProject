@@ -106,7 +106,7 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 			isInput = true;
 		}
 
-		if (isInput == true)
+		if (isInput == true && GameUtility::GetGameState() == GameState::GAME)
 		{
 
 			TransitionAttackState(PRE_TIME, PlayerAttackState::PRE);
