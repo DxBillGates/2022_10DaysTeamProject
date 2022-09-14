@@ -150,7 +150,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 45;
+	maxGenerateCount = 3;// 45;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {
@@ -279,7 +279,7 @@ void BossEnemyComponent::UpdateLife()
 	
 	//ライフ0以下でリザルトへ
 	if (life <= 0 && GameUtility::GetGameState() == GameState::GAME && deadAnimationFlag.GetFlag() == false) {
-
+		Result::StartThread();
 		deadAnimationFlag.SetFlag(true);
 		deadAnimationFlag.SetTime(0);
 
@@ -348,8 +348,6 @@ void BossEnemyComponent::UpdateDeadAnimation(float deltaTime)
 	// スコア更新
 	if (deadAnimationFlag.GetOverTimeTrigger())
 	{
-		Result::SendScore(GameUtility::GetClearTime());
-		Result::GetRanking();
 		GameUtility::SetGameState(GameState::RESULT);
 
 		deadAnimationFlag.SetFlag(false);
