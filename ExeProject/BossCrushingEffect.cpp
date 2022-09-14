@@ -13,7 +13,7 @@ void BossCrushingEffect::Update(float deltaTime)
 	const GE::Math::Vector3 START_SIZE = { 100,100,0 };
 	const GE::Math::Vector3 END_SIZE = { 1000,1000,0 };
 
-	float lerpTime = isActive.GetTime() / isActive.GetMaxTimeProperty();
+	float lerpTime = isActive.GetTime()/* / isActive.GetMaxTimeProperty()*/;
 	size = GE::Math::Vector3::Lerp(START_SIZE, END_SIZE, GE::Math::Easing::EaseInExpo(lerpTime));
 
 	Effect::Update(deltaTime);

@@ -22,7 +22,7 @@ void SlashEffect::Update(float deltaTime)
 	const GE::Math::Vector3 START_SIZE = { 1000,100,0 };
 	const GE::Math::Vector3 END_SIZE = { 200,2000,0 };
 
-	float lerpTime = isActive.GetTime() / isActive.GetMaxTimeProperty();
+	float lerpTime = isActive.GetTime()/* / isActive.GetMaxTimeProperty()*/;
 	size = GE::Math::Vector3::Lerp(START_SIZE, END_SIZE, GE::Math::Easing::EaseInOutCirc(lerpTime));
 
 	//GE::Utility::Printf("%3.3f\n", isActive.GetTime());

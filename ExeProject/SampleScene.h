@@ -16,6 +16,10 @@ private:
 	bool isSkipTutorial = false;
 
 	int cursol = 0;
+
+	// 左スティックが前フレームに一定値以上だったか
+	bool isLStickMovable;
+	bool isBeforeLStickMovable;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);

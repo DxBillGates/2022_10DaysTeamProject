@@ -12,7 +12,7 @@ MoveEntity::MoveEntity()
 
 void MoveEntity::Initialize()
 {
-	const float CHANGE_DIRECTION_TIME = 0.3f;
+	const float CHANGE_DIRECTION_TIME = 0.2f;
 
 	changeMoveDirectionFlag.Initialize();
 	changeMoveDirectionFlag.SetMaxTimeProperty(CHANGE_DIRECTION_TIME);
@@ -71,7 +71,7 @@ void MoveEntity::UpdateChangeDirectionFlag(float deltaTime,float gameTime)
 	if (changeMoveDirectionFlag.GetOverTimeTrigger())
 	{
 		changeMoveDirectionFlag.SetFlag(false);
-		changeMoveDirectionFlag.SetTime(changeMoveDirectionFlag.GetMaxTimeProperty());
+		changeMoveDirectionFlag.SetTime(1);
 	}
 
 	float startAngleValue;
@@ -90,9 +90,9 @@ void MoveEntity::UpdateChangeDirectionFlag(float deltaTime,float gameTime)
 	}
 
 	// ƒtƒ‰ƒO‚ÌŒo‰ßŽžŠÔ‚ð0 ~ 1‚É•ÏŠ·
-	float lerpTime = (changeMoveDirectionFlag.GetTime() / changeMoveDirectionFlag.GetMaxTimeProperty());
+	float lerpTime = (changeMoveDirectionFlag.GetTime()/* / changeMoveDirectionFlag.GetMaxTimeProperty()*/);
 
-	angles.y = GE::Math::Lerp(startAngleValue, endAngleValue, lerpTime * gameTime);
+	angles.y = GE::Math::Lerp(startAngleValue, endAngleValue, GE::Math::Easing::EaseInOutExpo(lerpTime));
 
 	changeMoveDirectionFlag.Update(deltaTime * gameTime);
 }

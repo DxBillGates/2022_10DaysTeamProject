@@ -220,10 +220,19 @@ void SampleScene::LateDraw()
 
 void SampleScene::UpdateCursol()
 {
+	isBeforeLStickMovable = isLStickMovable;
+
+	auto ctrler = inputDevice->GetXCtrler();
+	const float LSTICK_DEAD_ZONE = 0.15f;
+	isLStickMovable = ctrler->GetLStickY() > LSTICK_DEAD_ZONE || ctrler->GetLStickY() < -LSTICK_DEAD_ZONE;
+
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP) ||
-		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN))
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN) ||
+		ctrler->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_UP) || 
+		ctrler->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_DOWN) || 
+		(isBeforeLStickMovable == false && isLStickMovable == true))
 	{
 		//効果音再生
 		audioManager->Use("CursolDecide")->Start();
@@ -233,10 +242,22 @@ void SampleScene::UpdateCursol()
 	}
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) ||
-		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN)) {
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN) ||
+		ctrler->CheckHitButton(GE::XInputControllerButton::XINPUT_A)) {
 		//効果音再生
 		audioManager->Use("CursolDecide")->Start();
+	}
+	bool isInputExitKey = inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN);
+	if (ctrler->CheckHitButton(GE::XInputControllerButton::XINPUT_A))
+	{
+		isInputExitKey = true;
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+	{
+		isInputExitKey = true;
+	}
 
+	if (isInputExitKey == true) {
 		//Restart
 		if (cursol == 0) {
 			gameObjectManager.DeleteGameObjectWithTag("Enemy");
@@ -252,7 +273,7 @@ void SampleScene::UpdateCursol()
 		//Exit
 		else {
 			//ゲーム終了させるコード追加お願いします
-
+			Scene::isTerminateApplication = true;
 		}
 	}
 }

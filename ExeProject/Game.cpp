@@ -354,7 +354,9 @@ bool Game::Update()
 	GameSetting::GetInstance()->ChangingGameTime(timer.GetElapsedTime());
 	Application::Update();
 
-	return true;
+	bool isTerminate = !sceneManager.GetCurrentScene()->IsTerminateApplication();
+
+	return isTerminate;
 }
 
 bool Game::Draw()
