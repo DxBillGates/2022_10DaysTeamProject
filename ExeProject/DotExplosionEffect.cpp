@@ -17,7 +17,7 @@ void DotExplosionEffect::Update(float deltaTime)
 	const GE::Math::Vector3 START_SIZE = { 100,100,0 };
 	const GE::Math::Vector3 END_SIZE = { 500,500,0 };
 
-	float lerpTime = isActive.GetTime() / isActive.GetMaxTimeProperty();
+	float lerpTime = isActive.GetTime()/* / isActive.GetMaxTimeProperty()*/;
 	size = GE::Math::Vector3::Lerp(START_SIZE, END_SIZE, GE::Math::Easing::EaseInOutCirc(lerpTime));
 
 	Effect::Update(deltaTime);

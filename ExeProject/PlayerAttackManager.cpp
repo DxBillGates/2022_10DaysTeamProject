@@ -191,7 +191,7 @@ void PlayerAttackManager::AttackProcess()
 {
 	if (attackState == PlayerAttackState::NONE)return;
 
-	float lerpTime = attackStateFlag.GetTime() / attackStateFlag.GetMaxTimeProperty();
+	float lerpTime = attackStateFlag.GetTime()/* / attackStateFlag.GetMaxTimeProperty()*/;
 
 	switch (attackState)
 	{
@@ -222,8 +222,8 @@ void PlayerAttackManager::AttackProcess()
 		}
 		break;
 	case PlayerAttackState::ACTIVE:
-		player.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.playerOriginPosition, vibrationInfo.shadowPlayerOriginPosition, lerpTime);
-		shadowPlayer.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.shadowPlayerOriginPosition, vibrationInfo.playerOriginPosition, lerpTime);
+		player.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.playerOriginPosition, vibrationInfo.shadowPlayerOriginPosition,GE::Math::Easing::EaseInOutExpo(lerpTime));
+		shadowPlayer.object->GetTransform()->position = GE::Math::Vector3::Lerp(vibrationInfo.shadowPlayerOriginPosition, vibrationInfo.playerOriginPosition, GE::Math::Easing::EaseInOutExpo(lerpTime));
 		break;
 	case PlayerAttackState::END:
 		break;

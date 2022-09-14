@@ -46,7 +46,7 @@ void PlayerComponent::Start()
 	const float SPRITE_SIZE = 96;
 	transform->scale = SPRITE_SIZE;
 
-		transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
+	transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
 
 	hp = MAX_HP;
 
@@ -230,7 +230,7 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 	}
 
 	// ノックバックの経過時間を取得し線形補間でノックバックのベクトルを減衰させる
-	float lerpTime = knockbackFlag.GetTime() / knockbackFlag.GetMaxTimeProperty();
+	float lerpTime = knockbackFlag.GetTime()/* / knockbackFlag.GetMaxTimeProperty()*/;
 	knockbackVelocity = GE::Math::Vector3::Lerp(setKnockbackVector, GE::Math::Vector3(), lerpTime);
 
 	knockbackFlag.Update(deltaTime);
@@ -238,27 +238,35 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 
 bool PlayerComponent::CheckMovable()
 {
+	bool isLeftMove = inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A);
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))isLeftMove = true;
+	if (inputDevice->GetXCtrler()->GetLStickX() < -0.15f)isLeftMove = true;
+
+	bool isRightMove = inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D);
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))isRightMove = true;
+	if (inputDevice->GetXCtrler()->GetLStickX() > 0.15f)isRightMove = true;
+
 	if (Tutorial::GetTutorialState() == TutorialState::FIRST_ATTACK) {
 		//左のみ、指定位置まで移動可能
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::D) == false &&
+		return isRightMove == false &&
 			!(transform->position.x <= Tutorial::FIRST_PLAYER_POS_X);
 	}
-	else if(Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
+	else if (Tutorial::GetTutorialState() == TutorialState::SECOND_ATTACK) {
 		//右のみ、指定位置まで移動可能
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+		return isLeftMove == false &&
 			!(transform->position.x >= Tutorial::SECOND_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
 		//右のみ、下側の指定位置まで移動可能
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+		return isLeftMove == false &&
 			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
-			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X);
+				transform->position.x >= Tutorial::THIRD_PLAYER_POS_X);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
 		//右のみ、下側の特定の位置以外で移動可能
-		return inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::A) == false &&
+		return isLeftMove == false &&
 			!(moveEntity.GetStanceState() == StanceState::NORMAL &&
-			transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5);
+				transform->position.x >= Tutorial::FOURTH_PLAYER_POS_X - 5 && transform->position.x < Tutorial::FOURTH_PLAYER_POS_X + 5);
 	}
 
 	//チュートリアル外では自由に移動できる
@@ -277,7 +285,7 @@ void PlayerComponent::UpdateAttackable()
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::THIRD_ATTACK) {
 		//下側の特定の位置で攻撃可能
-		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL && 
+		Tutorial::SetAttackable(moveEntity.GetStanceState() == StanceState::NORMAL &&
 			transform->position.x >= Tutorial::THIRD_PLAYER_POS_X, 0);
 	}
 	else if (Tutorial::GetTutorialState() == TutorialState::FOURTH_ATTACK) {
@@ -362,14 +370,14 @@ void PlayerComponent::Move(const float GAME_TIME)
 	}
 
 
-	GE::Math::Vector3 moveVector = {0,0,0};
-	if (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0)
+	GE::Math::Vector3 moveVector = { 0,0,0 };
+	if (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < -0.15f)
 	{
 		isMove = true;
 		moveVector = { -1,0,0 };
 		moveVector *= MOVE_SPEED * GAME_TIME;
 	}
-	if (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0)
+	if (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0.15f)
 	{
 		isMove = true;
 		moveVector = { 1,0,0 };
@@ -385,7 +393,7 @@ void PlayerComponent::DrawHP()
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSpriteTextureAnimationShader");
-	
+
 	GE::Math::Matrix4x4 modelMatrix;
 
 	GE::TextureAnimationInfo animationInfo;

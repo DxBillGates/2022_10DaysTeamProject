@@ -24,7 +24,7 @@ void GameSetting::ChangingGameTime(float deltaTime)
 		changeGameTimeFlag.SetFlag(false);
 	}
 
-	float lerpTime = changeGameTimeFlag.GetTime() / changeGameTimeFlag.GetMaxTimeProperty();
+	float lerpTime = changeGameTimeFlag.GetTime()/* / changeGameTimeFlag.GetMaxTimeProperty()*/;
 	gameTime = GE::Math::Lerp(beforeGameTime, afterGameTime, lerpTime);
 
 	changeGameTimeFlag.Update(deltaTime);

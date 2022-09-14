@@ -215,8 +215,8 @@ void SampleScene::UpdateCursol()
 	isBeforeLStickMovable = isLStickMovable;
 
 	auto ctrler = inputDevice->GetXCtrler();
-	const float LSTICK_DEAD_ZONE = 0;
-	isLStickMovable = ctrler->GetLStickY() > LSTICK_DEAD_ZONE || ctrler->GetLStickY() < LSTICK_DEAD_ZONE;
+	const float LSTICK_DEAD_ZONE = 0.15f;
+	isLStickMovable = ctrler->GetLStickY() > LSTICK_DEAD_ZONE || ctrler->GetLStickY() < -LSTICK_DEAD_ZONE;
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S) ||

@@ -91,7 +91,7 @@ void BossEnemyComponent::LateDraw()
 
 	if (deadAnimationFlag.GetFlag() == true)
 	{
-		float lerpTime = deadAnimationFlag.GetTime() / deadAnimationFlag.GetMaxTimeProperty();
+		float lerpTime = deadAnimationFlag.GetTime()/* / deadAnimationFlag.GetMaxTimeProperty()*/;
 		material.color.a = GE::Math::Lerp(1, 0, lerpTime);
 	}
 
