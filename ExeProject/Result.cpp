@@ -35,6 +35,7 @@ const GE::Math::Vector3 SCALE_LOADING_FAILED = { 413, 64, 0 };
 const GE::Math::Vector3 SCALE_RESTART = { 265, 64, 0 };
 const GE::Math::Vector3 SCALE_EXIT = { 145, 64, 0 };
 const GE::Math::Vector3 SCALE_CURSOL = {32, 32, 0};
+const GE::Math::Vector3 SCALE_GAMEOVER = { 354, 64, 0 };
 
 const GE::Math::Vector3 POS_BASE_MONITOR_LEFT = { 12, 348, 0 };
 const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
@@ -52,6 +53,8 @@ const GE::Math::Vector3 POS_EXIT = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(148
 const GE::Math::Vector3 POS_CURSOL_RESTART = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(36 + SCALE_CURSOL.x, POS_RESTART.y - POS_BASE_MONITOR_LEFT.y, 0);
 const GE::Math::Vector3 POS_CURSOL_EXIT = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(36 + SCALE_CURSOL.x, POS_EXIT.y - POS_BASE_MONITOR_LEFT.y, 0);
 
+const GE::Math::Vector3 POS_GAMEOVER = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(73, 153, 0) + SCALE_GAMEOVER / 2;
+
 const float NEXT_TEXT_TIME = 5.0f;
 
 void Result::Initialize()
@@ -67,7 +70,8 @@ void Result::Initialize()
 
 void Result::Update(float deltaTime)
 {
-	if (GameUtility::GetGameState() == GameState::RESULT) {
+	if (GameUtility::GetGameState() == GameState::RESULT_CLEAR || 
+		GameUtility::GetGameState() == GameState::RESULT_GAMEOVER) {
 		isStartTimer = true;
 	}
 	else {
@@ -79,6 +83,39 @@ void Result::Update(float deltaTime)
 }
 
 void Result::Draw()
+{
+	if (GameUtility::GetGameState() == GameState::RESULT_CLEAR) {
+		DrawClear();
+	}
+	else {
+		DrawGameOver();
+	}
+
+	//ç∂ë§
+	if (timer >= (GameUtility::GetGameState() == GameState::RESULT_CLEAR ? NEXT_TEXT_TIME : NEXT_TEXT_TIME - 3.0f)) {
+		if (MonitorEffect::IsStart("Select") == false) {
+			MonitorEffect::StartEffect("Select");
+		}
+
+		if (MonitorEffect::IsDraw("Select")) {
+			//Restart
+			Draw(POS_RESTART, SCALE_RESTART, "Restart");
+
+			//Exit
+			Draw(POS_EXIT, SCALE_EXIT, "Exit");
+
+			//Cursol
+			if (*pCursol == 0) {
+				Draw(POS_CURSOL_RESTART, SCALE_CURSOL * 2, "Cursol");
+			}
+			else {
+				Draw(POS_CURSOL_EXIT, SCALE_CURSOL * 2, "Cursol");
+			}
+		}
+	}
+}
+
+void Result::DrawClear()
 {
 	//ç∂ë§
 	if (timer < NEXT_TEXT_TIME) {
@@ -102,27 +139,6 @@ void Result::Draw()
 			if (MonitorEffect::IsDraw("ClearTimeNum")) {
 				std::string num = std::to_string(GameUtility::GetClearTime());
 				DrawNum(num.substr(0, num.find(".") + 5), POS_NUMBER_LEFT, SCALE_NUMBER, 0);
-			}
-		}
-	}
-	else {
-		if (MonitorEffect::IsStart("Select") == false) {
-			MonitorEffect::StartEffect("Select");
-		}
-
-		if (MonitorEffect::IsDraw("Select")) {
-			//Restart
-			Draw(POS_RESTART, SCALE_RESTART, "Restart");
-
-			//Exit
-			Draw(POS_EXIT, SCALE_EXIT, "Exit");
-
-			//Cursol
-			if (*pCursol == 0) {
-				Draw(POS_CURSOL_RESTART, SCALE_CURSOL * 2, "Cursol");
-			}
-			else {
-				Draw(POS_CURSOL_EXIT, SCALE_CURSOL * 2, "Cursol");
 			}
 		}
 	}
@@ -173,6 +189,21 @@ void Result::Draw()
 					Draw(POS_NOW_LOADING_DOT + GE::Math::Vector3(32 * i, 0, 0), SCALE_NUMBER * 0.8f, "Dot");
 				}
 			}
+		}
+	}
+}
+
+void Result::DrawGameOver()
+{
+	//âEë§
+	if (timer >= 0.5f) {
+		if (MonitorEffect::IsStart("GameOver") == false) {
+			MonitorEffect::StartEffect("GameOver");
+		}
+
+		if (MonitorEffect::IsDraw("GameOver")) {
+			//GameOver
+			Draw(POS_GAMEOVER, SCALE_GAMEOVER * 1.25f, "GameOver");
 		}
 	}
 }

@@ -26,6 +26,10 @@ public:
 
 	static void Draw();
 
+	static void DrawClear();
+
+	static void DrawGameOver();
+
 	static void EndLoadRanking() { isGetRanking = true; }
 
 	static void StartThread();

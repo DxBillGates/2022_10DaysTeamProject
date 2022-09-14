@@ -220,6 +220,13 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "LoadFailed");
 	}
 
+	//「GameOver」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("GameOver.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "GameOver");
+	}
+
 	//「Title」
 	{
 		GE::Texture* texture = new GE::Texture();
@@ -257,7 +264,7 @@ bool Game::LoadContents()
 
 	//効果音「HitBoss」
 	{
-		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/HitBoss.wav"), "HitBossData");
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/HitBossPlayer.wav"), "HitBossPlayerData");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "HitBoss"));
 	}
 
@@ -275,7 +282,7 @@ bool Game::LoadContents()
 
 	//効果音「Player用Hit」
 	{
-		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitNormalData"), "PlayerHit"));
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitBossPlayerData"), "PlayerHit"));
 	}
 
 	//効果音「CursolDecide」
@@ -294,6 +301,7 @@ bool Game::LoadContents()
 	MonitorEffect::Add("WorldRankingNum");
 	MonitorEffect::Add("LoadFailed");
 	MonitorEffect::Add("Select");
+	MonitorEffect::Add("GameOver");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

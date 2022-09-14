@@ -180,7 +180,8 @@ void SampleScene::Update(float deltaTime)
 	auto collManager = CollisionManager::GetInstance();
 	collManager->Update(deltaTime);
 
-	if (GameUtility::GetGameState() == GameState::RESULT) {
+	if (GameUtility::GetGameState() == GameState::RESULT_CLEAR ||
+		GameUtility::GetGameState() == GameState::RESULT_GAMEOVER) {
 		UpdateCursol();
 	}
 }
@@ -189,7 +190,8 @@ void SampleScene::Draw()
 {
 	GameUtility::DrawBackground();
 
-	if (GameUtility::GetGameState() == GameState::RESULT) Result::Draw();
+	if (GameUtility::GetGameState() == GameState::RESULT_CLEAR ||
+		GameUtility::GetGameState() == GameState::RESULT_GAMEOVER) Result::Draw();
 
 	gameObjectManager.Draw();
 

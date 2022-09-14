@@ -3,7 +3,8 @@
 
 enum class GameState {
 	GAME,
-	RESULT,
+	RESULT_CLEAR,
+	RESULT_GAMEOVER,
 };
 
 class GameUtility

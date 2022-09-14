@@ -332,6 +332,7 @@ void PlayerComponent::UpdateTrueDeadFlag(float deltaTime)
 	if (isTrueDeadFlagContrller.GetOverTimeTrigger())
 	{
 		isTrueDead = true;
+		GameUtility::SetGameState(GameState::RESULT_GAMEOVER);
 	}
 
 	isTrueDeadFlagContrller.Update(deltaTime);

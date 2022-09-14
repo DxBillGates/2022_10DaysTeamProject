@@ -348,7 +348,7 @@ void BossEnemyComponent::UpdateDeadAnimation(float deltaTime)
 	// スコア更新
 	if (deadAnimationFlag.GetOverTimeTrigger())
 	{
-		GameUtility::SetGameState(GameState::RESULT);
+		GameUtility::SetGameState(GameState::RESULT_CLEAR);
 
 		deadAnimationFlag.SetFlag(false);
 		isEndDeadAnimation = true;
