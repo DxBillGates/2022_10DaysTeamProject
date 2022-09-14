@@ -14,6 +14,7 @@
 #include "Tutorial.h"
 #include "GameUtility.h"
 #include "Result.h"
+#include "MonitorEffect.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -144,6 +145,8 @@ void SampleScene::Initialize()
 
 	Result::Initialize();
 
+	MonitorEffect::Initialize();
+
 	playerComponent->SetAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
 	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
@@ -160,7 +163,7 @@ void SampleScene::Update(float deltaTime)
 	EffectManager::GetInstance()->Update(deltaTime);
 	PlayerAttackManager::GetInstance()->Update(deltaTime,playerComponent->IsDead());
 	HitStopManager::GetInstance()->Update(deltaTime);
-
+	MonitorEffect::Update(deltaTime);
 	//if (GE::CollisionManager::CheckHit(col1, col2))
 	//{
 	//	col1->Hit(col2, gameObjectManager.FindGameObject("test2"));

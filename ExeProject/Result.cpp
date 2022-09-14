@@ -1,5 +1,6 @@
 #include "Result.h"
 #include "GameUtility.h"
+#include "MonitorEffect.h"
 #include <GatesEngine/Header/GUI/GUIManager.h>
 #include <cpprest/filestream.h>
 #include <cpprest/http_client.h>
@@ -48,6 +49,9 @@ void Result::Initialize()
 	isStartTimer = false;
 	isGetRanking = false;
 	rankingError = false;
+
+	//2‰ñ–Ú‘Îô
+	JoinThread();
 }
 
 void Result::UpdateTimer(float deltaTime)
@@ -65,39 +69,70 @@ void Result::UpdateTimer(float deltaTime)
 void Result::Draw()
 {
 	if (timer >= 0.5f) {
-		Draw(POS_CLEAR_TIME, SCALE_CLEAR_TIME * 0.8f, "ClearTime");
+		if (MonitorEffect::IsStart("ClearTimeText") == false) {
+			MonitorEffect::StartEffect("ClearTimeText");
+		}
+
+		if (MonitorEffect::IsDraw("ClearTimeText")) {
+			Draw(POS_CLEAR_TIME, SCALE_CLEAR_TIME * 0.8f, "ClearTime");
+		}
 	}
 
 	if (timer >= 1.0f) {
-		std::string num = std::to_string(GameUtility::GetClearTime());
-		DrawNum(num.substr(0, num.find(".") + 5), POS_NUMBER_LEFT, SCALE_NUMBER, 0);
+		if (MonitorEffect::IsStart("ClearTimeNum") == false) {
+			MonitorEffect::StartEffect("ClearTimeNum");
+		}
+
+		if (MonitorEffect::IsDraw("ClearTimeNum")) {
+			std::string num = std::to_string(GameUtility::GetClearTime());
+			DrawNum(num.substr(0, num.find(".") + 5), POS_NUMBER_LEFT, SCALE_NUMBER, 0);
+		}
 	}
 
 	if (timer >= 1.5f) {
-		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING * 0.8f, "WorldRanking");
+		if (MonitorEffect::IsStart("WorldRankingText") == false) {
+			MonitorEffect::StartEffect("WorldRankingText");
+		}
+
+		if (MonitorEffect::IsDraw("WorldRankingText")) {
+			Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING * 0.8f, "WorldRanking");
+		}
 
 		if (rankingError) {
-			Draw(POS_LOADING_FAILED, SCALE_LOADING_FAILED * 0.8f, "LoadFailed");
+			if (MonitorEffect::IsStart("LoadFailed") == false) {
+				MonitorEffect::StartEffect("LoadFailed");
+			}
+
+			if (MonitorEffect::IsDraw("LoadFailed")) {
+				Draw(POS_LOADING_FAILED, SCALE_LOADING_FAILED * 0.8f, "LoadFailed");
+			}
 		}
 		else if (isGetRanking) {
+			if (MonitorEffect::IsStart("WorldRankingNum") == false) {
+				MonitorEffect::StartEffect("WorldRankingNum");
+			}
 
-			for (int i = 0; i < ranking.size(); i++) {
-				std::string num = std::to_string(ranking[i]);
-				std::string myTime = std::to_string(GameUtility::GetClearTime());
+			if (MonitorEffect::IsDraw("WorldRankingNum")) {
+				for (int i = 0; i < ranking.size(); i++) {
+					std::string num = std::to_string(ranking[i]);
+					std::string myTime = std::to_string(GameUtility::GetClearTime());
 
-				//Ž©•ª‚Ì‹L˜^‚ª‚ ‚ê‚Î“_–Å‚³‚¹‚é
-				if (num != myTime || (int)(timer * 2) % 2 == 0) {
-					DrawNum(std::to_string(i + 1) + ": " + num.substr(0, num.find(".") + 5), POS_RANKING_NUM_1ST + GE::Math::Vector3(0, 32 * i, 0), SCALE_NUMBER / 2, 0);
+					//Ž©•ª‚Ì‹L˜^‚ª‚ ‚ê‚Î“_–Å‚³‚¹‚é
+					if (num != myTime || (int)(timer * 2) % 2 == 0) {
+						DrawNum(std::to_string(i + 1) + ": " + num.substr(0, num.find(".") + 5), POS_RANKING_NUM_1ST + GE::Math::Vector3(0, 32 * i, 0), SCALE_NUMBER / 2, 0);
+					}
 				}
 			}
 		}
 		else {
-			//NowLoading
-			Draw(POS_NOW_LOADING, SCALE_NOW_LOADING * 0.8f, "NowLoading");
+			if (MonitorEffect::IsDraw("WorldRankingText")) {
+				//NowLoading
+				Draw(POS_NOW_LOADING, SCALE_NOW_LOADING * 0.8f, "NowLoading");
 
-			//...
-			for (int i = 0; i < ((int)(timer * 4) % 3) + 1; i++) {
-				Draw(POS_NOW_LOADING_DOT + GE::Math::Vector3(32 * i, 0, 0), SCALE_NUMBER * 0.8f, "Dot");
+				//...
+				for (int i = 0; i < ((int)(timer * 4) % 3) + 1; i++) {
+					Draw(POS_NOW_LOADING_DOT + GE::Math::Vector3(32 * i, 0, 0), SCALE_NUMBER * 0.8f, "Dot");
+				}
 			}
 		}
 	}

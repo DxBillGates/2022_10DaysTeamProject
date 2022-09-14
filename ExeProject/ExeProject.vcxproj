@@ -169,6 +169,7 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="GameUtility.cpp" />
+    <ClCompile Include="MonitorEffect.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SlashEffect.cpp" />
     <ClCompile Include="SpriteParticleComponent.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="GameUtility.h" />
+    <ClInclude Include="MonitorEffect.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="SlashEffect.h" />
     <ClInclude Include="SpriteParticleComponent.h" />

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "SampleScene.h"
 #include "GameSetting.h"
+#include "MonitorEffect.h"
 
 #include <GatesEngine/Header/Graphics/Texture.h>
 #include <GatesEngine/Header/Util/Random.h>
@@ -242,6 +243,14 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioManager.GetAudioData("HitData"), "PlayerHit"));
 	}
 
+	//モニターエフェクト用
+	MonitorEffect::Add("Tutorial_Left");
+	MonitorEffect::Add("Tutorial_Right");
+	MonitorEffect::Add("ClearTimeText");
+	MonitorEffect::Add("ClearTimeNum");
+	MonitorEffect::Add("WorldRankingText");
+	MonitorEffect::Add("WorldRankingNum");
+	MonitorEffect::Add("LoadFailed");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

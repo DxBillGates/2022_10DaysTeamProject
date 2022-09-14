@@ -1,6 +1,7 @@
 #include "Tutorial.h"
 #include "PlayerAttackManager.h"
 #include "GameUtility.h"
+#include "MonitorEffect.h"
 #include <GatesEngine/External/imgui/imgui.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 
@@ -78,11 +79,19 @@ void Tutorial::UpdateTimer(float deltaTime)
 void Tutorial::Draw()
 {
 	bool isAttacking = PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::NONE;
+	static bool prevIsAttackable = IsAttackable() ^ isAttacking;
+
+	//エフェクトタイマーのリセットかける
+	if (prevIsAttackable != (IsAttackable() ^ isAttacking)) {
+		MonitorEffect::StartEffect("Tutorial_Left");
+	}
 
 	if (tutorialState == TutorialState::FIRST_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Left
-			Draw(POS_RIGHT, SCALE_LEFT, "TTR_Left");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_RIGHT, SCALE_LEFT, "TTR_Left");
+			}
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { FIRST_PLAYER_POS_X , 933 + SCALE_GRID.y / 2,0 };
@@ -90,13 +99,17 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			}
 		}
 	}
 	else if (tutorialState == TutorialState::SECOND_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			}
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { SECOND_PLAYER_POS_X , SCALE_GRID.y / 2,0 };
@@ -104,13 +117,17 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			}
 		}
 	}
 	else if (tutorialState == TutorialState::THIRD_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			}
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { THIRD_PLAYER_POS_X, 933 + SCALE_GRID.y / 2,0 };
@@ -118,13 +135,17 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			}
 		}
 	}
 	else if (tutorialState == TutorialState::FOURTH_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
+			}
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { FOURTH_PLAYER_POS_X, 933 + SCALE_GRID.y / 2,0 };
@@ -132,7 +153,9 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			if (MonitorEffect::IsDraw("Tutorial_Left")) {
+				Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
+			}
 		}
 	}
 	else {
@@ -141,8 +164,12 @@ void Tutorial::Draw()
 
 	//Tutorial文字
 	if (IsEndTutorial() == false) {
-		Draw(POS_TUTORIAL, SCALE_TUTORIAL, "TTR_Tutorial");
+		if (MonitorEffect::IsDraw("Tutorial_Right")) {
+			Draw(POS_TUTORIAL, SCALE_TUTORIAL, "TTR_Tutorial");
+		}
 	}
+
+	prevIsAttackable = IsAttackable() ^ isAttacking;
 }
 
 void Tutorial::DecrementChangeStateCount(int resetNum)
