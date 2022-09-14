@@ -28,7 +28,7 @@ const GE::Math::Vector2 PlayerComponent::CLIP_SIZE = { 96 };
 const float PlayerComponent::FLASHING_TIME = 0.2f;
 
 const int PlayerComponent::MAX_HP = 3;
-const float PlayerComponent::MOVE_SPEED = 5;
+const float PlayerComponent::MOVE_SPEED = 10;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -43,7 +43,7 @@ void PlayerComponent::Start()
 
 	moveEntity.Initialize();
 
-	const float SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = 96;
 	transform->scale = SPRITE_SIZE;
 
 		transform->position = { 1920 * 5 / 8, GE::Window::GetWindowSize().y - transform->scale.y / 2,0 };
@@ -393,7 +393,7 @@ void PlayerComponent::DrawHP()
 	const float ANGLE = moveEntity.GetStanceState() == StanceState::NORMAL ? 0 : 180;
 	const float HEIGHT = moveEntity.GetStanceState() == StanceState::NORMAL ? 1 : -1;
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < MAX_HP; ++i)
 	{
 		modelMatrix = GE::Math::Matrix4x4::Scale(DRAW_SIZE);
 		modelMatrix *= GE::Math::Matrix4x4::RotationX(GE::Math::ConvertToRadian(ANGLE));
