@@ -61,6 +61,8 @@ void PlayerComponent::Start()
 	isTrueDeadFlagContrller.SetFlag(false);
 	isTrueDeadFlagContrller.SetTime(0);
 	isTrueDeadFlagContrller.SetMaxTimeProperty(CHANGE_ANIMATION_TIME_DEAD * 2);
+
+	isTrueDead = false;
 }
 
 void PlayerComponent::Update(float deltaTime)
