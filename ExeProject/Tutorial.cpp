@@ -19,7 +19,7 @@ const float Tutorial::THIRD_SHADOW_POS_X = 1920 * 30.5f / 32;
 const float Tutorial::FOURTH_PLAYER_POS_X = 1920 * 2 / 32;
 const float Tutorial::FOURTH_SHADOW_POS_X = 1920 * 30 / 32;
 
-const float Tutorial::PRE_START_TIME = 1.0f;
+const float Tutorial::PRE_START_TIME = 1.0f;//1516.286
 
 TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
 float Tutorial::tutorialTimer = 0;
@@ -29,12 +29,19 @@ bool Tutorial::isSkipTutorial = false;
 
 GE::IGraphicsDeviceDx12* Tutorial::graphicsDevice = nullptr;
 
-const GE::Math::Vector3 SCALE_TUTORIAL = { 384, 96, 0 };
+const GE::Math::Vector3 SCALE_TUTORIAL = { 320, 64, 0 };
 const GE::Math::Vector3 SCALE_LEFT = { 512,256,0 };
 const GE::Math::Vector3 SCALE_RIGHT = { 512,256,0 };
-const GE::Math::Vector3 SCALE_ATTACK = { 512,256,0 };
+const GE::Math::Vector3 SCALE_ATTACK = { 495,105,0 };
 const GE::Math::Vector3 SCALE_WAIT = { 192, 64, 0 };
 const GE::Math::Vector3 SCALE_GRID = { 132, 147, 0 };
+
+const GE::Math::Vector3 POS_BASE_MONITOR_LEFT = { 12, 348, 0 };
+const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
+
+const GE::Math::Vector3 POS_RIGHT = GE::Math::Vector3(54, 402, 0) + SCALE_RIGHT / 2;
+const GE::Math::Vector3 POS_ATTACK = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486, 353, 0) / 2;
+const GE::Math::Vector3 POS_TUTORIAL = GE::Math::Vector3(1516, 286, 0) + SCALE_TUTORIAL / 2;
 
 void Tutorial::Initialize(bool isSkipTutorial)
 {
@@ -70,13 +77,12 @@ void Tutorial::UpdateTimer(float deltaTime)
 
 void Tutorial::Draw()
 {
-	const GE::Math::Vector3 POS_INSTRUCTIONS = {256, GE::Window::GetWindowSize().y / 2, 0};
 	bool isAttacking = PlayerAttackManager::GetInstance()->GetAttackState() != PlayerAttackState::NONE;
 
 	if (tutorialState == TutorialState::FIRST_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Left
-			Draw(POS_INSTRUCTIONS, SCALE_LEFT, "TTR_Left");
+			Draw(POS_RIGHT, SCALE_LEFT, "TTR_Left");
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { FIRST_PLAYER_POS_X , 933 + SCALE_GRID.y / 2,0 };
@@ -84,13 +90,13 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_INSTRUCTIONS, SCALE_ATTACK, "TTR_Attack");
+			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
 		}
 	}
 	else if (tutorialState == TutorialState::SECOND_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_INSTRUCTIONS, SCALE_RIGHT, "TTR_Right");
+			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { SECOND_PLAYER_POS_X , SCALE_GRID.y / 2,0 };
@@ -98,13 +104,13 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_INSTRUCTIONS, SCALE_ATTACK, "TTR_Attack");
+			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
 		}
 	}
 	else if (tutorialState == TutorialState::THIRD_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_INSTRUCTIONS, SCALE_RIGHT, "TTR_Right");
+			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { THIRD_PLAYER_POS_X, 933 + SCALE_GRID.y / 2,0 };
@@ -112,13 +118,13 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_INSTRUCTIONS, SCALE_ATTACK, "TTR_Attack");
+			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
 		}
 	}
 	else if (tutorialState == TutorialState::FOURTH_ATTACK && isAttacking == false) {
 		if (IsAttackable() == false) {
 			//Right
-			Draw(POS_INSTRUCTIONS, SCALE_RIGHT, "TTR_Right");
+			Draw(POS_RIGHT, SCALE_RIGHT * 0.8, "TTR_Right");
 
 			//Grid
 			const GE::Math::Vector3 POS_GRID = { FOURTH_PLAYER_POS_X, 933 + SCALE_GRID.y / 2,0 };
@@ -126,7 +132,7 @@ void Tutorial::Draw()
 		}
 		else {
 			//Attack
-			Draw(POS_INSTRUCTIONS, SCALE_ATTACK, "TTR_Attack");
+			Draw(POS_ATTACK, SCALE_ATTACK * 0.8f, "TTR_Attack");
 		}
 	}
 	else {
@@ -135,7 +141,7 @@ void Tutorial::Draw()
 
 	//Tutorial•¶Žš
 	if (IsEndTutorial() == false) {
-		Draw(SCALE_TUTORIAL / 2, SCALE_TUTORIAL, "TTR_Tutorial");
+		Draw(POS_TUTORIAL, SCALE_TUTORIAL, "TTR_Tutorial");
 	}
 }
 

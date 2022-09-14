@@ -23,15 +23,15 @@ GE::IGraphicsDeviceDx12* Result::graphicsDevice = nullptr;
 
 const GE::Math::Vector3 SCALE_CLEAR_TIME = { 512, 96, 0 };
 const GE::Math::Vector3 SCALE_NUMBER = { 32, 64, 0 };
-const GE::Math::Vector3 SCALE_WORLD_RANKING = { 512, 96, 0 };
+const GE::Math::Vector3 SCALE_WORLD_RANKING = { 482, 64, 0 };
 const GE::Math::Vector3 SCALE_RANKING_NUM = { 16, 32, 0 };
 
 const GE::Math::Vector3 POS_BASE_MONITOR_LEFT = { 12, 348, 0 };
 const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
 
-const GE::Math::Vector3 POS_CLEAR_TIME = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(16, 0, 0) + SCALE_CLEAR_TIME / 2;
+const GE::Math::Vector3 POS_CLEAR_TIME = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486, 96 + 10, 0) / 2;
 const GE::Math::Vector3 POS_NUMBER_LEFT = POS_BASE_MONITOR_LEFT + GE::Math::Vector3(486 / 2 - 32 * 7 / 2, 150, 0) + SCALE_NUMBER / 2;
-const GE::Math::Vector3 POS_WORLD_RANKING = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(50, 8, 0) + SCALE_WORLD_RANKING / 2;
+const GE::Math::Vector3 POS_WORLD_RANKING = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(486, 64 + 10, 0) / 2;
 const GE::Math::Vector3 POS_RANKING_NUM_1ST = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(150, 80, 0) + SCALE_RANKING_NUM / 2;
 
 
@@ -56,7 +56,7 @@ void Result::UpdateTimer(float deltaTime)
 void Result::Draw()
 {
 	if (timer >= 0.5f) {
-		Draw(POS_CLEAR_TIME, SCALE_CLEAR_TIME, "ClearTime");
+		Draw(POS_CLEAR_TIME, SCALE_CLEAR_TIME * 0.8f, "ClearTime");
 	}
 
 	if (timer >= 1.0f) {
@@ -65,11 +65,16 @@ void Result::Draw()
 	}
 
 	if (timer >= 1.5f) {
-		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING, "WorldRanking");
+		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING * 0.8f, "WorldRanking");
 
 		for (int i = 0; i < ranking.size(); i++) {
 			std::string num = std::to_string(ranking[i]);
-			DrawNum(std::to_string(i + 1) + ": " + num.substr(0, num.find(".") + 5), POS_RANKING_NUM_1ST + GE::Math::Vector3(0, 32 * i, 0), SCALE_NUMBER / 2, 0);
+			std::string myTime = std::to_string(GameUtility::GetClearTime());
+
+			//Ž©•ª‚Ì‹L˜^‚ª‚ ‚ê‚Î“_–Å‚³‚¹‚é
+			if (num != myTime || (int)(timer * 2) % 2 == 0) {
+				DrawNum(std::to_string(i + 1) + ": " + num.substr(0, num.find(".") + 5), POS_RANKING_NUM_1ST + GE::Math::Vector3(0, 32 * i, 0), SCALE_NUMBER / 2, 0);
+			}
 		}
 	}
 }
