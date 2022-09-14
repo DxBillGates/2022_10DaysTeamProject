@@ -150,7 +150,7 @@ void BossEnemyComponent::OnGui()
 void BossEnemyComponent::Initialize()
 {
 	//最大生成数初期化
-	maxGenerateCount = 40;
+	maxGenerateCount = 35;
 
 	//チュートリアルスキップ時は最大生成数からチュートリアル分を引く
 	if (Tutorial::IsSkipTutorial()) {

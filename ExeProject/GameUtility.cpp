@@ -64,7 +64,8 @@ void GameUtility::DrawBackground()
 	}
 
 	//Start
-	if (Tutorial::IsEndTutorial() && MonitorEffect::IsDraw("Start") && timer >= 0.5f && timer < 5.0f) {
+	float f = Tutorial::IsSkipTutorial() ? 0 : 0.5f;
+	if (Tutorial::IsEndTutorial() && MonitorEffect::IsDraw("Start") && timer >= f && timer < 5.0f) {
 		Draw(POS_START, SCALE_START * 1.5f, "Start");
 	}
 

@@ -126,6 +126,8 @@ void SampleScene::Initialize()
 	GameUtility::SetGraphicsDevice(graphicsDevice);
 	Result::SetGraphicsDevice(graphicsDevice);
 
+	MonitorEffect::Initialize();
+
 	Tutorial::Initialize(isSkipTutorial);	//チュートリアルスキップさせるならtrueに
 
 	gameObjectManager.Awake();
@@ -147,7 +149,6 @@ void SampleScene::Initialize()
 
 	Result::Initialize();
 
-	MonitorEffect::Initialize();
 
 	playerComponent->SetPAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
