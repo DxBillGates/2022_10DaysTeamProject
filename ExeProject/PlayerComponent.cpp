@@ -226,7 +226,7 @@ void PlayerComponent::UpdateKnockback(float deltaTime)
 	if (knockbackFlag.GetOverTimeTrigger())
 	{
 		knockbackFlag.SetFlag(false);
-		knockbackFlag.SetTime(knockbackFlag.GetMaxTimeProperty());
+		knockbackFlag.SetTime(1);
 	}
 
 	// ノックバックの経過時間を取得し線形補間でノックバックのベクトルを減衰させる
