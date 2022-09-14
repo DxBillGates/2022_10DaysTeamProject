@@ -266,6 +266,7 @@ bool Game::LoadContents()
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/HitBossPlayer.wav"), "HitBossPlayerData");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "HitBoss"));
+		audio->SetVolume(0.1f);
 	}
 
 	//Œø‰Ê‰¹uExplosionv
