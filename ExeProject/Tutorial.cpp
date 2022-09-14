@@ -52,6 +52,7 @@ void Tutorial::Initialize(bool isSkipTutorial)
 		tutorialState = TutorialState::GAME_START;
 		//クリアタイマー開始
 		GameUtility::TimerStart();
+		MonitorEffect::StartEffect("Start");
 		attackable[0] = true;
 		attackable[1] = true;
 	}
