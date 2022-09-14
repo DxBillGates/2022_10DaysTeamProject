@@ -1,5 +1,6 @@
 #include "GameUtility.h"
 #include "MonitorEffect.h"
+#include "Tutorial.h"
 #include <GatesEngine/Header/GUI/GUIManager.h>
 
 float GameUtility::timer = 0;
@@ -11,8 +12,10 @@ GameState GameUtility::gameState = GameState::GAME;
 GE::IGraphicsDeviceDx12* GameUtility::graphicsDevice = nullptr;
 
 const GE::Math::Vector3 SCALE_TITLE = GE::Math::Vector3(804, 192, 0) * 0.6;
+const GE::Math::Vector3 SCALE_START = GE::Math::Vector3(192, 64, 0);
 
 const GE::Math::Vector3 POS_TITLE = GE::Math::Vector3(1430, 215, 0) + SCALE_TITLE / 2;
+const GE::Math::Vector3 POS_START = GE::Math::Vector3(1428 + 486 / 2, 380, 0);
 
 
 void GameUtility::Initialize()
@@ -29,6 +32,10 @@ void GameUtility::TimerStart()
 void GameUtility::UpdateTimer(float deltaTime)
 {
 	if (isStartTimer) { timer += deltaTime; }
+
+	if (Tutorial::IsEndTutorial() && MonitorEffect::IsStart("Start") == false && timer >= 0.5f) {
+		MonitorEffect::StartEffect("Start");
+	}
 }
 
 void GameUtility::TimerStop()
@@ -55,6 +62,12 @@ void GameUtility::DrawBackground()
 		(gameState == GameState::GAME)) {
 		Draw(POS_TITLE, SCALE_TITLE, "Title");
 	}
+
+	//Start
+	if (Tutorial::IsEndTutorial() && MonitorEffect::IsDraw("Start") && timer >= 0.5f && timer < 5.0f) {
+		Draw(POS_START, SCALE_START * 1.5f, "Start");
+	}
+
 }
 
 void GameUtility::Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, const std::string& name)

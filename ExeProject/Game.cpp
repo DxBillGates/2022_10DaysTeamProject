@@ -241,6 +241,13 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "Restart");
 	}
 
+	//「Start」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Start.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Start");
+	}
+
 	//「Exit」
 	{
 		GE::Texture* texture = new GE::Texture();
@@ -308,6 +315,7 @@ bool Game::LoadContents()
 	MonitorEffect::Add("LoadFailed");
 	MonitorEffect::Add("Select");
 	MonitorEffect::Add("GameOver");
+	MonitorEffect::Add("Start");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");
