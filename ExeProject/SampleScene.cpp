@@ -236,7 +236,7 @@ void SampleScene::UpdateCursol()
 		//Exit
 		else {
 			//ゲーム終了させるコード追加お願いします
-
+			Scene::isTerminateApplication = true;
 		}
 	}
 }
