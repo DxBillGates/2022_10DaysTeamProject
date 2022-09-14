@@ -26,6 +26,8 @@ const float BossEnemyComponent::CHANGE_ANIMATION_TIME = 0.25f;
 const GE::Math::Vector2 BossEnemyComponent::TEXTURE_SIZE = {2048,384};
 const GE::Math::Vector2 BossEnemyComponent::CLIP_SIZE = {512,384};
 
+const float BossEnemyComponent::EXPLOSION_TIME_SPACE = 0.5f;
+
 int BossEnemyComponent::generateCountOneAttack = 0;
 
 void BossEnemyComponent::Start()
@@ -36,9 +38,6 @@ void BossEnemyComponent::Start()
 	transform->position = { 1920 / 2, 1080 / 2, 0 };
 
 	Initialize();
-
-	damageFlag.Initialize();
-	damageFlag.SetMaxTimeProperty(1);
 }
 
 void BossEnemyComponent::Update(float deltaTime)
@@ -71,6 +70,7 @@ void BossEnemyComponent::Update(float deltaTime)
 
 	UpdateAnimation(deltaTime);
 	UpdateDamageFlag(deltaTime);
+	UpdateDeadAnimation(deltaTime);
 }
 
 void BossEnemyComponent::LateDraw()
@@ -88,6 +88,12 @@ void BossEnemyComponent::LateDraw()
 	modelMatrix *= GE::Math::Matrix4x4::Translate(transform->position);
 	GE::Material material;
 	material.color = GE::Color::White();
+
+	if (deadAnimationFlag.GetFlag() == true)
+	{
+		float lerpTime = deadAnimationFlag.GetTime() / deadAnimationFlag.GetMaxTimeProperty();
+		material.color.a = GE::Math::Lerp(1, 0, lerpTime);
+	}
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &Camera2D::GetInstance()->GetCameraInfo(), sizeof(GE::CameraInfo)) });
@@ -172,10 +178,23 @@ void BossEnemyComponent::Initialize()
 	isGenerate = false;
 	
 	normalEnemies.clear();
+
+	drawAnimationTimer = 0;
+	drawAnimationNumber = 0;
+
+	damageFlag.Initialize();
+	damageFlag.SetMaxTimeProperty(1);
+
+	deadAnimationFlag.Initialize();
+	deadAnimationFlag.SetMaxTimeProperty(3);
+
+	isEndDeadAnimation = false;
 }
 
 void BossEnemyComponent::Move()
 {
+	if (life <= 0)return;
+
 	//ライフが半分以下になったら動き出す
 	const int START_MOVE_LIFE = Tutorial::IsSkipTutorial() ? maxGenerateCount / 2 : (maxGenerateCount - 2) / 2;
 	if (life <= START_MOVE_LIFE && velocity == 0) {
@@ -216,7 +235,6 @@ void BossEnemyComponent::UpdateLife()
 {
 	static int prevLife = life;
 
-	GE::Math::Vector3 effectPosition;
 	//エネミーリスト走査して死んでいたら削除、ライフ減少
 	for (int i = 0; i < normalEnemies.size();) {
 		if (normalEnemies[i]->IsDead()) {
@@ -232,6 +250,7 @@ void BossEnemyComponent::UpdateLife()
 	if (life != prevLife) {
 		isGenerate = true;
 
+		GE::Math::Vector3 effectPosition;
 		effectPosition = { GE::RandomMaker::GetFloat(-128,128),GE::RandomMaker::GetFloat(-128,128),0 };
 		effectPosition += transform->position;
 
@@ -259,11 +278,12 @@ void BossEnemyComponent::UpdateLife()
 	prevLife = life;
 	
 	//ライフ0以下でリザルトへ
-	if (life <= 0 && GameUtility::GetGameState() == GameState::GAME) {
+	if (life <= 0 && GameUtility::GetGameState() == GameState::GAME && deadAnimationFlag.GetFlag() == false) {
+
+		deadAnimationFlag.SetFlag(true);
+		deadAnimationFlag.SetTime(0);
+
 		GameUtility::TimerStop();
-		Result::SendScore(GameUtility::GetClearTime());
-		Result::GetRanking();
-		GameUtility::SetGameState(GameState::RESULT);
 	}
 }
 
@@ -295,6 +315,50 @@ void BossEnemyComponent::UpdateAnimation(float deltaTime)
 		}
 	}
 	drawAnimationTimer += deltaTime;
+}
+
+void BossEnemyComponent::UpdateDeadAnimation(float deltaTime)
+{
+	if (deadAnimationFlag.GetFlag() == false)return;
+
+	drawAnimationNumber = DAMAGE_ANIMATION_NUMBER;
+
+	const float EXPLOSION_TIME_SPACE = 1;
+	if (deadAmimationTimer >= EXPLOSION_TIME_SPACE)
+	{
+		deadAmimationTimer = 0;
+		//パーティクル生成
+		for (int i = 0; i < 5; i++) {
+			auto* pParticle = SpriteParticleManager::AddParticle();
+			pParticle->SetTextureName("ex");
+			pParticle->SetTextureNum(12);
+			pParticle->SetScale(64);
+			GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50,50) * 3, GE::RandomMaker::GetFloat(-50,50) * 3, 0 };
+			pParticle->SetInitPosition(transform->position + random);
+			pParticle->StartAnime(true, GE::RandomMaker::GetFloat(0.2f, 0.8f));
+		}
+
+
+		GE::Math::Vector3 effectPosition;
+		effectPosition = { GE::RandomMaker::GetFloat(-128,128),GE::RandomMaker::GetFloat(-128,128),0 };
+		effectPosition += transform->position;
+		EffectManager::GetInstance()->Active("bossCrushingEffect", effectPosition);
+	}
+
+	// スコア更新
+	if (deadAnimationFlag.GetOverTimeTrigger())
+	{
+		Result::SendScore(GameUtility::GetClearTime());
+		Result::GetRanking();
+		GameUtility::SetGameState(GameState::RESULT);
+
+		deadAnimationFlag.SetFlag(false);
+		isEndDeadAnimation = true;
+		return;
+	}
+
+	deadAnimationFlag.Update(deltaTime);
+	deadAmimationTimer += deltaTime;
 }
 
 void BossEnemyComponent::GenerateNormalEnemy()
