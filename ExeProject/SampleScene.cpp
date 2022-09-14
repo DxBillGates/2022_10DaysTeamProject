@@ -212,15 +212,30 @@ void SampleScene::LateDraw()
 
 void SampleScene::UpdateCursol()
 {
+	isBeforeLStickMovable = isLStickMovable;
+
+	auto ctrler = inputDevice->GetXCtrler();
+	const float LSTICK_DEAD_ZONE = 0;
+	isLStickMovable = ctrler->GetLStickY() > LSTICK_DEAD_ZONE || ctrler->GetLStickY() < LSTICK_DEAD_ZONE;
+
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S) ||
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP) ||
-		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN))
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN) ||
+		ctrler->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_UP) || 
+		ctrler->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_DOWN) || 
+		(isBeforeLStickMovable == false && isLStickMovable == true))
 	{
 		cursol = cursol == 0 ? 1 : 0;
 	}
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN)) {
+	bool isInputExitKey = inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN);
+	if (ctrler->CheckHitButton(GE::XInputControllerButton::XINPUT_A))
+	{
+		isInputExitKey = true;
+	}
+
+	if (isInputExitKey == true) {
 		//Restart
 		if (cursol == 0) {
 			gameObjectManager.DeleteGameObjectWithTag("Enemy");

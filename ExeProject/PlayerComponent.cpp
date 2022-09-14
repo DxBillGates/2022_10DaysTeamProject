@@ -334,6 +334,9 @@ void PlayerComponent::UpdateTrueDeadFlag(float deltaTime)
 		isTrueDead = true;
 	}
 
+	ImGui::Begin("aaa");
+	ImGui::Text("isTrueTimer %f", deltaTime);
+	ImGui::End();
 	isTrueDeadFlagContrller.Update(deltaTime);
 }
 
@@ -422,5 +425,5 @@ void PlayerComponent::OnGui()
 {
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
-	ImGui::Text("%d", drawAnimationNumber);
+	ImGui::Text("isTrueTimer %f", isTrueDeadFlagContrller.GetTime());
 }
