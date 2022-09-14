@@ -19,7 +19,7 @@ const float Tutorial::THIRD_SHADOW_POS_X = 1920 * 30.5f / 32;
 const float Tutorial::FOURTH_PLAYER_POS_X = 1920 * 2 / 32;
 const float Tutorial::FOURTH_SHADOW_POS_X = 1920 * 30 / 32;
 
-const float Tutorial::PRE_START_TIME = 1.0f;//1516.286
+const float Tutorial::PRE_START_TIME = 1.0f;
 
 TutorialState Tutorial::tutorialState = TutorialState::GAME_START;
 float Tutorial::tutorialTimer = 0;

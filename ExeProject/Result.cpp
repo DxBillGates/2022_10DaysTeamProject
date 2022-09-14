@@ -20,6 +20,7 @@ bool Result::isStartTimer = false;
 std::array<float, 8> Result::ranking;
 bool Result::isGetRanking = false;
 std::thread Result::thread;
+bool Result::rankingError = false;
 
 GE::IGraphicsDeviceDx12* Result::graphicsDevice = nullptr;
 
@@ -28,6 +29,7 @@ const GE::Math::Vector3 SCALE_NUMBER = { 32, 64, 0 };
 const GE::Math::Vector3 SCALE_WORLD_RANKING = { 482, 64, 0 };
 const GE::Math::Vector3 SCALE_RANKING_NUM = { 16, 32, 0 };
 const GE::Math::Vector3 SCALE_NOW_LOADING = { 482, 64, 0 };
+const GE::Math::Vector3 SCALE_LOADING_FAILED = { 482, 64, 0 };
 
 const GE::Math::Vector3 POS_BASE_MONITOR_LEFT = { 12, 348, 0 };
 const GE::Math::Vector3 POS_BASE_MONITOR_RIGHT = { 1428, 144, 0 };
@@ -38,12 +40,14 @@ const GE::Math::Vector3 POS_WORLD_RANKING = POS_BASE_MONITOR_RIGHT + GE::Math::V
 const GE::Math::Vector3 POS_RANKING_NUM_1ST = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(150, 80, 0) + SCALE_RANKING_NUM / 2;
 const GE::Math::Vector3 POS_NOW_LOADING = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(231, 177, 0);
 const GE::Math::Vector3 POS_NOW_LOADING_DOT = POS_NOW_LOADING + GE::Math::Vector3(160, 0, 0);
+const GE::Math::Vector3 POS_LOADING_FAILED = POS_BASE_MONITOR_RIGHT + GE::Math::Vector3(486, 354, 0) / 2;
 
 void Result::Initialize()
 {
 	timer = 0;
 	isStartTimer = false;
 	isGetRanking = false;
+	rankingError = false;
 }
 
 void Result::UpdateTimer(float deltaTime)
@@ -70,8 +74,12 @@ void Result::Draw()
 	}
 
 	if (timer >= 1.5f) {
-		if (isGetRanking) {
-			Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING * 0.8f, "WorldRanking");
+		Draw(POS_WORLD_RANKING, SCALE_WORLD_RANKING * 0.8f, "WorldRanking");
+
+		if (rankingError) {
+			Draw(POS_LOADING_FAILED, SCALE_LOADING_FAILED * 0.8f, "LoadFailed");
+		}
+		else if (isGetRanking) {
 
 			for (int i = 0; i < ranking.size(); i++) {
 				std::string num = std::to_string(ranking[i]);
@@ -144,6 +152,7 @@ void Result::SendScore(float time)
 					}).wait();
 	}
 	catch (...) {
+		rankingError = true;
 		return;
 	}
 }
@@ -152,40 +161,46 @@ void Result::GetRanking()
 {
 	//ランキングデータベースからデータ取得
 	//降順に5つデータを返すようになっている
-	auto json = pplx::create_task([=]
-		{
-			//クライアントの設定
-			http_client client(BASE_URL + L"/score");
+	try {
+		auto json = pplx::create_task([=]
+			{
+				//クライアントの設定
+				http_client client(BASE_URL + L"/score");
 
-			//リクエスト設定
-			http_request request;
-			request.set_method(methods::GET);
+				//リクエスト設定
+				http_request request;
+				request.set_method(methods::GET);
 
-			//リクエスト送信
-			return client.request(request);
-		})
-		.then([](http_response response) {
-			//ステータスコード判定
-			if (response.status_code() == status_codes::OK) {
-				//jsonを返す
-				return response.extract_json();
-			}
-			}).get();
+				//リクエスト送信
+				return client.request(request);
+			})
+			.then([](http_response response) {
+				//ステータスコード判定
+				if (response.status_code() == status_codes::OK) {
+					//jsonを返す
+					return response.extract_json();
+				}
+				}).get();
 
-			auto& array = json.as_array();
+				auto& array = json.as_array();
 
-			//arrayに要素格納し返す
-			std::array<float, 8> result = {};
-			for (int i = 0; i < result.size(); i++) {
-				if (i >= array.size()) {
-					result[i] = 0;
-					continue;
+				//arrayに要素格納し返す
+				std::array<float, 8> result = {};
+				for (int i = 0; i < result.size(); i++) {
+					if (i >= array.size()) {
+						result[i] = 0;
+						continue;
+					}
+
+					result[i] = array[i].at(U("score")).as_double();
 				}
 
-				result[i] = array[i].at(U("score")).as_double();
-			}
-
-			ranking = result;
+				ranking = result;
+	}
+	catch (...) {
+		rankingError = true;
+		return;
+	}
 }
 
 void Result::Draw(const GE::Math::Vector3& pos, const GE::Math::Vector3& scale, const std::string& name)

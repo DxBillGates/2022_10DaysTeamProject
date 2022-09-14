@@ -212,6 +212,13 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "NowLoading");
 	}
 
+	//「Load Failed」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("LoadFailed.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "LoadFailed");
+	}
+
 	//効果音「Hit」
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit.wav"), "HitData");

@@ -11,6 +11,7 @@ private:
 	static std::array<float, 8> ranking;
 	static bool isGetRanking;
 	static std::thread thread;
+	static bool rankingError;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
