@@ -227,6 +227,28 @@ bool Game::LoadContents()
 		graphicsDevice.GetTextureManager()->Add(texture, "Title");
 	}
 
+	//「Restart」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Restart.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Restart");
+	}
+
+	//「Exit」
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Exit.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Exit");
+	}
+
+	//カーソル
+	{
+		GE::Texture* texture = new GE::Texture();
+		texture->Load("Cursol.png", graphicsDevice.GetDevice(), graphicsDevice.GetShaderResourceHeap());
+		graphicsDevice.GetTextureManager()->Add(texture, "Cursol");
+	}
+
+
 	//効果音「Hit」
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/Hit.wav"), "HitData");
@@ -258,6 +280,7 @@ bool Game::LoadContents()
 	MonitorEffect::Add("WorldRankingText");
 	MonitorEffect::Add("WorldRankingNum");
 	MonitorEffect::Add("LoadFailed");
+	MonitorEffect::Add("Select");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
 	sceneManager.ChangeScene("SampleScene");

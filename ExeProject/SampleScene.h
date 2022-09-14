@@ -14,6 +14,8 @@ private:
 	GE::GameObjectManager particleManager;
 
 	bool isSkipTutorial = false;
+
+	int cursol = 0;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);
@@ -22,4 +24,6 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() override;
 	void LateDraw() override;
+
+	void UpdateCursol();
 };

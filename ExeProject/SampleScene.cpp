@@ -110,6 +110,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 	SpriteParticleManager::SetPGameObjectManager(&particleManager);
 	SpriteParticleManager::StaticInitialize();
 
+	Result::SetPCursol(&cursol);
+
 	GE::RandomMaker::ResetSeed();
 }
 
@@ -150,6 +152,8 @@ void SampleScene::Initialize()
 	playerComponent->SetAudioManager(audioManager);
 	bossEnemyComponent->SetPAudioManager(audioManager);
 	PlayerAttackManager::GetInstance()->SetPAudioManager(audioManager);
+
+	cursol = 0;
 }
 
 void SampleScene::Update(float deltaTime)
@@ -171,22 +175,13 @@ void SampleScene::Update(float deltaTime)
 	//}
 	Tutorial::UpdateTimer(deltaTime);
 	GameUtility::UpdateTimer(deltaTime);
-	Result::UpdateTimer(deltaTime);
+	Result::Update(deltaTime);
 	
-
 	auto collManager = CollisionManager::GetInstance();
 	collManager->Update(deltaTime);
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
-	{
-		gameObjectManager.DeleteGameObjectWithTag("Enemy");
-		collManager->EraseEnemy();
-		changeSceneInfo.flag = true;
-		changeSceneInfo.initNextSceneFlag = true;
-		changeSceneInfo.name = this->name;
-
-		//2回目以降はチュートリアルスキップ
-		isSkipTutorial = true;
+	if (GameUtility::GetGameState() == GameState::RESULT) {
+		UpdateCursol();
 	}
 }
 
@@ -213,4 +208,35 @@ void SampleScene::LateDraw()
 
 	particleManager.LateDraw();
 	EffectManager::GetInstance()->Draw(graphicsDevice);
+}
+
+void SampleScene::UpdateCursol()
+{
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W) ||
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S) ||
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP) ||
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN))
+	{
+		cursol = cursol == 0 ? 1 : 0;
+	}
+
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN)) {
+		//Restart
+		if (cursol == 0) {
+			gameObjectManager.DeleteGameObjectWithTag("Enemy");
+			auto collManager = CollisionManager::GetInstance();
+			collManager->EraseEnemy();
+			changeSceneInfo.flag = true;
+			changeSceneInfo.initNextSceneFlag = true;
+			changeSceneInfo.name = this->name;
+
+			//2回目以降はチュートリアルスキップ
+			isSkipTutorial = true;
+		}
+		//Exit
+		else {
+			//ゲーム終了させるコード追加お願いします
+
+		}
+	}
 }

@@ -12,6 +12,7 @@ private:
 	static bool isGetRanking;
 	static std::thread thread;
 	static bool rankingError;
+	static int* pCursol;
 
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
 
@@ -21,7 +22,7 @@ private:
 
 public:
 	static void Initialize();
-	static void UpdateTimer(float deltaTime);
+	static void Update(float deltaTime);
 
 	static void Draw();
 
@@ -34,6 +35,8 @@ public:
 	static void SendScore(float time);
 
 	static void GetRanking();
+
+	static void SetPCursol(int* pCursol) { Result::pCursol = pCursol; }
 
 	static void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice) { Result::graphicsDevice = gDevice; }
 };
