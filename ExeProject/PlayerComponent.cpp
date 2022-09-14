@@ -68,7 +68,7 @@ void PlayerComponent::Update(float deltaTime)
 			++drawAnimationNumber;
 
 			const int MAX_ANIMATION_NUMBER = isMove ? MAX_ANIMATION_NUMBER_WALK : MAX_ANIMATION_NUMBER_STOP;
-			if (drawAnimationNumber > MAX_ANIMATION_NUMBER)
+			if (drawAnimationNumber >= MAX_ANIMATION_NUMBER)
 			{
 				drawAnimationNumber = 0;
 			}
@@ -273,25 +273,29 @@ void PlayerComponent::UpdateInvinsible(float deltaTime)
 
 void PlayerComponent::Move(const float GAME_TIME)
 {
-	// 移動方向の変更テスト
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A) && moveEntity.GetDirectionState() == MoveDirectionState::RIGHT
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D) && moveEntity.GetDirectionState() == MoveDirectionState::LEFT)
-	{
-		moveEntity.ChangeMoveDirection();
-	}
-
 	isMove = false;
 	auto keyboard = inputDevice->GetKeyboard();
 	auto ctrler = inputDevice->GetXCtrler();
 
+	// 移動方向の変更テスト
+	if(moveEntity.GetDirectionState() == MoveDirectionState::RIGHT && (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0))
+	{
+		moveEntity.ChangeMoveDirection();
+	}
+	else if (moveEntity.GetDirectionState() == MoveDirectionState::LEFT && (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0))
+	{
+		moveEntity.ChangeMoveDirection();
+	}
+
+
 	GE::Math::Vector3 moveVector = {0,0,0};
-	if (keyboard->CheckHitKey(GE::Keys::A))
+	if (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT) || ctrler->GetLStickX() < 0)
 	{
 		isMove = true;
 		moveVector = { -1,0,0 };
 		moveVector *= MOVE_SPEED * GAME_TIME;
 	}
-	if (keyboard->CheckHitKey(GE::Keys::D))
+	if (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT) || ctrler->GetLStickX() > 0)
 	{
 		isMove = true;
 		moveVector = { 1,0,0 };
@@ -343,9 +347,9 @@ void PlayerComponent::DrawHP()
 	}
 }
 
-//void PlayerComponent::OnGui()
-//{
-//	float dragSpeed = 0.1f;
-//	float maxValue = 100;
-//	ImGui::DragFloat3("Angles", transform->rotation.value, dragSpeed, 0, 360);
-//}
+void PlayerComponent::OnGui()
+{
+	float dragSpeed = 0.1f;
+	float maxValue = 100;
+	ImGui::Text("%d", drawAnimationNumber);
+}

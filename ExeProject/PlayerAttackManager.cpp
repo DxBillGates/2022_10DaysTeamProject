@@ -95,22 +95,32 @@ void PlayerAttackManager::TransitionAttackStateProcess()
 	const float TRANSITION_TIME = 0.5f;
 
 	// キーを押したときにクールタイムが終了していてかつ攻撃遷移がNoneなら攻撃を開始
-	if (Tutorial::IsAttackable() && GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) && 
+	if (Tutorial::IsAttackable() && 
 		attackState == PlayerAttackState::NONE && coolTimeFlag.GetFlag() == false)
 	{
-		TransitionAttackState(PRE_TIME, PlayerAttackState::PRE);
-		GameSetting::GetInstance()->SetTime(SLOW_TIME, TRANSITION_TIME);
+		bool isInput = GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE);
+		if (GE::InputDevice::GetInstance()->GetXCtrler()->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_A))
+		{
+			isInput = true;
+		}
 
-		InitializeVibrationInfo();
+		if (isInput == true)
+		{
 
-		//チェイン数リセット
-		GameUtility::ResetNowChain();
+			TransitionAttackState(PRE_TIME, PlayerAttackState::PRE);
+			GameSetting::GetInstance()->SetTime(SLOW_TIME, TRANSITION_TIME);
 
-		//1回の攻撃で生成された敵数リセット
-		BossEnemyComponent::ResetGenerateCountOneAttack();
+			InitializeVibrationInfo();
 
-		//効果音再生状況リセット
-		GameUtility::SetIsPlaySE(false);
+			//チェイン数リセット
+			GameUtility::ResetNowChain();
+
+			//1回の攻撃で生成された敵数リセット
+			BossEnemyComponent::ResetGenerateCountOneAttack();
+
+			//効果音再生状況リセット
+			GameUtility::SetIsPlaySE(false);
+		}
 	}
 
 	// 各攻撃状態から次の遷移に移る処理

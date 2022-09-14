@@ -54,7 +54,7 @@ public:
 	void Start() override;
 	void Update(float deltaTime) override;
 	void LateDraw() override;
-	//void OnGui() override;
+	void OnGui() override;
 	void OnCollision(GE::GameObject* other)override;
 
 	MoveEntity* GetMoveEntity();

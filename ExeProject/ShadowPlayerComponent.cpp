@@ -61,7 +61,7 @@ void ShadowPlayerComponent::Update(float deltaTime)
 		drawAnimationTimer = 0;
 		++drawAnimationNumber;
 
-		if (drawAnimationNumber > MAX_ANIMATION_NUMBER)
+		if (drawAnimationNumber >= MAX_ANIMATION_NUMBER)
 		{
 			drawAnimationNumber = 0;
 		}
