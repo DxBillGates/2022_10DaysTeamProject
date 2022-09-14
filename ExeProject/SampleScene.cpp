@@ -128,7 +128,7 @@ void SampleScene::Initialize()
 
 	MonitorEffect::Initialize();
 
-	Tutorial::Initialize(true);	//チュートリアルスキップさせるならtrueに
+	Tutorial::Initialize(isSkipTutorial);	//チュートリアルスキップさせるならtrueに
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
