@@ -175,7 +175,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 
 			Camera2D::GetInstance()->Shake(0.4f, 20);
-			HitStopManager::GetInstance()->Active(0.3f);
+			HitStopManager::GetInstance()->Active(0.1f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position,EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 
@@ -201,7 +201,7 @@ void NormalEnemyComponent::OnCollision(GE::GameObject* other)
 			}
 
 			Camera2D::GetInstance()->Shake(0.4f, 50);
-			HitStopManager::GetInstance()->Active(0.4f);
+			HitStopManager::GetInstance()->Active(0.13f);
 			EffectManager::GetInstance()->Active("slashEffect", transform->position, EffectScale::HALF);
 			EffectManager::GetInstance()->Active("dotEffect", transform->position);
 

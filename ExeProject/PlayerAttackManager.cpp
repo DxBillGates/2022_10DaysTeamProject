@@ -87,8 +87,8 @@ PlayerAttackManager::PlayerAttackManager()
 void PlayerAttackManager::TransitionAttackStateProcess()
 {
 	// Šeó‘Ô‚Ì‘JˆÚŠÔ(s)
-	const float PRE_TIME = 0.3f;
-	const float ACTIVE_TIME = 0.5f;
+	const float PRE_TIME = 0.2f;
+	const float ACTIVE_TIME = 0.46f;
 	const float END_TIME = 0.01f;
 	const float COOL_TIME = 0.001f;
 
