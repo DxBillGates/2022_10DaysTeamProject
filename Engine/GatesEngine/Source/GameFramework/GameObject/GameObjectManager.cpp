@@ -31,17 +31,31 @@ void GE::GameObjectManager::Start()
 
 void GE::GameObjectManager::Update(float deltaTime)
 {
+	bool isReleaseMode = true;
+#ifdef _DEBUG
+	isReleaseMode = false;
+#endif
+
+
+
 	for (auto& object : gameObjects)
 	{
 		object->Update(deltaTime);
 
-		// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
-		if (hierarchyGui.OnGui(object))
+		if (!isReleaseMode)
 		{
-			inspectorGui.SetCurrentSelectGameObject(object);
+			// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
+			if (hierarchyGui.OnGui(object))
+			{
+				inspectorGui.SetCurrentSelectGameObject(object);
+			}
 		}
 	}
-	inspectorGui.OnGui();
+
+	if (!isReleaseMode)
+	{
+		inspectorGui.OnGui();
+	}
 }
 
 void GE::GameObjectManager::Draw()
@@ -91,4 +105,37 @@ GE::GameObject* GE::GameObjectManager::FindGameObjectWithTag(const std::string& 
 		break;
 	}
 	return returnObject;
+}
+
+void GE::GameObjectManager::DeleteGameObject(const std::string& name)
+{
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetName() == name)
+		{
+			delete gameObject;
+			gameObject = nullptr;
+			std::swap(gameObject, gameObjects.back());
+			gameObjects.pop_back();
+			return;
+		}
+	}
+}
+
+void GE::GameObjectManager::DeleteGameObjectWithTag(const std::string& tag)
+{
+	int l = gameObjects.size();
+	for (int i = 0; i < l; ++i)
+	{
+		if (gameObjects[i]->GetTag() == tag)
+		{
+			delete gameObjects[i];
+			gameObjects[i] = nullptr;
+			std::swap(gameObjects[i], gameObjects.back());
+			gameObjects.pop_back();
+
+			l--;
+			i--;
+		}
+	}
 }

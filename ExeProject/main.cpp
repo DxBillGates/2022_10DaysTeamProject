@@ -10,11 +10,12 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #endif
+
 	GE::Math::Vector2 windowSize = GE::Math::Vector2(1920, 1080);
 	GE::Math::Vector2 resolution = GE::Math::Vector2(1920, 1080);
 
 	GE::WindowData windowData;
-	windowData.title = "no title";
+	windowData.title = "4003_クロススイッチ";
 	windowData.windowSize = windowSize;
 	windowData.windowMode = GE::WindowMode::WINDOW;
 	windowData.iconHandle = IDI_ICON1;

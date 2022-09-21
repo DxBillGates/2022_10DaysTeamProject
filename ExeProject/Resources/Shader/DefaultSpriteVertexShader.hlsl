@@ -1,4 +1,4 @@
-#include "DefaultShader.hlsli"
+#include "DefaultShaderInfo.hlsli"
 
 DefaultSpriteVSOutput main(DefaultSpriteVSInput input)
 {

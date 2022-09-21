@@ -35,7 +35,7 @@ GE::AudioData* GE::AudioManager::AddAudioData(AudioData * newAudioData,const std
 	return newAudioData;
 }
 
-GE::AudioData* GE::AudioManager::GetAudioData(std::string& tag)
+GE::AudioData* GE::AudioManager::GetAudioData(const std::string& tag)
 {
 	return backupAudioDatas.at(tag);
 }

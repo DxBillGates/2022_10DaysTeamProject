@@ -1,4 +1,4 @@
-#include "DefaultShader.hlsli"
+#include "DefaultShaderInfo.hlsli"
 
 float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 {

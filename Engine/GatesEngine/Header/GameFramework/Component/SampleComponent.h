@@ -10,6 +10,7 @@ namespace GE
 		InputDevice* inputDevice;
 		Math::Vector3 random;
 		float speed;
+		static Math::Vector3 angles;
 	public:
 		SampleComponent();
 		~SampleComponent();

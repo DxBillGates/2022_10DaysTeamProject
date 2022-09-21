@@ -18,6 +18,7 @@ void GE::BoxCollider::Awake()
 
 void GE::BoxCollider::Draw()
 {
+#ifdef _DEBUG
 	if (!drawEnabled)return;
 	ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -57,6 +58,7 @@ void GE::BoxCollider::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
 
 	graphicsDevice->DrawMesh("LineCube");
+#endif
 }
 
 void GE::BoxCollider::OnGui()

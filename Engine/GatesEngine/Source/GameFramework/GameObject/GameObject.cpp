@@ -61,6 +61,7 @@ void GE::GameObject::Draw()
 		component->Draw();
 	}
 
+#ifdef _DEBUG
 	// gameObject‚ÌŽ²‚ð•`‰æ
 	if (!drawAxisEnabled)return;
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -77,6 +78,7 @@ void GE::GameObject::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
 	graphicsDevice->DrawMesh("LineAxis");
+#endif // _DEBUG
 }
 
 void GE::GameObject::LateDraw()

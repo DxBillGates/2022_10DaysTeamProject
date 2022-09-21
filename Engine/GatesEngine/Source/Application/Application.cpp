@@ -179,6 +179,10 @@ bool GE::Application::LoadContents()
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
 
+	Texture* iconTexture = new Texture();
+	iconTexture->Load("test.png", device, shaderResourceHeap);
+	textureManager->Add(iconTexture, "texture_icon");
+
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");
@@ -195,6 +199,14 @@ bool GE::Application::LoadContents()
 	gaussBlurPixelShader.CompileShaderFileWithoutFormat(L"GaussBlurPixelShader", "ps_5_0");
 	Shader defaultSpriteWithTexturePixelShader;
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
+	Shader spriteTextureForPostEffectPixelShader;
+	spriteTextureForPostEffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPostEffectPixelShader", "ps_5_0");
+	Shader spriteTextureAnimationShader;
+	spriteTextureAnimationShader.CompileShaderFileWithoutFormat(L"DefaultSpriteTextureAnimationVertexShader", "vs_5_0");
+	Shader brightnessSamlingShader;
+	brightnessSamlingShader.CompileShaderFileWithoutFormat(L"BrightnessSamplingPixelShader", "ps_5_0");
+	Shader mixedTextureShader;
+	mixedTextureShader.CompileShaderFileWithoutFormat(L"MixedTexturePixelShader", "ps_5_0");
 
 	// rootSignature作成
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -213,6 +225,14 @@ bool GE::Application::LoadContents()
 	RootSignature* testRootSignature = new RootSignature();
 	testRootSignature->Create(device, {16,16,0});
 	rootSignatureManager->Add(testRootSignature, "CBV16SRV16");
+	// cbv5srv1ルートシグネチャ
+	RootSignature* cbv4srv1cbv1RootSignature = new RootSignature();
+	cbv4srv1cbv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV,DescriptorRangeType::SRV ,DescriptorRangeType::CBV });
+	rootSignatureManager->Add(cbv4srv1cbv1RootSignature, "CBV4SRV1CBV1");
+	// cbv3,srv5ルートシグネチャ
+	RootSignature* cbv3srv4RootSignature = new RootSignature();
+	cbv3srv4RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV,DescriptorRangeType::SRV,DescriptorRangeType::SRV,DescriptorRangeType::SRV,DescriptorRangeType::SRV,DescriptorRangeType::SRV });
+	rootSignatureManager->Add(cbv3srv4RootSignature, "CBV3SRV5");
 
 	// demo graphicsPipeline作成
 	GraphicsPipelineInfo pipelineInfo = GraphicsPipelineInfo();
@@ -240,12 +260,36 @@ bool GE::Application::LoadContents()
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;
 	GraphicsPipeline* dafaultSpriteWithTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
 	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteWithTexturePipeline, "DefaultSpriteWithTextureShader");
 	// gauss blur shader
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_BACK;
 	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(gaussBlurPipeline, "GaussBlurShader");
+	// sprite texture for pre postEffect shader
+	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
+	pipelineInfo.isUseDepthClip = false;
+	GraphicsPipeline* spriteTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&spriteTextureForPostEffectPixelShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
+	spriteTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(spriteTexturePipeline, "SpriteTextureForPostEffectShader");
+	// sprite texture animation shader
+	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
+	pipelineInfo.isUseDepthClip = false;
+	GraphicsPipeline* dafaultSpriteTextureAnimationPipeline = new GraphicsPipeline({ &spriteTextureAnimationShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
+	pipelineInfo.cullMode = GraphicsPipelineCullingMode::CULL_MODE_NONE;
+	dafaultSpriteTextureAnimationPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv4srv1cbv1RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(dafaultSpriteTextureAnimationPipeline, "DefaultSpriteTextureAnimationShader");
+	// brightness sampling shader
+	GraphicsPipeline* brightnessSamplingPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&brightnessSamlingShader });
+	brightnessSamplingPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(brightnessSamplingPipeline, "BrightnessSamplingShader");
+	// mixed texture shader
+	GraphicsPipeline* mixedTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&mixedTextureShader });
+	mixedTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv3srv4RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(mixedTexturePipeline, "MixedTextureShader");
 
 	// demo layer作成
 	auto* layerManager = graphicsDevice.GetLayerManager();
@@ -262,6 +306,19 @@ bool GE::Application::LoadContents()
 	resultDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
 
+	RenderTexture* effectRenderTexture = new RenderTexture();
+	effectRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	layerManager->Add(new Layer(effectRenderTexture, nullptr), "EffectLayer");
+
+	for (int i = 0,divide = 2; i < 6; ++i)
+	{
+		if (i % 2 == 0)divide *= 2;
+
+		RenderTexture* bloomRenderTexture = new RenderTexture();
+		bloomRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize() / divide, Color::Black());
+
+		layerManager->Add(new Layer(bloomRenderTexture, nullptr), "BloomLayer_" + std::to_string(i));
+	}
 
 	return true;
 }

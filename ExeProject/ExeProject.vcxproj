@@ -163,17 +163,63 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BossCrushingEffect.cpp" />
+    <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="DotExplosionEffect.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="GameUtility.cpp" />
+    <ClCompile Include="MonitorEffect.cpp" />
+    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="SlashEffect.cpp" />
+    <ClCompile Include="SpriteParticleComponent.cpp" />
+    <ClCompile Include="BossEnemyComponent.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameSetting.cpp" />
+    <ClCompile Include="HitStopManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveEntity.cpp" />
+    <ClCompile Include="NormalEnemyComponent.cpp" />
+    <ClCompile Include="PlayerAttackManager.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="ShadowPlayerComponent.cpp" />
+    <ClCompile Include="SpriteParticleManager.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BossCrushingEffect.h" />
+    <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="DotExplosionEffect.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="GameUtility.h" />
+    <ClInclude Include="MonitorEffect.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="SlashEffect.h" />
+    <ClInclude Include="SpriteParticleComponent.h" />
+    <ClInclude Include="BossEnemyComponent.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameSetting.h" />
+    <ClInclude Include="HitStopManager.h" />
+    <ClInclude Include="MoveEntity.h" />
+    <ClInclude Include="NormalEnemyComponent.h" />
+    <ClInclude Include="PlayerAttackManager.h" />
+    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="ShadowPlayerComponent.h" />
+    <ClInclude Include="SpriteParticleManager.h" />
+    <ClInclude Include="Tutorial.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shader\DefaultShader.hlsli" />
+    <None Include="Resources\Shader\DefaultCBuffer.hlsli" />
+    <None Include="Resources\Shader\DefaultFunction.hlsli" />
+    <None Include="Resources\Shader\DefaultInputLayout.hlsli" />
+    <None Include="Resources\Shader\DefaultSampler.hlsli" />
+    <None Include="Resources\Shader\DefaultShaderInfo.hlsli" />
     <None Include="Resources\Shader\GaussBlurShaderHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +279,20 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpriteTextureAnimationPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpriteTextureAnimationVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shader\DefaultSpriteVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -248,12 +308,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\Shader\GaussBlurPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\MixedTexturePixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\SpriteTextureForPostEffectPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

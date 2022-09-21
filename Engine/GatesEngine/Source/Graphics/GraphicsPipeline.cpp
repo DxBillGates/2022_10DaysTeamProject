@@ -120,7 +120,7 @@ void GE::GraphicsPipeline::Create(ID3D12Device* device, const std::vector<Graphi
 	}
 
 	psoDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	psoDesc.RasterizerState.CullMode = (D3D12_CULL_MODE)info.cullMode;
 	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 
 	psoDesc.RasterizerState.DepthClipEnable = info.isUseDepthClip;

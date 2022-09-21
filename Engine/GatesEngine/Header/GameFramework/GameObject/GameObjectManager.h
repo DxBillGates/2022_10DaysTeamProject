@@ -25,5 +25,7 @@ namespace GE
 		GameObject* AddGameObject(GameObject* newGameObject);
 		GameObject* FindGameObject(const std::string& name);
 		GameObject* FindGameObjectWithTag(const std::string& name, const std::string& tag);
+		void DeleteGameObject(const std::string& name);
+		void DeleteGameObjectWithTag(const std::string& tag);
 	};
 }
